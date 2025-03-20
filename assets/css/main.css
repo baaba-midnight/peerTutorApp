@@ -1,0 +1,18 @@
+:root {
+    --poppins-font: 'Poppins', sans-serif;
+    --poppins-extra-black: 900;
+    --poppins-extra-bold: 800;
+    --poppins-bold: 700;
+    --poppins-semi-bold: 600;
+    --poppins-medium: 500;
+    --poppins-regular: 400;
+    --poppins-light: 300;
+    --poppins-extra-light: 200;
+    --poppins-thin: 100;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
