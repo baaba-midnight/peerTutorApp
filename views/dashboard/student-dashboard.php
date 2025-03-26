@@ -1,9 +1,10 @@
-<?php 
+<?php
 $_SESSION['role'] = 2;
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,12 +24,130 @@ $_SESSION['role'] = 2;
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/header.css">
+    <link rel="stylesheet" href="../../assets/css/footer.css">
+    <link rel="stylesheet" href="../../assets/css/dashboard.css">
+    <link rel="stylesheet" href="../../assets/css/student-dashboard.css">
 </head>
-<body>
-    <!-- Include NavBar -->
-    <?php include 'includes/navbar.php'; ?>
 
-    <!-- Include Footer -->
-    <?php include 'includes/footer.php'; ?>
+<body>
+    <?php 
+    $role = 'student'; // temporary variable
+    include('../../includes/header.php'); 
+    ?>
+
+    <div class="main-content">
+        <div class="student-welcome">
+            <h2>Welcome Malcom!</h2>
+            <p>Find the best tutors and manage your learning journey.</p>
+        </div>
+
+        <!-- Appointment Card -->
+        <div class="card">
+            <div class="card-header">
+                <p>Upcoming Appointments</p>
+                <a href="#">View All</a>
+            </div>
+
+            <div class="card-body">
+                <div class="card-section">
+                    <div class="card-info">
+                        <p class="title">Appointment with Jennifer</p>
+
+                        <div class="title-meta">
+                            <p>Mathematics</p>
+                            <p>Monday, 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn appointment-status">Pending</button>
+                        <button class="btn appointment-join">Join</button>
+                    </div>
+                </div>
+
+                <div class="card-section">
+                    <div class="card-info">
+                        <p class="title">Appointment with Jennifer</p>
+
+                        <div class="title-meta">
+                            <p>Mathematics</p>
+                            <p>Monday, 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn appointment-status">Pending</button>
+                        <button class="btn appointment-join">Join</button>
+                    </div>
+                </div>
+
+                <div class="card-section">
+                    <div class="card-info">
+                        <p class="title">Appointment with Jennifer</p>
+
+                        <div class="title-meta">
+                            <p>Mathematics</p>
+                            <p>Monday, 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn appointment-status">Pending</button>
+                        <button class="btn appointment-join">Join</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Messages Card -->
+        <div class="card">
+            <div class="card-header">
+                <p>Unread Messages</p>
+                <a href="#">View All</a>
+            </div>
+
+            <div class="card-body">
+                <div class="card-section">
+                    <div class="card-info">
+                        <p class="title">Jennifer Sent You A chat</p>
+
+                        <div class="title-meta">
+                            <p>Monday, 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn appointment-join">Open Message</button>
+                    </div>
+                </div>
+
+                <div class="card-section">
+                    <div class="card-info">
+                        <p class="title">Jennifer Sent You A chat</p>
+
+                        <div class="title-meta">
+                            <p>Monday, 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn appointment-join">Open Message</button>
+                    </div>
+                </div>
+
+                <div class="card-section">
+                    <div class="card-info">
+                        <p class="title">Jennifer Sent You A chat</p>
+
+                        <div class="title-meta">
+                            <p>Monday, 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button class="btn appointment-join">Open Message</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <?php include('../../includes/footer.php'); ?>
 </body>
+
 </html>
