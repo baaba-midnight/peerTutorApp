@@ -9,10 +9,23 @@
     --poppins-light: 300;
     --poppins-extra-light: 200;
     --poppins-thin: 100;
+    --sidebar-width: 300px;
 }
 
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+body {
+    font-family: var(--poppins-font);
+    background-color: #fff;
+}
+
+.main-content {
+    display: flex;
+    gap: 20px;
+    padding: 50px;
+    flex-direction: column;
 }

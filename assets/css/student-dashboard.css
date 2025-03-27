@@ -1,0 +1,92 @@
+.card-header {
+    background-color: #fff;
+    color: #121212;
+    border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+    margin: 0;
+    align-items: center;
+}
+
+.card-header a {
+    color: rgba(18, 18, 18, 0.5);
+    text-decoration: none;
+    font-weight: var(--poppins-regular);
+    font-size: 15px;
+}
+
+.card-body {
+    padding: 0px 20px 20px 20px;
+}
+
+.card-section {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background-color: #fff;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-info {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 15px;
+    font-weight: var(--poppins-bold);
+    padding: 0;
+    margin: 0;
+}
+
+.title-meta {
+    font-size: 13px;
+    color: rgba(18, 18, 18, 0.5);
+    font-weight: var(--poppins-regular);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 0;
+    margin: 0;
+}
+
+.card-action {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-direction: column;
+    width: 200px;
+}
+
+.btn {
+    font-size: 15px;
+    font-weight: var(--poppins-semi-bold);
+    border-radius: 50px;
+    width: 100%;
+    border: 1px solid #000;
+}
+
+.appointment-status {
+    background-color: #fff;
+    color: #000;
+}
+
+.appointment-status:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.appointment-join {
+    background-color: #000;
+    color: #fff;
+    border-radius: 50px;
+}
+
+.appointment-join:hover {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #000;
+}
