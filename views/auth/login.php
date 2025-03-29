@@ -27,7 +27,7 @@ if($_SERVER["REQUEST_METHOD"] == 'POST'){
         $lastName = $row['last_name'];
         $email = $row['email'];
 
-        if (password_verify($password, $row['password'])){
+        if (password_verify($password, $row['password_hash'])){
             // set session variables
             $_SESSION['id'] = $user_id;
             $_SESSION['role'] = $user_role;
@@ -39,6 +39,8 @@ if($_SERVER["REQUEST_METHOD"] == 'POST'){
             }elseif($user_role == 'doctor'){
                 header("Location: ../dashboard/student-dashboard.php");
             }elseif($user_role == 'admin'){
+                // echo '<script>alert("User successfully logged in.");</script>';
+                echo json_encode(array("status" => "success", "message" => "Login successful."));
                 header("Location: ../dashboard/tutor-dashboard.php");
             }else{
                 header("Location: login.php");
