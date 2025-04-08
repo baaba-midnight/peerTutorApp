@@ -1,0 +1,189 @@
+.main-content {
+    padding: 30px;
+}
+
+.user-info {
+    background-color: #000;
+    padding: 10px;
+    border-radius: 10px;
+    color: white;
+    font-size: 12px;
+}
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    border: 1px solid #000;
+}
+
+.card-header {
+    border-bottom: none;
+    background-color: #fff;
+    padding: 15px 20px;
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.stat-card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: var(--poppins-bold);
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.stat-trend {
+    font-size: 0.8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.trend-up {
+    color: #28a745;
+}
+
+.trend-neutral {
+    color: #6c757d;
+}
+
+.trend-down {
+    color: #dc3545;
+}
+
+.search-bar {
+    max-width: 500px;
+    border-radius: 20px;
+    background-color: #f1f3f5;
+    border: none;
+    padding: 10px 20px;
+}
+
+.search-bar:focus {
+    box-shadow: none;
+    border: none;
+    background-color: #e9ecef;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #495057;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.top-tutor {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.top-tutor:last-child {
+    border-bottom: none;
+}
+
+.tutor-info {
+    margin-left: 10px;
+}
+
+.tutor-name {
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.tutor-subject {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+.tutor-rating {
+    font-size: 0.8rem;
+    color: #ffc107;
+    margin-left: auto;
+}
+
+.activity-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+.activity-time {
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.stat-icon {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.notification-badge {
+    position: relative;
+}
+
+.notification-badge .badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    border-radius: 50%;
+    background-color: #dc3545;
+    color: white;
+}
+
+.pending-actions {
+    list-style: none;
+    padding: 0;
+}
+
+.pending-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pending-item:last-child {
+    border-bottom: none;
+}
