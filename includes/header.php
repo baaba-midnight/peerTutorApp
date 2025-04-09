@@ -12,27 +12,27 @@
 
         <?php if ($role === 'student') : ?>
             <nav class="main-nav" id="mainNav">
-                <a href="#" class="active">Home</a>
-                <a href="../appointments/schedule.php">Find Tutors</a>
-                <a href="../appointments/view-appointments.php">Appointments</a>
-                <a href="../messaging/chat.php">Messages</a>
-                <a href="../settings/settings.php">Settings</a>
+                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="../appointments/schedule.php">Find Tutors</a>
+                <a class="nav-link" href="../appointments/view-appointments.php">Appointments</a>
+                <a class="nav-link" href="../messaging/chat.php">Messages</a>
+                <a class="nav-link" href="../settings/settings.php">Settings</a>
             </nav>
         <?php elseif ($role === 'tutor') : ?>
             <nav class="main-nav" id="mainNav">
-                <a href="#" class="active">Home</a>
-                <a href="#">View Students</a>
-                <a href="#">Appointments</a>
-                <a href="#">Messages</a>
-                <a href="#">Settings</a>
+                <a class="nav-link" href="#">Dashboard</a>
+                <a class="nav-link" href="#">User Management</a>
+                <a class="nav-link" href="#">Appointments</a>
+                <a class="nav-link" href="#">Messages</a>
+                <a class="nav-link" href="#">Settings</a>
             </nav>
         <?php elseif ($role === 'admin') : ?>
             <nav class="main-nav" id="mainNav">
-                <a href="#" class="active">Home</a>
-                <a href="#">View Tutors</a>
-                <a href="#">Appointment Management</a>
-                <a href="#">Messages</a>
-                <a href="#">Settings</a>
+                <a class="nav-link" href="../../views/dashboard/admin-dashboard.php">Home</a>
+                <a class="nav-link" href="../../views/admin/manage-users.php">User Management</a>
+                <a class="nav-link" href="#">System Log</a>
+                <a class="nav-link" href="#">Backup & Restore</a>
+                <a class="nav-link" href="../../views/settings/settings.php">Settings</a>
             </nav>
         <?php endif; ?>
 

@@ -8,6 +8,16 @@ footer {
     text-align: center;
 }
 
+.fixed-footer {
+    width: 100%;
+    background-color: #f8f9fa;
+    padding: 15px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+}
+
 .footer-text {
     font-size: 15px;
     color: #121212;

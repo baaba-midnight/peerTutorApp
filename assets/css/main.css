@@ -26,6 +26,6 @@ body {
 .main-content {
     display: flex;
     gap: 20px;
-    padding: 50px;
+    padding: 100px 50px 50px 50px;
     flex-direction: column;
 }
