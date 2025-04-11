@@ -1,7 +1,7 @@
 <?php
 class Student {
     private $conn;
-    private $table = "Users";
+    // private $table = "Users";
 
     public function __construct($db) {
         $this->conn = $db;
@@ -28,22 +28,6 @@ class Student {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    
-    // 🔹 Create student profile
-    public function createStudentProfile($user_id, $bio, $profile_picture, $department, $year_of_study) {
-        $query = "INSERT INTO Profiles (profile_id, user_id, bio, profile_picture_url, department, year_of_study)
-                  VALUES (UUID(), :user_id, :bio, :profile_picture, :department, :year_of_study)";
-
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->bindParam(':bio', $bio);
-        $stmt->bindParam(':profile_picture', $profile_picture);
-        $stmt->bindParam(':department', $department);
-        $stmt->bindParam(':year_of_study', $year_of_study);
-        
-        return $stmt->execute();
     }
 
     // Update student profile
