@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
@@ -14,9 +13,20 @@
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/footer.css">
-    <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/student-dashboard.css">
     <style>
+        .table {
+            font-family: var(--poppins-font);
+        }
+
+        .table thead {
+            font-weight: var(--poppins-semi-bold);
+        }
+
+        .table tbody {
+            font-weight: var(--poppins-regular);
+        }
+
         /* Reviews & Ratings Page Styles */
         .rating-stars {
             display: inline-flex;
@@ -25,34 +35,38 @@
 
         .rating-star {
             font-size: 1.25rem;
-            color: #f59e0b;
+            color: #000;
         }
 
         .review-content {
             margin-top: 0.5rem;
             font-size: 0.9rem;
-            color: #718096;
+            color: #000;
+            font-weight: var(--poppins-regular);
         }
 
         /* System Log Page Styles */
         .log-entry {
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid #000;
             padding-bottom: 0.75rem;
             margin-bottom: 0.75rem;
             font-size: 0.9rem;
-            color: #4a5568;
+            color: #000;
+            font-weight: var(--poppins-regular);
         }
 
         .log-timestamp {
             display: block;
             font-size: 0.75rem;
-            color: #a0aec0;
+            color: #000;
+            opacity: 0.5;
             margin-bottom: 0.25rem;
+            font-weight: var(--poppins-regular);
         }
 
         /* Backup & Restore Page Styles */
         .backup-restore-section {
-            border: 1px solid #e2e8f0;
+            border: 1px solid #000;
             border-radius: 0.75rem;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -60,37 +74,79 @@
 
         .backup-restore-title {
             font-size: 1.125rem;
-            font-weight: 600;
-            color: #1a202c;
+            font-weight: var(--poppins-semi-bold);
+            color: #000;
             margin-bottom: 1rem;
         }
 
         .backup-restore-description {
             font-size: 0.9rem;
-            color: #718096;
+            color: #000;
+            opacity: 0.5;
             margin-bottom: 1.5rem;
+            font-weight: var(--poppins-regular);
         }
 
         .backup-restore-button {
-            background-color:rgb(3, 15, 34);
+            background-color: #000;
             color: #fff;
             padding: 0.75rem 1.5rem;
             border-radius: 0.375rem;
             font-size: 1rem;
-            font-weight: 600;
+            font-weight: var(--poppins-semi-bold);
             border: none;
             cursor: pointer;
             transition: background-color 0.15s ease-in-out;
         }
 
         .backup-restore-button:hover {
-            background-color:rgb(3, 15, 34);
+            background-color: #000;
         }
 
         .restore-warning {
-            color: #e53e3e;
+            color: #000;
             font-size: 0.875rem;
             margin-top: 1rem;
+            font-weight: var(--poppins-medium);
+        }
+
+        .student-welcome {
+            margin-bottom: 2rem;
+        }
+
+        .student-welcome h2 {
+            font-weight: var(--poppins-bold);
+            color: #000;
+            margin-bottom: 0.5rem;
+        }
+
+        .student-welcome p {
+            font-weight: var(--poppins-regular);
+            color: #000;
+            opacity: 0.5;
+        }
+
+        .fw-semibold {
+            font-weight: var(--poppins-semi-bold) !important;
+        }
+
+        .page-link {
+            font-family: var(--poppins-font);
+            font-weight: var(--poppins-regular);
+            color: #000;
+        }
+
+        .page-item.active .page-link {
+            background-color: #000;
+            border-color: #000;
+            font-weight: var(--poppins-medium);
+        }
+
+        .text-muted {
+            font-family: var(--poppins-font);
+            font-weight: var(--poppins-regular);
+            color: #000 !important;
+            opacity: 0.5;
         }
     </style>
 </head>

@@ -3,8 +3,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    border-bottom: 1px solid #121212;
-    /* background-color: #fff; */
+    border-bottom: 1px solid #000;
+    background-color: #fff;
 }
 
 .logo {
@@ -32,7 +32,7 @@
 }
 
 .main-nav a {
-    color: #121212;
+    color: #000;
     text-decoration: none;
     font-weight: var(--poppins-regular);
     font-size: 15px;
@@ -40,6 +40,7 @@
 
 .main-nav a.active {
     font-weight: var(--poppins-bold);
+    color: #000;
 }
 
 .user-actions {
@@ -57,8 +58,8 @@
     position: absolute;
     top: -5px;
     right: -5px;
-    background-color: #ff3b30;
-    color: white;
+    background-color: #000;
+    color: #fff;
     border-radius: 50%;
     width: 16px;
     height: 16px;
