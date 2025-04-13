@@ -26,11 +26,21 @@
 <body class="bg-gray-100">
     <div id="particles-js"></div>
     <header class="bg-white py-4 shadow-md">
+
         <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+            <div class="logo" style="width: 50px; height: 50px;">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: 100%;">
+                <path d="M37.5 70C37.5 70 62.5 70 62.5 60C62.5 50 37.5 50 37.5 40C37.5 30 62.5 30 62.5 30" stroke="black" stroke-width="10" stroke-linecap="round" />
+                <path d="M75 20L90 35L75 50" stroke="black" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M25 50L10 65L25 80" stroke="black" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
             <a href="#" class="text-xl font-semibold text-gray-800">PeerEd</a>
+            </div>
             <nav class="hidden md:block">
                 <ul class="flex space-x-6">
-                    <li><a href="#" class="text-gray-700 hover:text-blue-600 transition duration-300">Home</a></li>
+                    <li><a href="index.php" class="text-gray-700 hover:text-blue-600 transition duration-300">Home</a></li>
                     <li class="text-gray-300">|</li> 
                     <li><a href="views/auth/login.php" class="text-gray-700 hover:text-blue-600 transition duration-300">Login</a></li>
                      <li class="text-gray-300">|</li>
@@ -44,9 +54,9 @@
                     </svg>
                 </button>
                 <div id="mobile-menu" class="hidden absolute top-16 right-0 bg-white shadow-lg rounded-md py-2 px-4 space-y-2">
-                    <a href="#" class="block text-gray-700 hover:text-blue-600 transition duration-300">Home</a>
-                    <a href="#" class="block text-gray-700 hover:text-blue-600 transition duration-300">Login</a>
-                    <a href="#" class="block text-gray-700 hover:text-blue-600 transition duration-300">Sign Up</a>
+                    <a href="views/auth/login.php" class="block text-gray-700 hover:text-blue-600 transition duration-300">Home</a>
+                    <a href="views/auth/login.php" class="block text-gray-700 hover:text-blue-600 transition duration-300">Login</a>
+                    <a href="views/auth/register.php" class="block text-gray-700 hover:text-blue-600 transition duration-300">Sign Up</a>
                 </div>
             </div>
         </div>
@@ -57,9 +67,9 @@
             <h1 class="text-3xl font-semibold text-gray-800 mb-4">Learn. Teach. Succeed.</h1>
             <p class="text-gray-600 mb-8">Connecting Students & Tutors Seamlessly.</p>
             <div class="flex justify-center space-x-4">
-                <button class="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-full transition duration-300">Get Started</button>
-                <button class="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-full transition duration-300">Find a Tutor</button>
-                <button class="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-full transition duration-300">Become a Tutor</button>
+                <a href="views/auth/login.php" class="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-full transition duration-300">Get Started</a>
+                <a href="views/auth/login.php" class="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-full transition duration-300">Find a Tutor</a>
+                <a href="views/auth/login.php" class="bg-black hover:bg-gray-800 text-white font-semibold py-3 px-6 rounded-full transition duration-300">Become a Tutor</a>
             </div>
         </section>
 
