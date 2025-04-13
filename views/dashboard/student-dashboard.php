@@ -72,7 +72,7 @@
         }
 
         .backup-restore-button {
-            background-color:rgb(11, 75, 178);
+            background-color:rgb(3, 15, 34);
             color: #fff;
             padding: 0.75rem 1.5rem;
             border-radius: 0.375rem;
@@ -84,7 +84,7 @@
         }
 
         .backup-restore-button:hover {
-            background-color:rgb(20, 73, 189);
+            background-color:rgb(3, 15, 34);
         }
 
         .restore-warning {
@@ -110,7 +110,7 @@
         <div class="card">
             <div class="card-header">
                 <p>Upcoming Appointments</p>
-                <a href="#">View All</a>
+                <a href="../appointments/schedule.php">View All</a>
             </div>
 
             <div class="card-body">
@@ -164,7 +164,7 @@
         <div class="card">
             <div class="card-header">
                 <p>Unread Messages</p>
-                <a href="#">View All</a>
+                <a href="../messaging/chat.php">View All</a>
             </div>
 
             <div class="card-body">
