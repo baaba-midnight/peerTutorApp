@@ -18,8 +18,8 @@
         </svg>
         Back to Home
     </a>
-    <div class="login-container">
-        <div class="logo">
+    <div class="login-container text-center">
+        <div class="logo mx-auto" style="width: 60px; height: 60px; display: flex; justify-content: center; align-items: center; margin: 0 auto;">
             <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M37.5 70C37.5 70 62.5 70 62.5 60C62.5 50 37.5 50 37.5 40C37.5 30 62.5 30 62.5 30" stroke="black" stroke-width="10" stroke-linecap="round" />
                 <path d="M75 20L90 35L75 50" stroke="black" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
@@ -28,7 +28,6 @@
         </div>
         <h1 class="heading">Welcome Back</h1>
         <p class="subheading">Glad to see you again! Login to your account below</p>
-        
         <div id="error-message" class="alert alert-danger" style="display: none;"></div>
         
         <form id="loginForm">
