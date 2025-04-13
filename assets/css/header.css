@@ -76,4 +76,11 @@
     font-size: 15px;
     font-weight: var(--poppins-medium);
     cursor: pointer;
+    transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+    border: none;
+}
+
+.logout-btn:hover {
+    background-color: #000;
+    transform: translateY(-2px);
 }

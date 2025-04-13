@@ -29,3 +29,27 @@ body {
     padding: 50px;
     flex-direction: column;
 }
+
+/* Global button styles */
+button,
+.btn,
+input[type="submit"],
+input[type="button"] {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.5rem 1rem;
+    font-size: 15px;
+    font-weight: var(--poppins-medium);
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+button:hover,
+.btn:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover {
+    background-color: #000;
+    transform: translateY(-2px);
+}
