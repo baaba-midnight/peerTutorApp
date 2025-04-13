@@ -1,58 +1,52 @@
-<?php
-include '../../config/database.php';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/login.css">
+</head>
+<body>
+    <div class="login-container">
+        <img src="https://via.placeholder.com/80" alt="Logo" class="logo">
+        <h1 class="heading">Welcome Back</h1>
+        <p class="subheading">Glad to see you again! Login to your account below</p>
+        <form>
+            <div class="form-group">
+                <label for="email-username">Email / Username</label>
+                <input type="text" id="email-username" class="form-control" placeholder="Enter your email / username">
+            </div>
+            <div class="form-group">
+                <label for="password">Password *</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password">
+                <a href="forgot-password.php" class="forgot-password">Forgot Password</a>
+            </div>
+            <div class="sign-in-as">
+                <span>Sign in as</span>
+            </div>
+            <div class="role-buttons">
+                <button type="button" class="role-button tutor">Tutor</button>
+                <button type="button" class="role-button student">Student</button>
+            </div>
+            <button type="submit" class="login-button">Login</button>
+            <p class="sign-up-link">Don't have an account? <a href="register.php">Sign Up</a></p>
+        </form>
+    </div>
+    <script>
+        const tutorButton = document.querySelector('.role-button.tutor');
+        const studentButton = document.querySelector('.role-button.student');
 
-session_start();
+        tutorButton.addEventListener('click', () => {
+            tutorButton.classList.add('active');
+            studentButton.classList.remove('active');
+        });
 
-if($_SERVER["REQUEST_METHOD"] == 'POST'){
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-
-    //check if fields are empty
-    if(empty($email)||empty($password)){
-        die("Dont leave field empty");
-    }
-
-    $query = 'SELECT user_id, first_name, last_name, `password_hash`, email, `role` FROM Users WHERE email = ?';
-    $stmt = $conn -> prepare($query);
-    $stmt->bind_param('s',$email);
-    $stmt->execute();
-    $results = $stmt -> get_result();
-
-    if($results -> num_rows > 0){
-        $row = $results -> fetch_assoc();
-
-        $user_id = $row['user_id'];
-        $user_role = $row['role'];
-        $firstName = $row['first_name'];
-        $lastName = $row['last_name'];
-        $email = $row['email'];
-
-        if (password_verify($password, $row['password_hash'])){
-            // set session variables
-            $_SESSION['id'] = $user_id;
-            $_SESSION['role'] = $user_role;
-            $_SESSION['full_name'] = $firstName . " " . $lastName;
-            $_SESSION['email'] = $email;
-
-            if ($user_role == 'nurse'){
-                header("Location: ../dashboard/admin-dashboard.php");
-            }elseif($user_role == 'doctor'){
-                header("Location: ../dashboard/student-dashboard.php");
-            }elseif($user_role == 'admin'){
-                // echo '<script>alert("User successfully logged in.");</script>';
-                echo json_encode(array("status" => "success", "message" => "Login successful."));
-                header("Location: ../dashboard/tutor-dashboard.php");
-            }else{
-                header("Location: login.php");
-            }
-            exit();
-        }
-    }else {
-        // Show an alert if the user is not registered
-        header("Location: register.php");
-        echo '<script>alert("User not registered.");</script>';
-    }
-    $stmt -> close();
-}
-$conn -> close();
-?>
+        studentButton.addEventListener('click', () => {
+            studentButton.classList.add('active');
+            tutorButton.classList.remove('active');
+        });
+    </script>
+</body>
+</html>

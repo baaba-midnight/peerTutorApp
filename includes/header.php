@@ -12,7 +12,7 @@
 
         <?php if ($role === 'student') : ?>
             <nav class="main-nav" id="mainNav">
-                <a href="#" class="active">Home</a>
+                <a href="../dashboard/student-dashboard.php" class="active">Home</a>
                 <a href="../appointments/schedule.php">Find Tutors</a>
                 <a href="../appointments/view-appointments.php">Appointments</a>
                 <a href="../messaging/chat.php">Messages</a>
@@ -47,7 +47,14 @@
             <span class="notification-badge">3</span>
         </div>
 
-        <button class="logout-btn">Logout</button>
+        <a href="../../api/auth.php?action=logout" class="logout-btn">Logout</a>
     </div>
-
 </header>
+<script>
+document.querySelector('.logout-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    if (confirm('Are you sure you want to logout?')) {
+        window.location.href = this.href;
+    }
+});
+</script>

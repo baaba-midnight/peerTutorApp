@@ -1,240 +1,116 @@
--- Drop database if it exists
-DROP DATABASE IF EXISTS PeerTutor;
-
--- Create a new database
-CREATE DATABASE PeerTutor;
-
--- Use the newly created database
-USE PeerTutor;
-
--- Users table
+-- Create Users table
 CREATE TABLE Users (
-    user_id VARCHAR(36) PRIMARY KEY,
-    email VARCHAR(255) UNIQUE NOT NULL,
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
     role ENUM('student', 'tutor', 'admin') NOT NULL,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    phone_number VARCHAR(20),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    last_login TIMESTAMP,
-    is_active BOOLEAN DEFAULT TRUE,
-    verification_status BOOLEAN DEFAULT FALSE
-);
-
--- Profiles table
-CREATE TABLE Profiles (
-    profile_id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
+    profile_image VARCHAR(255),
+    phone VARCHAR(20),
+    location VARCHAR(100),
     bio TEXT,
-    profile_picture_url VARCHAR(255),
-    department VARCHAR(100),
-    year_of_study INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
-);
-
--- TutorProfiles table
-CREATE TABLE TutorProfiles (
-    tutor_profile_id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    hourly_rate DECIMAL(10,2),
-    availability_schedule JSON, -- Stores JSON object with available time slots
-    overall_rating DECIMAL(3,2),
-    is_verified BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
-);
-
--- Courses table
-CREATE TABLE Courses (
-    course_id VARCHAR(36) PRIMARY KEY,
-    course_code VARCHAR(20) NOT NULL UNIQUE,
-    course_name VARCHAR(100) NOT NULL,
-    department VARCHAR(100) NOT NULL,
-    description TEXT,
+    reset_token VARCHAR(64) DEFAULT NULL,
+    reset_token_expiry DATETIME DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- TutorCourses table
-CREATE TABLE TutorCourses (
-    tutor_course_id VARCHAR(36) PRIMARY KEY,
-    tutor_id VARCHAR(36) NOT NULL,
-    course_id VARCHAR(36) NOT NULL,
-    proficiency_level ENUM('beginner', 'intermediate', 'advanced', 'expert') NOT NULL,
+-- Create Subjects table
+CREATE TABLE Subjects (
+    subject_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    parent_subject_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (tutor_id) REFERENCES TutorProfiles(tutor_profile_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE,
-    UNIQUE KEY (tutor_id, course_id)
+    FOREIGN KEY (parent_subject_id) REFERENCES Subjects(subject_id)
 );
 
--- Sessions table
-CREATE TABLE Sessions (
-    session_id VARCHAR(36) PRIMARY KEY,
-    student_id VARCHAR(36) NOT NULL,
-    tutor_id VARCHAR(36) NOT NULL,
-    course_id VARCHAR(36) NOT NULL,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME NOT NULL,
-    status ENUM('requested', 'confirmed', 'cancelled', 'completed') NOT NULL,
-    location VARCHAR(255), -- Can be physical location or virtual meeting link
-    session_type ENUM('in-person', 'online') NOT NULL,
-    session_notes TEXT,
-    cancellation_reason TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (student_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (tutor_id) REFERENCES TutorProfiles(tutor_profile_id) ON DELETE CASCADE,
-    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
+-- Create TutorSubjects table (junction table for tutors and their subjects)
+CREATE TABLE TutorSubjects (
+    tutor_id INT,
+    subject_id INT,
+    hourly_rate DECIMAL(10,2) NOT NULL,
+    experience_years DECIMAL(3,1),
+    PRIMARY KEY (tutor_id, subject_id),
+    FOREIGN KEY (tutor_id) REFERENCES Users(user_id),
+    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
 );
 
--- Reviews table
+-- Create Availability table for tutors
+CREATE TABLE Availability (
+    availability_id INT PRIMARY KEY AUTO_INCREMENT,
+    tutor_id INT,
+    day_of_week ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),
+    start_time TIME,
+    end_time TIME,
+    FOREIGN KEY (tutor_id) REFERENCES Users(user_id)
+);
+
+-- Create Appointments table
+CREATE TABLE Appointments (
+    appointment_id INT PRIMARY KEY AUTO_INCREMENT,
+    student_id INT,
+    tutor_id INT,
+    subject_id INT,
+    start_datetime DATETIME,
+    end_datetime DATETIME,
+    status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
+    meeting_link VARCHAR(255),
+    notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES Users(user_id),
+    FOREIGN KEY (tutor_id) REFERENCES Users(user_id),
+    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
+);
+
+-- Create Reviews table
 CREATE TABLE Reviews (
-    review_id VARCHAR(36) PRIMARY KEY,
-    session_id VARCHAR(36) NOT NULL,
-    student_id VARCHAR(36) NOT NULL,
-    tutor_id VARCHAR(36) NOT NULL,
-    rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    comment TEXT,
+    review_id INT PRIMARY KEY AUTO_INCREMENT,
+    appointment_id INT,
+    reviewer_id INT,
+    reviewee_id INT,
+    rating INT CHECK (rating >= 1 AND rating <= 5),
+    title VARCHAR(255),
+    content TEXT,
     is_anonymous BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (session_id) REFERENCES Sessions(session_id) ON DELETE CASCADE,
-    FOREIGN KEY (student_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (tutor_id) REFERENCES TutorProfiles(tutor_profile_id) ON DELETE CASCADE,
-    UNIQUE KEY (session_id, student_id)
+    FOREIGN KEY (appointment_id) REFERENCES Appointments(appointment_id),
+    FOREIGN KEY (reviewer_id) REFERENCES Users(user_id),
+    FOREIGN KEY (reviewee_id) REFERENCES Users(user_id)
 );
 
--- Messages table
+-- Create Messages table
 CREATE TABLE Messages (
-    message_id VARCHAR(36) PRIMARY KEY,
-    sender_id VARCHAR(36) NOT NULL,
-    recipient_id VARCHAR(36) NOT NULL,
-    content TEXT NOT NULL,
+    message_id INT PRIMARY KEY AUTO_INCREMENT,
+    sender_id INT,
+    receiver_id INT,
+    content TEXT,
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sender_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (recipient_id) REFERENCES Users(user_id) ON DELETE CASCADE
+    FOREIGN KEY (sender_id) REFERENCES Users(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES Users(user_id)
 );
 
--- Conversations table
-CREATE TABLE Conversations (
-    conversation_id VARCHAR(36) PRIMARY KEY,
-    user1_id VARCHAR(36) NOT NULL,
-    user2_id VARCHAR(36) NOT NULL,
-    last_message_id VARCHAR(36),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user1_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (user2_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-    FOREIGN KEY (last_message_id) REFERENCES Messages(message_id) ON DELETE SET NULL,
-    UNIQUE KEY (user1_id, user2_id)
-);
-
--- Notifications table
+-- Create Notifications table
 CREATE TABLE Notifications (
-    notification_id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
-    type ENUM('session_request', 'session_confirmed', 'session_cancelled', 'session_reminder', 'message', 'review', 'system') NOT NULL,
-    content TEXT NOT NULL,
-    is_read BOOLEAN DEFAULT FALSE,
-    related_id VARCHAR(36), -- Can reference sessions, messages, etc.
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
-);
-
--- AcademicResources table
-CREATE TABLE AcademicResources (
-    resource_id VARCHAR(36) PRIMARY KEY,
+    notification_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    type ENUM('appointment', 'message', 'review', 'system') NOT NULL,
     title VARCHAR(255) NOT NULL,
-    resource_type ENUM('faculty', 'library', 'online_resource', 'study_material') NOT NULL,
-    description TEXT,
-    contact_info VARCHAR(255),
-    department VARCHAR(100),
-    url VARCHAR(255),
+    content TEXT,
+    is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
--- LecturerContacts table
-CREATE TABLE LecturerContacts (
-    lecturer_id VARCHAR(36) PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) NOT NULL,
-    department VARCHAR(100) NOT NULL,
-    office_location VARCHAR(255),
-    office_hours TEXT,
-    phone_number VARCHAR(20),
-    Courses_taught TEXT,
-    profile_picture_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
--- Create indexes for optimized queries
-
--- Users table indexes
-CREATE INDEX idx_users_email ON Users(email);
-CREATE INDEX idx_users_role ON Users(role);
-
--- TutorProfiles table indexes
-CREATE INDEX idx_tutors_rating ON TutorProfiles(overall_rating);
-CREATE INDEX idx_tutors_verified ON TutorProfiles(is_verified);
-
--- Courses table indexes
-CREATE INDEX idx_Courses_dept ON Courses(department);
-CREATE INDEX idx_Courses_code ON Courses(course_code);
-
--- Sessions table indexes
-CREATE INDEX idx_sessions_tutor ON Sessions(tutor_id);
-CREATE INDEX idx_sessions_student ON Sessions(student_id);
-CREATE INDEX idx_sessions_course ON Sessions(course_id);
-CREATE INDEX idx_sessions_status ON Sessions(status);
-CREATE INDEX idx_sessions_date ON Sessions(start_time);
-
--- Messages table indexes
+-- Create indexes for better performance
+CREATE INDEX idx_appointments_student ON Appointments(student_id);
+CREATE INDEX idx_appointments_tutor ON Appointments(tutor_id);
+CREATE INDEX idx_appointments_datetime ON Appointments(start_datetime);
 CREATE INDEX idx_messages_sender ON Messages(sender_id);
-CREATE INDEX idx_messages_recipient ON Messages(recipient_id);
-CREATE INDEX idx_messages_read ON Messages(is_read);
-
--- Notifications table indexes
+CREATE INDEX idx_messages_receiver ON Messages(receiver_id);
 CREATE INDEX idx_notifications_user ON Notifications(user_id);
-CREATE INDEX idx_notifications_read ON Notifications(is_read);
-CREATE INDEX idx_notifications_type ON Notifications(type);
-
--- Create triggers
-
--- Trigger to update overall tutor rating when a new review is added
-DELIMITER //
-CREATE TRIGGER update_tutor_rating
-AFTER INSERT ON Reviews
-FOR EACH ROW
-BEGIN
-    UPDATE TutorProfiles
-    SET overall_rating = (
-        SELECT AVG(rating)
-        FROM Reviews
-        WHERE tutor_id = NEW.tutor_id
-    )
-    WHERE tutor_profile_id = NEW.tutor_id;
-END //
-DELIMITER ;
-
--- Trigger to mark related notifications as read when a message is read
-DELIMITER //
-CREATE TRIGGER mark_message_notifications
-AFTER UPDATE ON Messages
-FOR EACH ROW
-BEGIN
-    IF NEW.is_read = TRUE AND OLD.is_read = FALSE THEN
-        UPDATE Notifications
-        SET is_read = TRUE
-        WHERE related_id = NEW.message_id AND type = 'message';
-    END IF;
-END //
-DELIMITER ;
+CREATE INDEX idx_reviews_reviewee ON Reviews(reviewee_id);

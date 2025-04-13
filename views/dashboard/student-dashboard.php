@@ -1,39 +1,104 @@
-<?php
-$_SESSION['role'] = 2;
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <!-- Google Font: Poppins -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/2.6.0/uicons-solid-rounded/css/uicons-solid-rounded.css'>
-
-    <!-- Bootstrap CSS and JS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-
-    <!-- Custom CSS -->
+    <title>Student Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/footer.css">
     <link rel="stylesheet" href="../../assets/css/dashboard.css">
     <link rel="stylesheet" href="../../assets/css/student-dashboard.css">
+    <style>
+        /* Reviews & Ratings Page Styles */
+        .rating-stars {
+            display: inline-flex;
+            gap: 0.25rem;
+        }
+
+        .rating-star {
+            font-size: 1.25rem;
+            color: #f59e0b;
+        }
+
+        .review-content {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #718096;
+        }
+
+        /* System Log Page Styles */
+        .log-entry {
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 0.75rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+
+        .log-timestamp {
+            display: block;
+            font-size: 0.75rem;
+            color: #a0aec0;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Backup & Restore Page Styles */
+        .backup-restore-section {
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .backup-restore-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1a202c;
+            margin-bottom: 1rem;
+        }
+
+        .backup-restore-description {
+            font-size: 0.9rem;
+            color: #718096;
+            margin-bottom: 1.5rem;
+        }
+
+        .backup-restore-button {
+            background-color:rgb(11, 75, 178);
+            color: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
+        }
+
+        .backup-restore-button:hover {
+            background-color:rgb(20, 73, 189);
+        }
+
+        .restore-warning {
+            color: #e53e3e;
+            font-size: 0.875rem;
+            margin-top: 1rem;
+        }
+    </style>
 </head>
 
 <body>
-    <?php 
+    <?php
     $role = 'student'; // temporary variable
-    include('../../includes/header.php'); 
+    include('../../includes/header.php');
     ?>
 
     <div class="main-content">
@@ -42,7 +107,6 @@ $_SESSION['role'] = 2;
             <p>Find the best tutors and manage your learning journey.</p>
         </div>
 
-        <!-- Appointment Card -->
         <div class="card">
             <div class="card-header">
                 <p>Upcoming Appointments</p>
@@ -97,7 +161,6 @@ $_SESSION['role'] = 2;
             </div>
         </div>
 
-        <!-- Messages Card -->
         <div class="card">
             <div class="card-header">
                 <p>Unread Messages</p>
@@ -145,9 +208,200 @@ $_SESSION['role'] = 2;
                 </div>
             </div>
         </div>
+
+        <div class="card" id="reviews-ratings">
+            <div class="card-header">
+                <h2 class="card-title">Reviews & Ratings</h2>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Rating</th>
+                                <th>Review</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="initials rounded-circle bg-primary text-white fw-semibold">JS</span>
+                                        <div>
+                                            <div class="fw-semibold">John Smith</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="far fa-star rating-star"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="review-content">Great tutor, very helpful!</div>
+                                </td>
+                                <td>10 Mar, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="initials rounded-circle bg-warning text-white fw-semibold">SJ</span>
+                                        <div>
+                                            <div class="fw-semibold">Sarah Johnson</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="review-content">Excellent service, highly recommended.</div>
+                                </td>
+                                <td>05 Mar, 2025</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="initials rounded-circle bg-danger text-white fw-semibold">MB</span>
+                                        <div>
+                                            <div class="fw-semibold">Michael Brown</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="rating-stars">
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="fas fa-star rating-star"></i>
+                                        <i class="far fa-star rating-star"></i>
+                                        <i class="far fa-star rating-star"></i>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="review-content">Good but could be better.</div>
+                                </td>
+                                <td>01 Mar, 2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <p class="text-muted text-center">Showing 1-3 of 10 reviews</p>
+            </div>
+        </div>
+
+        <div class="card" id="system-log">
+            <div class="card-header">
+                <h2 class="card-title">System Log</h2>
+            </div>
+            <div class="card-body">
+                <div class="log-entry">
+                    <span class="log-timestamp">2025-03-10 10:00:00</span>
+                    User John Smith logged in.
+                </div>
+                <div class="log-entry">
+                    <span class="log-timestamp">2025-03-10 09:30:00</span>
+                    User Sarah Johnson updated her profile.
+                </div>
+                <div class="log-entry">
+                    <span class="log-timestamp">2025-03-09 14:00:00</span>
+                    Database backup completed.
+                </div>
+                <div class="log-entry">
+                    <span class="log-timestamp">2025-03-09 14:00:00</span>
+                    Database backup completed.
+                </div>
+            </div>
+            <div class="card-footer">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <p class="text-muted text-center">Showing 1-4 of 20 log entries</p>
+            </div>
+        </div>
+
+        <div class="card" id="backup-restore">
+            <div class="card-header">
+                <h2 class="card-title">Backup & Restore</h2>
+            </div>
+            <div class="card-body">
+                <div class="backup-restore-section">
+                    <h3 class="backup-restore-title">Database Backup</h3>
+                    <p class="backup-restore-description">
+                        Create a backup of your database to ensure data safety.
+                    </p>
+                    <button class="backup-restore-button">Create Backup</button>
+                </div>
+                <div class="backup-restore-section">
+                    <h3 class="backup-restore-title">Database Restore</h3>
+                    <p class="backup-restore-description">
+                        Restore your database from a previous backup.
+                    </p>
+                    <button class="backup-restore-button">Restore Database</button>
+                    <p class="restore-warning">
+                        Warning: Restoring the database will overwrite the current data.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <?php include('../../includes/footer.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+    </script>
 </body>
 
 </html>
