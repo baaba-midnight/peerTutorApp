@@ -1,6 +1,6 @@
 body {
-    background-color: white;
-    color: #212529;
+    background-color: var(--primary-white);
+    color: var(--primary-black);
     font-family: var(--poppins-font);
     padding: 30px;
 }
@@ -8,43 +8,45 @@ body {
 .profile-section {
     max-width: 900px;
     margin: 0 auto;
-    background-color: #f8f9fa;
+    background-color: var(--primary-white);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 15px var(--gray-medium);
+    border: 1px solid var(--primary-black);
 }
 
 h3 {
-    color: #000;
+    color: var(--primary-black);
     font-weight: 600;
     margin-bottom: 25px;
-    border-bottom: 2px solid #000;
+    border-bottom: 2px solid var(--primary-black);
     padding-bottom: 10px;
 }
 
 .btn-edit {
-    background-color: #000;
-    color: #fff;
-    border: 2px solid #000;
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+    border: 2px solid var(--primary-black);
     padding: 8px 24px;
     font-weight: 500;
     transition: all 0.3s ease;
 }
 
 .btn-edit:hover {
-    background-color: #fff;
-    color: #000;
+    background-color: var(--primary-white);
+    color: var(--primary-black);
 }
 
 /* Modal Customizations */
 .modal-content {
+    background-color: var(--primary-white);
+    border: 1px solid var(--gray-medium);
     border-radius: 10px;
 }
 
 .modal-header {
-    /* background-color: #000; */
-    color: #121212;
-    border-bottom: 1px solid #dee2e6;
+    color: var(--primary-black);
+    border-bottom: 1px solid var(--gray-medium);
     justify-content: center;
     align-items: center;
     text-align: center;
@@ -54,34 +56,36 @@ h3 {
     font-weight: var(--poppins-semi-bold);
     font-size: 20px;
     text-align: center;
+    color: var(--primary-black);
 }
 
 .modal-footer {
-    border: none !important;
-    
+    border: none;
 }
 
 .btn-save {
-    background-color: #000;
-    color: #fff;
-    border: none;
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+    border: 1px solid var(--primary-black);
     font-weight: var(--poppins-regular);
     font-size: 16px;
-    /* border-radius: 50px; */
+    transition: all 0.2s ease;
 }
 
 .btn-save:hover {
-    background-color: #121212 !important;
-    color: #fff;
+    background-color: var(--primary-white);
+    color: var(--primary-black);
 }
 
 .btn-cancel {
-    border: 1px solid #000;
-    color: #000;
+    border: 1px solid var(--primary-black);
+    color: var(--primary-black);
+    background-color: var(--primary-white);
+    transition: all 0.2s ease;
 }
 
 .btn-cancel:hover {
-    background-color: #f1f1f1;
+    background-color: var(--gray-light);
 }
 
 /* Form Styling */
@@ -92,26 +96,30 @@ h3 {
 .form-label {
     font-weight: var(--poppins-medium);
     font-size: 11px;
-    color: #000;
+    color: var(--primary-black);
 }
 
 .form-control {
-    border: 1px solid #000;
-    font-size: 14px !important;         /* Custom font size for input values */
-    font-weight: var(--poppins-light) !important;
+    border: 1px solid var(--primary-black);
+    font-size: 14px;
+    font-weight: var(--poppins-light);
+    color: var(--primary-black);
+    background-color: var(--primary-white);
 }
 
 .form-control:focus {
-    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-black);
+    box-shadow: 0 0 0 0.2rem var(--gray-medium);
 }
 
 .form-file-label {
     cursor: pointer;
     padding: 8px 16px;
-    background-color: #f1f1f1;
-    border: 1px solid #ddd;
+    background-color: var(--gray-light);
+    border: 1px solid var(--gray-medium);
     border-radius: 4px;
     display: inline-block;
+    color: var(--primary-black);
 }
 
 .profile-info {
@@ -120,15 +128,17 @@ h3 {
 
 .profile-info p {
     margin-bottom: 5px;
+    color: var(--primary-black);
 }
 
 .profile-info strong {
     font-weight: 600;
     display: inline-block;
     width: 120px;
+    color: var(--primary-black);
 }
 
-input::placeholder, input::value {
+input::placeholder {
     font-weight: var(--poppins-light);
-    font-size: 14px;
+    color: var(--gray-dark);
 }

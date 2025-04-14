@@ -5,6 +5,8 @@
 
 .card {
     max-width: 750px;
+    background-color: var(--primary-white);
+    border: 1px solid var(--primary-black);
 }
 
 .card-header {
@@ -12,45 +14,47 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px;
-  background-color: #fff;
-  border-bottom: none;
+  background-color: var(--primary-white);
+  border-bottom: 1px solid var(--gray-medium);
 }
 
 .profile-title {
   font-size: 24px;
   font-weight: 600;
-  color: #000;
+  color: var(--primary-black);
   margin: 0;
 }
 
 .edit-button {
-  background-color: #000;
-  color: white;
-  border: none;
+  background-color: var(--primary-black);
+  color: var(--primary-white);
+  border: 1px solid var(--primary-black);
   border-radius: 20px;
   padding: 8px 16px;
   font-size: 14px;
   cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.delete-button {
-  background-color: #ff4d4d;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 16px;
-  font-size: 14px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .edit-button:hover {
-  opacity: 0.8;
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+}
+
+.delete-button {
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+  border: 1px solid var(--primary-black);
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .delete-button:hover {
-  opacity: 0.8;
+  background-color: var(--primary-black);
+  color: var(--primary-white);
 }
 
 .profile-content {
@@ -65,6 +69,7 @@
   border-radius: 50%;
   overflow: hidden;
   flex-shrink: 0;
+  border: 1px solid var(--gray-medium);
 }
 
 .profile-image img {
@@ -82,16 +87,17 @@
 .profile-name {
   font-size: 18px;
   font-weight: 600;
+  color: var(--primary-black);
   margin-bottom: 4px;
 }
 
 .profile-role {
   font-size: 16px;
-  color: #555;
+  color: var(--gray-dark);
 }
 
 .profile-bio {
-  color: #333;
+  color: var(--primary-black);
   line-height: 1.6;
   font-size: 14px;
 }
@@ -104,15 +110,23 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #333;
+  color: var(--primary-black);
 }
 
 .form-control {
   width: 100%;
   padding: 10px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--gray-medium);
   border-radius: 6px;
   font-size: 14px;
+  color: var(--primary-black);
+  background-color: var(--primary-white);
+}
+
+.form-control:focus {
+  border-color: var(--primary-black);
+  outline: none;
+  box-shadow: 0 0 0 2px var(--gray-medium);
 }
 
 textarea.form-control {
@@ -133,24 +147,23 @@ textarea.form-control {
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
 }
 
 .btn-cancel {
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  color: #333;
+  background-color: var(--primary-white);
+  border: 1px solid var(--primary-black);
+  color: var(--primary-black);
 }
 
 .btn-save {
-  background-color: #000;
-  border: 1px solid #000;
-  color: white;
+  background-color: var(--primary-black);
+  border: 1px solid var(--primary-black);
+  color: var(--primary-white);
 }
 
 .btn:hover {
   opacity: 0.9;
-  border: 1px solid #000;
 }
 
 .image-upload {
@@ -166,7 +179,7 @@ textarea.form-control {
   border-radius: 50%;
   overflow: hidden;
   margin-bottom: 12px;
-  border: 2px solid #eee;
+  border: 2px solid var(--gray-medium);
 }
 
 .upload-preview img {
@@ -176,10 +189,16 @@ textarea.form-control {
 }
 
 .upload-btn {
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
+  background-color: var(--gray-light);
+  border: 1px solid var(--gray-medium);
   border-radius: 6px;
   padding: 8px 12px;
   font-size: 14px;
   cursor: pointer;
+  color: var(--primary-black);
+  transition: all 0.2s ease;
+}
+
+.upload-btn:hover {
+  background-color: var(--gray-medium);
 }

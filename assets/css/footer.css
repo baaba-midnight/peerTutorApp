@@ -1,17 +1,18 @@
 footer {
-    border-top: 1px solid #000;
+    border-top: 1px solid var(--primary-black);
     padding: 1rem 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
     text-align: center;
-    background-color: #fff;
+    background-color: var(--primary-white);
 }
 
 .fixed-footer {
     width: 100%;
-    background-color: #f8f9fa;
+    background-color: var(--primary-white);
+    border-top: 1px solid var(--gray-medium);
     padding: 15px 0;
     position: fixed;
     bottom: 0;
@@ -21,6 +22,6 @@ footer {
 
 .footer-text {
     font-size: 15px;
-    color: #000;
+    color: var(--primary-black);
     font-weight: var(--poppins-regular);
 }
