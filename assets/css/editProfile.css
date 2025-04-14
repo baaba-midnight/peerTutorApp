@@ -1,0 +1,134 @@
+body {
+    background-color: white;
+    color: #212529;
+    font-family: var(--poppins-font);
+    padding: 30px;
+}
+
+.profile-section {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+}
+
+h3 {
+    color: #000;
+    font-weight: 600;
+    margin-bottom: 25px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+}
+
+.btn-edit {
+    background-color: #000;
+    color: #fff;
+    border: 2px solid #000;
+    padding: 8px 24px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Modal Customizations */
+.modal-content {
+    border-radius: 10px;
+}
+
+.modal-header {
+    /* background-color: #000; */
+    color: #121212;
+    border-bottom: 1px solid #dee2e6;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.modal-title {
+    font-weight: var(--poppins-semi-bold);
+    font-size: 20px;
+    text-align: center;
+}
+
+.modal-footer {
+    border: none !important;
+    
+}
+
+.btn-save {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    font-weight: var(--poppins-regular);
+    font-size: 16px;
+    /* border-radius: 50px; */
+}
+
+.btn-save:hover {
+    background-color: #121212 !important;
+    color: #fff;
+}
+
+.btn-cancel {
+    border: 1px solid #000;
+    color: #000;
+}
+
+.btn-cancel:hover {
+    background-color: #f1f1f1;
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: var(--poppins-medium);
+    font-size: 11px;
+    color: #000;
+}
+
+.form-control {
+    border: 1px solid #000;
+    font-size: 14px !important;         /* Custom font size for input values */
+    font-weight: var(--poppins-light) !important;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 0, 0, 0.15);
+}
+
+.form-file-label {
+    cursor: pointer;
+    padding: 8px 16px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.profile-info {
+    margin-bottom: 15px;
+}
+
+.profile-info p {
+    margin-bottom: 5px;
+}
+
+.profile-info strong {
+    font-weight: 600;
+    display: inline-block;
+    width: 120px;
+}
+
+input::placeholder, input::value {
+    font-weight: var(--poppins-light);
+    font-size: 14px;
+}
