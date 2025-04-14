@@ -1,4 +1,4 @@
-.card-header {
+/* .card-header {
     background-color: #fff;
     color: #000;
     border-bottom: none;
@@ -6,7 +6,7 @@
     justify-content: space-between;
     margin: 0;
     align-items: center;
-}
+} */
 
 .card-header a {
     color: #000;

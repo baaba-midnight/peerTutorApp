@@ -1,0 +1,366 @@
+body {
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  flex-direction: column;
+  max-width: 1000px;
+  margin: 20px auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #333;
+}
+
+.content-header h1 {
+  font-size: 20px;
+  font-weight: var(--poppins-bold);
+}
+
+.header-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.search-btn,
+.filter-btn,
+.add-user-btn {
+  background: none;
+  border: none;
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.add-user-btn {
+  background-color: #121212;
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: var(--poppins-bold);
+}
+
+.filter-btn::after {
+  content: "";
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 6px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid #121212;
+}
+
+.table-container {
+  flex: 1;
+  overflow: auto; /* Enable scrolling */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  font-size: 13px;
+  color: #999;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 12px 20px;
+}
+
+th:last-child,
+td:last-child {
+  text-align: right;
+}
+
+tbody tr {
+  border-bottom: 1px solid #333;
+}
+
+tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: #333;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-weight: 500;
+}
+
+.user-email {
+  font-size: 13px;
+  color: #999;
+  margin-top: 2px;
+}
+
+.role-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.student {
+  background-color: #4285f4;
+}
+
+.tutor {
+  background-color: #34a853;
+}
+
+.admin {
+  background-color: #ea4335;
+}
+
+.applicant {
+  background-color: #fbbc05;
+  color: #000;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.active .status-dot {
+  background-color: #4caf50;
+}
+
+.inactive .status-dot {
+  background-color: #f44336;
+}
+
+.pending .status-dot {
+  background-color: #ff9800;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.action-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: #333;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.action-btn:hover {
+  background-color: #444;
+}
+
+.approve-btn {
+  background-color: #34a853;
+}
+
+.approve-btn:hover {
+  background-color: #2d9147;
+}
+
+.reject-btn {
+  background-color: #ea4335;
+}
+
+.reject-btn:hover {
+  background-color: #d03c2f;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #333;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dropdown-content button {
+  color: white;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  background: none;
+  border: none;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown-content button:hover {
+  background-color: #444;
+}
+
+.dropdown-content button.danger {
+  color: #ea4335;
+}
+
+.dropdown-content button.danger:hover {
+  background-color: rgba(234, 67, 53, 0.1);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #999;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background-color: #fff;
+  color: #333;
+  font-size: 14px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-cancel {
+  background-color: transparent;
+  border: 1px solid #333;
+  color: #333;
+}
+
+.btn-primary {
+  background-color: #fff;
+  color: #000;
+}
+
+.btn-danger {
+  background-color: #ea4335;
+  color: #fff;
+}
+
+.btn-success {
+  background-color: #34a853;
+  color: #fff;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.page-info {
+  font-size: 14px;
+  color: #999;
+}
+
+.page-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.page-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background-color: #333;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-btn.active {
+  background-color: #fff;
+  color: #000;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
