@@ -1,0 +1,107 @@
+@startuml PeerEd ER Diagram
+!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
+!define foreign_key(x) <color:#3c7daf><&link-intact></color> x
+
+!theme plain
+skinparam linetype ortho
+
+entity "Users" {
+    primary_key(user_id) : VARCHAR(36)
+    email : VARCHAR(255)
+    role : ENUM
+    first_name : VARCHAR(100)
+    last_name : VARCHAR(100)
+    --
+    + foreign_key(profile_id)
+    + foreign_key(tutor_profile_id)
+}
+
+entity "Profiles" {
+    primary_key(profile_id) : VARCHAR(36)
+    foreign_key(user_id) : VARCHAR(36)
+    bio : TEXT
+    department : VARCHAR(100)
+    year_of_study : INT
+}
+
+entity "TutorProfiles" {
+    primary_key(tutor_profile_id) : VARCHAR(36)
+    foreign_key(user_id) : VARCHAR(36)
+    hourly_rate : DECIMAL(10,2)
+    is_verified : BOOLEAN
+    overall_rating : DECIMAL(3,2)
+}
+
+entity "Subjects" {
+    primary_key(subject_id) : VARCHAR(36)
+    subject_code : VARCHAR(20)
+    subject_name : VARCHAR(100)
+    department : VARCHAR(100)
+}
+
+entity "TutorSubjects" {
+    primary_key(tutor_subject_id) : VARCHAR(36)
+    foreign_key(tutor_id) : VARCHAR(36)
+    foreign_key(subject_id) : VARCHAR(36)
+    proficiency_level : ENUM
+}
+
+entity "Sessions" {
+    primary_key(session_id) : VARCHAR(36)
+    foreign_key(student_id) : VARCHAR(36)
+    foreign_key(tutor_id) : VARCHAR(36)
+    foreign_key(subject_id) : VARCHAR(36)
+    start_time : DATETIME
+    end_time : DATETIME
+    status : ENUM
+    session_type : ENUM
+}
+
+entity "Reviews" {
+    primary_key(review_id) : VARCHAR(36)
+    foreign_key(session_id) : VARCHAR(36)
+    foreign_key(student_id) : VARCHAR(36)
+    foreign_key(tutor_id) : VARCHAR(36)
+    rating : INT
+    comment : TEXT
+}
+
+entity "Messages" {
+    primary_key(message_id) : VARCHAR(36)
+    foreign_key(sender_id) : VARCHAR(36)
+    foreign_key(recipient_id) : VARCHAR(36)
+    content : TEXT
+    is_read : BOOLEAN
+}
+
+entity "Conversations" {
+    primary_key(conversation_id) : VARCHAR(36)
+    foreign_key(user1_id) : VARCHAR(36)
+    foreign_key(user2_id) : VARCHAR(36)
+    foreign_key(last_message_id) : VARCHAR(36)
+}
+
+entity "Notifications" {
+    primary_key(notification_id) : VARCHAR(36)
+    foreign_key(user_id) : VARCHAR(36)
+    type : ENUM
+    content : TEXT
+    is_read : BOOLEAN
+}
+
+Users ||--|| Profiles
+Users ||--|| TutorProfiles
+Users ||--o{ Sessions
+Users ||--o{ Messages
+Users ||--o{ Notifications
+Users ||--o{ Conversations
+
+TutorProfiles ||--o{ TutorSubjects
+Subjects ||--o{ TutorSubjects
+
+Sessions ||--|| Reviews
+Sessions }|--|| Subjects
+
+Conversations ||--o{ Messages
+
+@enduml
