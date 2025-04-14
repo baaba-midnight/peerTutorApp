@@ -1,31 +1,36 @@
 :root {
-    --poppins-font: 'Poppins', sans-serif;
-    --poppins-extra-black: 900;
-    --poppins-extra-bold: 800;
-    --poppins-bold: 700;
-    --poppins-semi-bold: 600;
-    --poppins-medium: 500;
-    --poppins-regular: 400;
-    --poppins-light: 300;
-    --poppins-extra-light: 200;
-    --poppins-thin: 100;
-    --sidebar-width: 300px;
+  --poppins-font: "Poppins", sans-serif;
+  --poppins-extra-black: 900;
+  --poppins-extra-bold: 800;
+  --poppins-bold: 700;
+  --poppins-semi-bold: 600;
+  --poppins-medium: 500;
+  --poppins-regular: 400;
+  --poppins-light: 300;
+  --poppins-extra-light: 200;
+  --poppins-thin: 100;
+  --sidebar-width: 300px;
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: var(--poppins-font);
-    background-color: #fff;
+  font-family: var(--poppins-font);
+  background-color: #fff;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-    display: flex;
-    gap: 20px;
-    padding: 100px 50px 50px 50px;
-    flex-direction: column;
+  display: flex;
+  gap: 20px;
+  padding: 2rem 50px 50px !important;
+  flex-direction: column;
+  margin-top: 6rem !important;
 }

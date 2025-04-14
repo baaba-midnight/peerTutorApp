@@ -35,16 +35,16 @@ const users = [
     status: "pending",
     lastLogin: "Never",
     joinedDate: "28 Mar, 2025",
-  }
-  // {
-  //   id: 5,
-  //   name: "David Lee",
-  //   email: "david.l@example.com",
-  //   role: "tutor",
-  //   status: "inactive",
-  //   lastLogin: "2 weeks ago",
-  //   joinedDate: "15 Dec, 2024",
-  // },
+  },
+  {
+    id: 5,
+    name: "David Lee",
+    email: "david.l@example.com",
+    role: "applicant",
+    status: "pending",
+    lastLogin: "Never",
+    joinedDate: "15 Jan, 2025",
+  },
 ];
 
 let currentUserId = null;
@@ -115,12 +115,12 @@ function populateUserTable() {
                 <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" fill="white"/>
               </svg>
             </button>
-            <button class="action-btn approve-btn" title="Approve" data-bs-toggle="modal" onclick="openModal('approve-modal', ${user.id})">
+            <button class="action-btn approve-btn" title="Approve" onclick="approveTutor(${user.id})">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59L9 16.17Z" fill="white"/>
               </svg>
             </button>
-            <button class="action-btn reject-btn" title="Reject" onclick="openModal('reject-modal', ${user.id})">
+            <button class="action-btn reject-btn" title="Reject" onclick="rejectModal(${user.id})" data-bs-toggle="modal" data-bs-target="#rejectModal">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M19 6.41L17.59 5L12 10.59L6.41 5L5 6.41L10.59 12L5 17.59L6.41 19L12 13.41L17.59 19L19 17.59L13.41 12L19 6.41Z" fill="white"/>
               </svg>
@@ -160,7 +160,7 @@ function populateUserTable() {
                     ? `<button onclick="viewCredentials(${user.id})">View Credentials</button>`
                     : ""
                 }
-                <button class="danger" onclick="openModal('delete-modal', ${
+                <button class="danger" onclick="deleteUser(${
                   user.id
                 })">Delete</button>
               </div>
@@ -173,54 +173,94 @@ function populateUserTable() {
   });
 }
 
+let selectedUserId = null;
+
 // User actions functions
-function deleteUser() {
-  console.log(`Deleting user with ID: ${currentUserId}`);
-  // In a real application, you would send an API request here
+function deleteUser(userId) {
+  selectedUserId = userId; // set user ID to delete
 
-  // For demo purposes, remove from the array
-  const index = users.findIndex((user) => user.id === currentUserId);
-  if (index !== -1) {
-    users.splice(index, 1);
-    populateUsersTable();
-  }
+  console.log(selectedUserId)
 
-  closeModal("delete-modal");
+  // Show the modal
+  const deleteModal = new bootstrap.Modal(
+    document.getElementById("deleteModal")
+  );
+  deleteModal.show();
 }
 
-function approveTutor() {
-  console.log(`Approving tutor application for user ID: ${currentUserId}`);
+function confirmDelete() {
+  const input = document.getElementById("confirmDeleteInput").value.trim();
+
+  if (input !== "DELETE") {
+    alert("You must type DELETE to confirm.");
+    return;
+  }
+
+  if (!selectedUserId) return;
+
+  // send API request to delete user
+
+  // For demo purposes, remove from the array
+  const index = users.findIndex((user) => user.id === parseInt(selectedUserId));
+  if (index !== -1) {
+    users.splice(index, 1);
+    populateUserTable();
+  }
+
+  selectedUserId = null; // reset user ID
+
+  // Hide the modal
+  const modalEl = document.getElementById("deleteModal");
+  const modalInstance = bootstrap.Modal.getInstance(modalEl);
+  modalInstance.hide();
+}
+
+function approveTutor(userId) {
+  console.log(`Approving tutor application for user ID: ${userId}`);
   // In a real application, you would send an API request here
 
   // For demo purposes, update the user's role and status
-  const user = users.find((user) => user.id === currentUserId);
+  const user = users.find((user) => user.id === userId);
   if (user) {
     user.role = "tutor";
     user.status = "active";
-    populateUsersTable();
+    populateUserTable();
   }
+}
 
-  closeModal("approve-modal");
+function rejectModal(userId) {
+  selectedUserId = userId; // set user ID to reject
+
+  const rejectModal = new bootstrap.Modal(
+    document.getElementById("rejectModal")
+  );
+
+  rejectModal.show();
 }
 
 function rejectTutor() {
   const reason = document.getElementById("rejection-reason").value;
   console.log(
-    `Rejecting tutor application for user ID: ${currentUserId} with reason: ${reason}`
+    `Rejecting tutor application for user ID: ${selectedUserId} with reason: ${reason}`
   );
   // In a real application, you would send an API request here
 
   // For demo purposes, remove from the array or update status
-  const user = users.find((user) => user.id === currentUserId);
+  const user = users.find((user) => user.id === selectedUserId);
   if (user) {
     user.status = "inactive";
-    populateUsersTable();
+    populateUserTable();
   }
 
   // Clear the textarea
   document.getElementById("rejection-reason").value = "";
 
-  closeModal("reject-modal");
+  selectedUserId = null;
+
+  // Hide the modal
+  const modalEl = document.getElementById("rejectModal");
+  const modalInstance = bootstrap.Modal.getInstance(modalEl);
+  modalInstance.hide();
 }
 
 function resetPassword(userId) {
@@ -237,7 +277,7 @@ function disableUser(userId) {
   const user = users.find((user) => user.id === userId);
   if (user) {
     user.status = "inactive";
-    populateUsersTable();
+    populateUserTable();
   }
 }
 
@@ -249,7 +289,7 @@ function enableUser(userId) {
   const user = users.find((user) => user.id === userId);
   if (user) {
     user.status = "active";
-    populateUsersTable();
+    populateUserTable();
   }
 }
 
