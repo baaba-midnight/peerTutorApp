@@ -215,7 +215,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn delete-button" id="saveChangesBtn">Delete</button>
+                    <button type="button" class="btn delete-button" id="deleteBtn">Delete</button>
                 </div>
             </div>
         </div>
