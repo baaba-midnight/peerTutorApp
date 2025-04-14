@@ -256,3 +256,12 @@
 .pending-item:last-child {
     border-bottom: none;
 }
+
+.view-all {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: var(--poppins-bold);
+    font-size: .625rem;
+    color: #121212;
+    cursor: pointer;
+}

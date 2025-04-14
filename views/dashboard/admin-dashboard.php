@@ -206,8 +206,6 @@
         </div>
     </div>
 
-    <?php include('../../includes/footer.php'); ?>
-
     <script src="../../assets/js/activePage.js"></script>
 </body>
 
