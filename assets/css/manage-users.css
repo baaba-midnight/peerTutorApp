@@ -12,7 +12,7 @@ body {
   margin: 20px auto;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 16px var(--gray-medium);
 }
 
 .content-header {
@@ -20,12 +20,13 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--gray-medium);
 }
 
 .content-header h1 {
   font-size: 20px;
   font-weight: var(--poppins-bold);
+  color: var(--primary-black);
 }
 
 .header-actions {
@@ -38,7 +39,7 @@ body {
 .add-user-btn {
   background: none;
   border: none;
-  color: #000;
+  color: var(--primary-black);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -46,8 +47,8 @@ body {
 }
 
 .add-user-btn {
-  background-color: #121212;
-  color: #fff;
+  background-color: var(--primary-black);
+  color: var(--primary-white);
   padding: 8px 16px;
   border-radius: 4px;
   font-weight: var(--poppins-bold);
@@ -61,12 +62,12 @@ body {
   margin-left: 6px;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 5px solid #121212;
+  border-top: 5px solid var(--primary-black);
 }
 
 .table-container {
   flex: 1;
-  overflow: auto; /* Enable scrolling */
+  overflow: auto;
 }
 
 table {
@@ -76,7 +77,7 @@ table {
 
 thead {
   font-size: 13px;
-  color: #999;
+  color: var(--gray-dark);
   text-align: left;
 }
 
@@ -91,11 +92,11 @@ td:last-child {
 }
 
 tbody tr {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid var(--gray-medium);
 }
 
 tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: var(--gray-light);
 }
 
 .user-info {
@@ -107,12 +108,12 @@ tbody tr:hover {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #333;
+  background-color: var(--primary-black);
   margin-right: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--primary-white);
   font-weight: bold;
   font-size: 14px;
 }
@@ -124,11 +125,12 @@ tbody tr:hover {
 
 .user-name {
   font-weight: 500;
+  color: var(--primary-black);
 }
 
 .user-email {
   font-size: 13px;
-  color: #999;
+  color: var(--gray-dark);
   margin-top: 2px;
 }
 
@@ -139,6 +141,9 @@ tbody tr:hover {
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
+  background-color: var(--gray-light);
+  color: var(--primary-black);
+  border: 1px solid var(--gray-medium);
 }
 
 .student {
@@ -168,6 +173,7 @@ tbody tr:hover {
   height: 8px;
   border-radius: 50%;
   margin-right: 8px;
+  background-color: var(--primary-black);
 }
 
 .active .status-dot {
@@ -193,18 +199,20 @@ tbody tr:hover {
   width: 32px;
   height: 32px;
   border-radius: 4px;
-  background-color: #333;
+  background-color: var(--primary-black);
   border: none;
-  color: #fff;
+  color: var(--primary-white);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .action-btn:hover {
-  background-color: #444;
+  background-color: var(--primary-white);
+  color: var(--primary-black);
+  border: 1px solid var(--primary-black);
 }
 
 .approve-btn {
@@ -232,16 +240,17 @@ tbody tr:hover {
   display: none;
   position: absolute;
   right: 0;
-  background-color: #333;
+  background-color: var(--primary-white);
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 8px 16px var(--gray-medium);
   z-index: 1;
   border-radius: 4px;
   overflow: hidden;
+  border: 1px solid var(--gray-medium);
 }
 
 .dropdown-content button {
-  color: white;
+  color: var(--primary-black);
   padding: 12px 16px;
   text-decoration: none;
   display: block;
@@ -254,7 +263,7 @@ tbody tr:hover {
 }
 
 .dropdown-content button:hover {
-  background-color: #444;
+  background-color: var(--gray-light);
 }
 
 .dropdown-content button.danger {
@@ -277,16 +286,16 @@ tbody tr:hover {
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
-  color: #999;
+  color: var(--gray-dark);
 }
 
 .form-control {
   width: 100%;
   padding: 10px;
   border-radius: 4px;
-  border: 1px solid #333;
-  background-color: #fff;
-  color: #333;
+  border: 1px solid var(--gray-medium);
+  background-color: var(--primary-white);
+  color: var(--primary-black);
   font-size: 14px;
 }
 
@@ -307,34 +316,36 @@ tbody tr:hover {
 
 .btn-cancel {
   background-color: transparent;
-  border: 1px solid #333;
-  color: #333;
+  border: 1px solid var(--gray-medium);
+  color: var(--primary-black);
 }
 
 .btn-primary {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--primary-white);
+  color: var(--primary-black);
 }
 
 .btn-danger {
   background-color: #ea4335;
-  color: #fff;
+  color: var(--primary-white);
 }
 
 .btn-success {
   background-color: #34a853;
-  color: #fff;
+  color: var(--primary-white);
 }
 
 .pagination {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 16px 20px;
+  border-top: 1px solid var(--gray-medium);
 }
 
 .page-info {
   font-size: 14px;
-  color: #999;
+  color: var(--gray-dark);
 }
 
 .page-buttons {
@@ -346,18 +357,19 @@ tbody tr:hover {
   width: 32px;
   height: 32px;
   border-radius: 4px;
-  background-color: #333;
-  border: none;
-  color: #fff;
+  background-color: var(--primary-black);
+  border: 1px solid var(--primary-black);
+  color: var(--primary-white);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+.page-btn:hover,
 .page-btn.active {
-  background-color: #fff;
-  color: #000;
+  background-color: var(--primary-white);
+  color: var(--primary-black);
 }
 
 .page-btn:disabled {

@@ -10,6 +10,13 @@
     --poppins-extra-light: 200;
     --poppins-thin: 100;
     --sidebar-width: 300px;
+    
+    /* Color scheme */
+    --primary-black: #000000;
+    --primary-white: #ffffff;
+    --gray-light: #f8f9fa;
+    --gray-medium: rgba(0, 0, 0, 0.1);
+    --gray-dark: rgba(0, 0, 0, 0.5);
 }
 
 * {
@@ -20,14 +27,17 @@
 
 body {
     font-family: var(--poppins-font);
-    background-color: #fff;
+    background-color: var(--primary-white);
+    color: var(--primary-black);
 }
 
 .main-content {
     display: flex;
     gap: 20px;
-    padding: 100px 50px 50px 50px;
+    padding: 50px;
     flex-direction: column;
+    padding-top: 5rem;
+    min-height: calc(100vh - 60px);
 }
 
 /* Global button styles */
@@ -35,21 +45,54 @@ button,
 .btn,
 input[type="submit"],
 input[type="button"] {
-    background-color: #000;
-    color: #fff;
+    background-color: var(--primary-black);
+    color: var(--primary-white);
     border: none;
     border-radius: 50px;
     padding: 0.5rem 1rem;
     font-size: 15px;
     font-weight: var(--poppins-medium);
     cursor: pointer;
-    transition: background-color 0.15s ease-in-out, transform 0.1s ease-in-out;
+    transition: all 0.2s ease-in-out;
 }
 
 button:hover,
 .btn:hover,
 input[type="submit"]:hover,
 input[type="button"]:hover {
-    background-color: #000;
+    background-color: var(--primary-white);
+    color: var(--primary-black);
+    border: 1px solid var(--primary-black);
     transform: translateY(-2px);
+}
+
+/* Form styles */
+.form-control {
+    border: 1px solid var(--primary-black);
+    background-color: var(--primary-white);
+    color: var(--primary-black);
+}
+
+.form-control:focus {
+    border-color: var(--primary-black);
+    box-shadow: 0 0 0 2px var(--gray-medium);
+}
+
+/* Card styles */
+.card {
+    background-color: var(--primary-white);
+    border: 1px solid var(--primary-black);
+    box-shadow: 0 2px 10px var(--gray-medium);
+}
+
+/* Status indicators */
+.status-active {
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+}
+
+.status-inactive {
+    background-color: var(--gray-light);
+    color: var(--primary-black);
+    border: 1px solid var(--primary-black);
 }

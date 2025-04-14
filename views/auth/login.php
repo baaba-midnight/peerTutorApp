@@ -178,17 +178,20 @@
                 <label for="email-username">Email / Username</label>
                 <input type="text" id="email-username" class="form-control" placeholder="Enter your email / username">
             </div>
+
             <div class="form-group">
                 <label for="password">Password *</label>
                 <input type="password" id="password" class="form-control" placeholder="Enter your password">
                 <a href="#" class="forgot-password">Forgot Password</a>
             </div>
+
             <div class="sign-in-as">
                 <span>Sign in as</span>
             </div>
+
             <div class="role-buttons">
-                <button type="button" class="role-button tutor">Tutor</button>
-                <button type="button" class="role-button student">Student</button>
+                <button type="button" class="role-button student" data-role="student">Student</button>
+                <button type="button" class="role-button tutor" data-role="tutor">Tutor</button>
             </div>
             <button type="submit" class="login-button">Login</button>
             <p class="sign-up-link">Don't have an account? <a href="#">Sign Up</a></p>

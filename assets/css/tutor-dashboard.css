@@ -1,0 +1,299 @@
+.tutor-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--primary-white);
+    border: 1px solid var(--primary-black);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--gray-medium);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: var(--poppins-bold);
+    color: var(--primary-black);
+    margin-bottom: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--gray-dark);
+    font-weight: var(--poppins-medium);
+}
+
+.upcoming-sessions {
+    background-color: var(--primary-white);
+    border: 1px solid var(--primary-black);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: var(--poppins-semi-bold);
+    color: var(--primary-black);
+}
+
+.session-card {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-medium);
+    transition: background-color 0.3s ease;
+}
+
+.session-card:hover {
+    background-color: var(--gray-light);
+}
+
+.session-card:last-child {
+    border-bottom: none;
+}
+
+.session-info {
+    margin-bottom: 1rem;
+}
+
+.student-name {
+    font-size: 1.1rem;
+    font-weight: var(--poppins-semi-bold);
+    color: var(--primary-black);
+    margin-bottom: 0.5rem;
+}
+
+.session-details {
+    display: flex;
+    gap: 1.5rem;
+    color: var(--gray-dark);
+    font-size: 0.9rem;
+}
+
+.session-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.action-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-size: 0.9rem;
+    font-weight: var(--poppins-medium);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.join-button {
+    background: var(--primary-black);
+    color: var(--primary-white);
+    border: 2px solid var(--primary-black);
+}
+
+.join-button:hover {
+    background: var(--primary-white);
+    color: var(--primary-black);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--gray-medium);
+}
+
+.cancel-button {
+    background: var(--primary-white);
+    color: var(--primary-black);
+    border: 2px solid var(--primary-black);
+}
+
+.cancel-button:hover {
+    background: var(--primary-black);
+    color: var(--primary-white);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--gray-medium);
+}
+
+.availability-section {
+    background-color: var(--primary-white);
+    border: 1px solid var(--primary-black);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.time-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.time-slot {
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid var(--primary-black);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.time-slot.available {
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+}
+
+.time-slot.unavailable {
+    background-color: var(--primary-white);
+    color: var(--primary-black);
+}
+
+.time-slot:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px var(--gray-medium);
+}
+
+.main-content {
+    padding: 2rem;
+}
+
+.student-welcome {
+    background: linear-gradient(120deg, var(--primary-white) 0%, var(--gray-light) 100%);
+    padding: 2rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--primary-black);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.student-welcome:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--gray-medium);
+}
+
+.student-welcome h2 {
+    font-size: 2rem;
+    font-weight: var(--poppins-bold);
+    margin-bottom: 0.5rem;
+    color: var(--primary-black);
+}
+
+.student-welcome p {
+    font-size: 1.1rem;
+    color: var(--primary-black);
+    opacity: 0.7;
+}
+
+.earnings-card {
+    background: linear-gradient(135deg, var(--primary-black) 0%, #333 100%);
+    color: var(--primary-white);
+    border-radius: 1rem;
+    padding: 1.75rem;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.earnings-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.earnings-amount {
+    font-size: 2.5rem;
+    font-weight: var(--poppins-bold);
+    margin-bottom: 0.75rem;
+}
+
+.earnings-label {
+    font-size: 1rem;
+    opacity: 0.8;
+}
+
+.card {
+    background: var(--primary-white);
+    border-radius: 1rem;
+    border: 1px solid var(--primary-black);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--gray-medium);
+}
+
+.card-header {
+    background: var(--primary-white);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--gray-medium);
+}
+
+.card-title {
+    font-size: 1.25rem;
+    font-weight: var(--poppins-semi-bold);
+    color: var(--primary-black);
+    margin: 0;
+}
+
+.availability-toggle {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin: 1rem 0;
+}
+
+.availability-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.availability-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--gray-medium);
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.availability-slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: var(--primary-white);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .availability-slider {
+    background-color: var(--primary-black);
+}
+
+input:checked + .availability-slider:before {
+    transform: translateX(26px);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
