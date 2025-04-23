@@ -65,14 +65,35 @@ input[type="button"]:hover {
     border: 1px solid var(--primary-black);
     transform: translateY(-2px);
 }
+.list-group {
+    border: none;
+    background-color: var(--primary-white);
+    color: var(--primary-black);
+}
 
-/* Form styles */
+.list-group-item-action {
+    background-color: var(--primary-white) !important;
+    color: var(--primary-black) !important;
+    border: 1px solid var(--gray-medium) !important;
+    transition: all 0.3s ease;
+}
+.list-group-item-action:active,
+.list-group-item-action:focus {
+    background-color: var(--primary-black) !important;
+    color: var(--primary-white) !important;
+    border: 1px solid var(--primary-black) !important;
+}
+.form-check-input:checked {
+    background-color: var(--primary-black) !important;
+    border-color: var(--primary-black)!important;
+}
+
 .form-control {
     border: 1px solid var(--primary-black);
     background-color: var(--primary-white);
     color: var(--primary-black);
 }
-
+.form-switch { color: var(--primary-black); }
 .form-control:focus {
     border-color: var(--primary-black);
     box-shadow: 0 0 0 2px var(--gray-medium);

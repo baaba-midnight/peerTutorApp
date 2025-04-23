@@ -21,8 +21,11 @@
             <h1 class="mb-4">Settings</h1>
             
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-3 ">
                     <div class="list-group">
+                        <a href="#profile" class="list-group-item list-group-item-action" data-bs-toggle="list">
+                            Profile
+                        </a>
                         <a href="#account" class="list-group-item list-group-item-action active" data-bs-toggle="list">
                             Account Settings
                         </a>
