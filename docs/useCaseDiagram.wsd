@@ -1,0 +1,52 @@
+@startuml PeerTutorAppUseCaseDiagram
+left to right direction
+
+actor Student
+actor Tutor
+actor Administrator
+
+rectangle "Peer Tutor Application" {
+  
+  (Register/Login) as RL
+  (Search for Tutors) as ST
+  (View Tutor Profiles) as VTP
+  (Schedule Appointment) as SA
+  (Send/Receive Messages) as MSG
+  (Leave Reviews) as LR
+  (View Appointment History) as VAH
+
+  (Manage Availability) as MA
+  (Accept/Decline Appointment) as ADA
+  (View Student Profiles) as VSP
+  (View Reviews) as VR
+  (Manage Profile) as MP
+
+  (Manage Users) as MU
+  (Approve/Reject Tutor Applications) as ATA
+  (Manage Appointments) as MAP
+  (View Reports) as REP
+  (Monitor Messages and Reviews) as MMR
+
+  Student --> RL
+  Student --> ST
+  Student --> VTP
+  Student --> SA
+  Student --> MSG
+  Student --> LR
+  Student --> VAH
+
+  Tutor --> RL
+  Tutor --> MA
+  Tutor --> ADA
+  Tutor --> VSP
+  Tutor --> MSG
+  Tutor --> VR
+  Tutor --> MP
+
+  Administrator --> MU
+  Administrator --> ATA
+  Administrator --> MAP
+  Administrator --> REP
+  Administrator --> MMR
+}
+@enduml
