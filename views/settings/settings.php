@@ -21,28 +21,41 @@
             <h1 class="mb-4">Settings</h1>
             
             <div class="row">
-                <div class="col-md-3 ">
+                <div class="col-md-3">
                     <div class="list-group">
-                        <a href="#profile" class="list-group-item list-group-item-action" data-bs-toggle="list">
-                            Profile
-                        </a>
-                        <a href="#account" class="list-group-item list-group-item-action active" data-bs-toggle="list">
-                            Account Settings
-                        </a>
-                        <a href="#notifications" class="list-group-item list-group-item-action" data-bs-toggle="list">
-                            Notifications
-                        </a>
-                        <a href="#privacy" class="list-group-item list-group-item-action" data-bs-toggle="list">
-                            Privacy
-                        </a>
-                        <a href="#preferences" class="list-group-item list-group-item-action" data-bs-toggle="list">
-                            Preferences
-                        </a>
+                        <a href="#profile" class="list-group-item list-group-item-action" data-bs-toggle="list">Profile</a>
+                        <a href="#account" class="list-group-item list-group-item-action active" data-bs-toggle="list">Account Settings</a>
+                        <a href="#notifications" class="list-group-item list-group-item-action" data-bs-toggle="list">Notifications</a>
+                        <a href="#privacy" class="list-group-item list-group-item-action" data-bs-toggle="list">Privacy</a>
+                        <a href="#preferences" class="list-group-item list-group-item-action" data-bs-toggle="list">Preferences</a>
                     </div>
                 </div>
 
                 <div class="col-md-9">
                     <div class="tab-content">
+                        <!-- Profile Tab -->
+                        <div class="tab-pane fade" id="profile">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h1 class="profile-title">My Profile</h1>
+                                    <button class="edit-button" data-bs-toggle="modal" data-bs-target="#editProfileModal">Edit Profile</button>
+                                </div>
+                                <div class="profile-content">
+                                    <div class="profile-image">
+                                        <img id="profileImage" src="../../assets/images/man-1.jpg" alt="Profile Picture">
+                                    </div>
+                                    <div class="profile-info">
+                                        <h2 class="profile-name" id="profileName">Malcom Price</h2>
+                                        <p class="profile-role" id="profileRole">Student</p>
+                                    </div>
+                                </div>
+                                <p class="profile-bio" id="profileBio">
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Account Settings Tab -->
                         <div class="tab-pane fade show active" id="account">
                             <div class="card">
                                 <div class="card-body">
@@ -70,6 +83,7 @@
                             </div>
                         </div>
 
+                        <!-- Notifications Tab -->
                         <div class="tab-pane fade" id="notifications">
                             <div class="card">
                                 <div class="card-body">
@@ -78,25 +92,19 @@
                                         <div class="mb-3">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                                                <label class="form-check-label" for="emailNotifications">
-                                                    Email Notifications
-                                                </label>
+                                                <label class="form-check-label" for="emailNotifications">Email Notifications</label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="appointmentReminders" checked>
-                                                <label class="form-check-label" for="appointmentReminders">
-                                                    Appointment Reminders
-                                                </label>
+                                                <label class="form-check-label" for="appointmentReminders">Appointment Reminders</label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="messageNotifications" checked>
-                                                <label class="form-check-label" for="messageNotifications">
-                                                    Message Notifications
-                                                </label>
+                                                <label class="form-check-label" for="messageNotifications">Message Notifications</label>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -105,6 +113,7 @@
                             </div>
                         </div>
 
+                        <!-- Privacy Tab -->
                         <div class="tab-pane fade" id="privacy">
                             <div class="card">
                                 <div class="card-body">
@@ -113,17 +122,13 @@
                                         <div class="mb-3">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="profileVisibility" checked>
-                                                <label class="form-check-label" for="profileVisibility">
-                                                    Public Profile
-                                                </label>
+                                                <label class="form-check-label" for="profileVisibility">Public Profile</label>
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input" type="checkbox" id="showOnlineStatus" checked>
-                                                <label class="form-check-label" for="showOnlineStatus">
-                                                    Show Online Status
-                                                </label>
+                                                <label class="form-check-label" for="showOnlineStatus">Show Online Status</label>
                                             </div>
                                         </div>
                                         <button type="submit" class="btn btn-primary">Save Changes</button>
@@ -132,6 +137,7 @@
                             </div>
                         </div>
 
+                        <!-- Preferences Tab -->
                         <div class="tab-pane fade" id="preferences">
                             <div class="card">
                                 <div class="card-body">
@@ -169,11 +175,9 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Handle form submissions
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
-                // Add AJAX call to save settings
                 alert('Settings saved successfully!');
             });
         });
