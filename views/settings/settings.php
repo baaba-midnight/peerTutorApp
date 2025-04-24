@@ -54,6 +54,92 @@
                                 </p>
                             </div>
                         </div>
+                <!-- Tutor Additional Functionality -->
+        <?php if ($role === 'tutor'): ?>
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h1 class="profile-title">Tutor Profile</h1>
+                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#editTutorModal">Edit Tutor Profile</button>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="form-group">
+                            <label for="courses-offered" class="form-label">Courses Offered</label>
+                            <input type="dropdown" id="courses-offered" class="form-control" value="OOP, DSA" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="experience" class="form-label">Tutoring Experience</label>
+                            <input type="text" id="experience" class="form-control" value="5 years" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h1 class="profile-title">Availability & Scheduling</h1>
+                        <button class="edit-button" data-bs-toggle="modal" data-bs-target="#editAvailabilityModal">Set Availability</button>
+                    </div>
+
+                    <div class="card-content">
+                        <!-- Display Current Schedule -->
+                        <div id="current-schedule">
+                            <p><strong>Monday:</strong> 9:00 AM - 12:00 PM, 1:00 PM - 4:00 PM</p>
+                            <p><strong>Tuesday:</strong> 10:00 AM - 2:00 PM</p>
+                            <p><strong>Wednesday:</strong> Not Available</p>
+                            <p><strong>Thursday:</strong> 9:00 AM - 12:00 PM</p>
+                            <p><strong>Friday:</strong> 2:00 PM - 5:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProfileForm">
+                        <div class="text-center mb-4">
+                            <div class="upload-preview mx-auto mb-3">
+                                <img id="uploadPreview" src="/api/placeholder/100/100" alt="Profile Picture">
+                            </div>
+                            <button type="button" class="btn btn-outline-secondary">Change Photo</button>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" value="Malcom Price">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <input type="text" class="form-control" id="role" value="Student">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="bio" class="form-label">Bio</label>
+                            <textarea class="form-control" id="bio" rows="4">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-save" id="saveChangesBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
                         <!-- Account Settings Tab -->
                         <div class="tab-pane fade show active" id="account">
