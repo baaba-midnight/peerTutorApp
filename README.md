@@ -138,5 +138,9 @@ peerTutorApp/
    ```
 4. Push to your fork and submit a Pull Request
 
+## Use Case Diagram
+
+![Peer Tutor Use Case Diagram](assets/diagram.png)
+
 ## License
 This project is licensed under the MIT License.

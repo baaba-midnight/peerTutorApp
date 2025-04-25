@@ -1,0 +1,27 @@
+footer {
+    border-top: 1px solid var(--primary-black);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    text-align: center;
+    background-color: var(--primary-white);
+}
+
+.fixed-footer {
+    width: 100%;
+    background-color: var(--primary-white);
+    border-top: 1px solid var(--gray-medium);
+    padding: 15px 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.footer-text {
+    font-size: 15px;
+    color: var(--primary-black);
+    font-weight: var(--poppins-regular);
+}

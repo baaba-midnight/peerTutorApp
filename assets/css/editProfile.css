@@ -1,0 +1,144 @@
+body {
+    background-color: var(--primary-white);
+    color: var(--primary-black);
+    font-family: var(--poppins-font);
+    padding: 30px;
+}
+
+.profile-section {
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: var(--primary-white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px var(--gray-medium);
+    border: 1px solid var(--primary-black);
+}
+
+h3 {
+    color: var(--primary-black);
+    font-weight: 600;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--primary-black);
+    padding-bottom: 10px;
+}
+
+.btn-edit {
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+    border: 2px solid var(--primary-black);
+    padding: 8px 24px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-edit:hover {
+    background-color: var(--primary-white);
+    color: var(--primary-black);
+}
+
+/* Modal Customizations */
+.modal-content {
+    background-color: var(--primary-white);
+    border: 1px solid var(--gray-medium);
+    border-radius: 10px;
+}
+
+.modal-header {
+    color: var(--primary-black);
+    border-bottom: 1px solid var(--gray-medium);
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.modal-title {
+    font-weight: var(--poppins-semi-bold);
+    font-size: 20px;
+    text-align: center;
+    color: var(--primary-black);
+}
+
+.modal-footer {
+    border: none;
+}
+
+.btn-save {
+    background-color: var(--primary-black);
+    color: var(--primary-white);
+    border: 1px solid var(--primary-black);
+    font-weight: var(--poppins-regular);
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+.btn-save:hover {
+    background-color: var(--primary-white);
+    color: var(--primary-black);
+}
+
+.btn-cancel {
+    border: 1px solid var(--primary-black);
+    color: var(--primary-black);
+    background-color: var(--primary-white);
+    transition: all 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: var(--gray-light);
+}
+
+/* Form Styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    font-weight: var(--poppins-medium);
+    font-size: 11px;
+    color: var(--primary-black);
+}
+
+.form-control {
+    border: 1px solid var(--primary-black);
+    font-size: 14px;
+    font-weight: var(--poppins-light);
+    color: var(--primary-black);
+    background-color: var(--primary-white);
+}
+
+.form-control:focus {
+    border-color: var(--primary-black);
+    box-shadow: 0 0 0 0.2rem var(--gray-medium);
+}
+
+.form-file-label {
+    cursor: pointer;
+    padding: 8px 16px;
+    background-color: var(--gray-light);
+    border: 1px solid var(--gray-medium);
+    border-radius: 4px;
+    display: inline-block;
+    color: var(--primary-black);
+}
+
+.profile-info {
+    margin-bottom: 15px;
+}
+
+.profile-info p {
+    margin-bottom: 5px;
+    color: var(--primary-black);
+}
+
+.profile-info strong {
+    font-weight: 600;
+    display: inline-block;
+    width: 120px;
+    color: var(--primary-black);
+}
+
+input::placeholder {
+    font-weight: var(--poppins-light);
+    color: var(--gray-dark);
+}
