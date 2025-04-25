@@ -39,20 +39,12 @@
 }
 
 .card-header {
-    background: var(--primary-white);
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--gray-medium);
-    font-weight: var(--poppins-semi-bold);
-    font-size: 1.1rem;
-    color: var(--primary-black);
-    display: flex;
-    justify-content: space-between;
+    border-bottom: none;
+    background-color: #fff;
+    padding: 15px 20px;
+    font-weight: 500;
+    color: #6c757d;
     align-items: center;
-}
-
-.card-header i {
-    font-size: 1.25rem;
-    opacity: 0.7;
 }
 
 .stat-card-body {
@@ -255,4 +247,13 @@
 
 .pending-item:last-child {
     border-bottom: none;
+}
+
+.view-all {
+    text-align: center;
+    margin-top: 20px;
+    font-weight: var(--poppins-bold);
+    font-size: .625rem;
+    color: #121212;
+    cursor: pointer;
 }

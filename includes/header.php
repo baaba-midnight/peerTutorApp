@@ -9,28 +9,20 @@
         </a>
 
         <?php if ($role === 'student') : ?>
-            <nav class="main-nav">
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'student-dashboard.php' ? 'active' : ''; ?>" 
-                   href="../../views/dashboard/student-dashboard.php">Home</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'schedule.php' ? 'active' : ''; ?>"
-                   href="../../views/appointments/schedule.php">Find Tutors</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'view-appointments.php' ? 'active' : ''; ?>"
-                   href="../../views/appointments/view-appointments.php">Appointments</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'chat.php' ? 'active' : ''; ?>"
-                   href="../../views/messaging/chat.php">Messages</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>"
-                   href="../../views/settings/settings.php">Settings</a>
+            <nav class="main-nav" id="mainNav">
+                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="../../views/appointments/schedule.php">Find Tutors</a>
+                <a class="nav-link" href="../../views/appointments/view-appointments.php">Appointments</a>
+                <a class="nav-link" href="../../views/messaging/chat.php">Messages</a>
+                <a class="nav-link" href="../../views/settings/settings.php">Settings</a>
             </nav>
         <?php elseif ($role === 'tutor') : ?>
-            <nav class="main-nav">
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'tutor-dashboard.php' ? 'active' : ''; ?>"
-                   href="../../views/dashboard/tutor-dashboard.php">Home</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'view-appointments.php' ? 'active' : ''; ?>"
-                   href="../../views/appointments/view-appointments.php">Appointments</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'chat.php' ? 'active' : ''; ?>"
-                   href="../../views/messaging/chat.php">Messages</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>"
-                   href="../../views/settings/settings.php">Settings</a>
+            <nav class="main-nav" id="mainNav">
+                <a class="nav-link" href="../../views/dashboard/tutor-dashboard.php">Home</a>
+                <a class="nav-link" href="../../views/appointments/view-appointments.php">Appointments</a>
+                <a class="nav-link" href="../../views/messaging/chat.php">Messages</a>
+                <a class="nav-link" href="../../views/reviews/view-reviews.php">Reviews and Ratings</a>
+                <a class="nav-link" href=".././views/settings/settings.php">Settings</a>
             </nav>
         <?php elseif ($role === 'admin') : ?>
             <nav class="main-nav">
