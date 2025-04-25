@@ -1,16 +1,11 @@
 .student-welcome {
-    background: linear-gradient(120deg, var(--primary-white) 0%, var(--gray-light) 100%);
     padding: 2rem;
     border-radius: 1rem;
     margin-bottom: 2rem;
-    border: 1px solid var(--primary-black);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    
 }
 
-.student-welcome:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px var(--gray-medium);
-}
 
 .student-welcome h2 {
     font-size: 2rem;
