@@ -1,34 +1,30 @@
 :root {
-    --poppins-font: 'Poppins', sans-serif;
-    --poppins-extra-black: 900;
-    --poppins-extra-bold: 800;
-    --poppins-bold: 700;
-    --poppins-semi-bold: 600;
-    --poppins-medium: 500;
-    --poppins-regular: 400;
-    --poppins-light: 300;
-    --poppins-extra-light: 200;
-    --poppins-thin: 100;
-    --sidebar-width: 300px;
-    
-    /* Color scheme */
-    --primary-black: #000000;
-    --primary-white: #ffffff;
-    --gray-light: #f8f9fa;
-    --gray-medium: rgba(0, 0, 0, 0.1);
-    --gray-dark: rgba(0, 0, 0, 0.5);
+  --poppins-font: "Poppins", sans-serif;
+  --poppins-extra-black: 900;
+  --poppins-extra-bold: 800;
+  --poppins-bold: 700;
+  --poppins-semi-bold: 600;
+  --poppins-medium: 500;
+  --poppins-regular: 400;
+  --poppins-light: 300;
+  --poppins-extra-light: 200;
+  --poppins-thin: 100;
+  --sidebar-width: 300px;
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: var(--poppins-font);
-    background-color: var(--primary-white);
-    color: var(--primary-black);
+  font-family: var(--poppins-font);
+  background-color: #fff;
+  height: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
@@ -116,4 +112,9 @@ input[type="button"]:hover {
     background-color: var(--gray-light);
     color: var(--primary-black);
     border: 1px solid var(--primary-black);
+  display: flex;
+  gap: 20px;
+  padding: 2rem 50px 50px !important;
+  flex-direction: column;
+  margin-top: 6rem !important;
 }
