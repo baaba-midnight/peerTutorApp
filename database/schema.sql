@@ -9,7 +9,7 @@ USE PeerTutor;
 
 -- Users table
 CREATE TABLE Users (
-    user_id VARCHAR(36) PRIMARY KEY,
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('student', 'tutor', 'admin') NOT NULL,
@@ -25,8 +25,8 @@ CREATE TABLE Users (
 
 -- Profiles table
 CREATE TABLE Profiles (
-    profile_id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
+    profile_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     bio TEXT,
     profile_picture_url VARCHAR(255),
     department VARCHAR(100),
@@ -38,10 +38,10 @@ CREATE TABLE Profiles (
 
 -- TutorProfiles table
 CREATE TABLE TutorProfiles (
-    tutor_profile_id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
+    tutor_profile_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     hourly_rate DECIMAL(10,2),
-    availability_schedule JSON, -- Stores JSON object with available time slots
+    availability_schedule JSON,
     overall_rating DECIMAL(3,2),
     is_verified BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -51,7 +51,7 @@ CREATE TABLE TutorProfiles (
 
 -- Courses table
 CREATE TABLE Courses (
-    course_id VARCHAR(36) PRIMARY KEY,
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
     course_code VARCHAR(20) NOT NULL UNIQUE,
     course_name VARCHAR(100) NOT NULL,
     department VARCHAR(100) NOT NULL,
@@ -62,9 +62,9 @@ CREATE TABLE Courses (
 
 -- TutorCourses table
 CREATE TABLE TutorCourses (
-    tutor_course_id VARCHAR(36) PRIMARY KEY,
-    tutor_id VARCHAR(36) NOT NULL,
-    course_id VARCHAR(36) NOT NULL,
+    tutor_course_id INT AUTO_INCREMENT PRIMARY KEY,
+    tutor_id INT NOT NULL,
+    course_id INT NOT NULL,
     proficiency_level ENUM('beginner', 'intermediate', 'advanced', 'expert') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -75,14 +75,14 @@ CREATE TABLE TutorCourses (
 
 -- Sessions table
 CREATE TABLE Sessions (
-    session_id VARCHAR(36) PRIMARY KEY,
-    student_id VARCHAR(36) NOT NULL,
-    tutor_id VARCHAR(36) NOT NULL,
-    course_id VARCHAR(36) NOT NULL,
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    tutor_id INT NOT NULL,
+    course_id INT NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
     status ENUM('requested', 'confirmed', 'cancelled', 'completed') NOT NULL,
-    location VARCHAR(255), -- Can be physical location or virtual meeting link
+    location VARCHAR(255),
     session_type ENUM('in-person', 'online') NOT NULL,
     session_notes TEXT,
     cancellation_reason TEXT,
@@ -95,10 +95,10 @@ CREATE TABLE Sessions (
 
 -- Reviews table
 CREATE TABLE Reviews (
-    review_id VARCHAR(36) PRIMARY KEY,
-    session_id VARCHAR(36) NOT NULL,
-    student_id VARCHAR(36) NOT NULL,
-    tutor_id VARCHAR(36) NOT NULL,
+    review_id INT AUTO_INCREMENT PRIMARY KEY,
+    session_id INT NOT NULL,
+    student_id INT NOT NULL,
+    tutor_id INT NOT NULL,
     rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
     comment TEXT,
     is_anonymous BOOLEAN DEFAULT FALSE,
@@ -112,9 +112,9 @@ CREATE TABLE Reviews (
 
 -- Messages table
 CREATE TABLE Messages (
-    message_id VARCHAR(36) PRIMARY KEY,
-    sender_id VARCHAR(36) NOT NULL,
-    recipient_id VARCHAR(36) NOT NULL,
+    message_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NOT NULL,
+    recipient_id INT NOT NULL,
     content TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -124,10 +124,10 @@ CREATE TABLE Messages (
 
 -- Conversations table
 CREATE TABLE Conversations (
-    conversation_id VARCHAR(36) PRIMARY KEY,
-    user1_id VARCHAR(36) NOT NULL,
-    user2_id VARCHAR(36) NOT NULL,
-    last_message_id VARCHAR(36),
+    conversation_id INT AUTO_INCREMENT PRIMARY KEY,
+    user1_id INT NOT NULL,
+    user2_id INT NOT NULL,
+    last_message_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user1_id) REFERENCES Users(user_id) ON DELETE CASCADE,
@@ -138,19 +138,19 @@ CREATE TABLE Conversations (
 
 -- Notifications table
 CREATE TABLE Notifications (
-    notification_id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL,
+    notification_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
     type ENUM('session_request', 'session_confirmed', 'session_cancelled', 'session_reminder', 'message', 'review', 'system') NOT NULL,
     content TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
-    related_id VARCHAR(36), -- Can reference sessions, messages, etc.
+    related_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
 -- AcademicResources table
 CREATE TABLE AcademicResources (
-    resource_id VARCHAR(36) PRIMARY KEY,
+    resource_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
     resource_type ENUM('faculty', 'library', 'online_resource', 'study_material') NOT NULL,
     description TEXT,
@@ -163,7 +163,7 @@ CREATE TABLE AcademicResources (
 
 -- LecturerContacts table
 CREATE TABLE LecturerContacts (
-    lecturer_id VARCHAR(36) PRIMARY KEY,
+    lecturer_id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     department VARCHAR(100) NOT NULL,
@@ -176,40 +176,26 @@ CREATE TABLE LecturerContacts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Create indexes for optimized queries
-
--- Users table indexes
+-- Indexes
 CREATE INDEX idx_users_email ON Users(email);
 CREATE INDEX idx_users_role ON Users(role);
-
--- TutorProfiles table indexes
 CREATE INDEX idx_tutors_rating ON TutorProfiles(overall_rating);
 CREATE INDEX idx_tutors_verified ON TutorProfiles(is_verified);
-
--- Courses table indexes
 CREATE INDEX idx_Courses_dept ON Courses(department);
 CREATE INDEX idx_Courses_code ON Courses(course_code);
-
--- Sessions table indexes
 CREATE INDEX idx_sessions_tutor ON Sessions(tutor_id);
 CREATE INDEX idx_sessions_student ON Sessions(student_id);
 CREATE INDEX idx_sessions_course ON Sessions(course_id);
 CREATE INDEX idx_sessions_status ON Sessions(status);
 CREATE INDEX idx_sessions_date ON Sessions(start_time);
-
--- Messages table indexes
 CREATE INDEX idx_messages_sender ON Messages(sender_id);
 CREATE INDEX idx_messages_recipient ON Messages(recipient_id);
 CREATE INDEX idx_messages_read ON Messages(is_read);
-
--- Notifications table indexes
 CREATE INDEX idx_notifications_user ON Notifications(user_id);
 CREATE INDEX idx_notifications_read ON Notifications(is_read);
 CREATE INDEX idx_notifications_type ON Notifications(type);
 
--- Create triggers
-
--- Trigger to update overall tutor rating when a new review is added
+-- Triggers
 DELIMITER //
 CREATE TRIGGER update_tutor_rating
 AFTER INSERT ON Reviews
@@ -222,11 +208,9 @@ BEGIN
         WHERE tutor_id = NEW.tutor_id
     )
     WHERE tutor_profile_id = NEW.tutor_id;
-END //
-DELIMITER ;
+END;
+//
 
--- Trigger to mark related notifications as read when a message is read
-DELIMITER //
 CREATE TRIGGER mark_message_notifications
 AFTER UPDATE ON Messages
 FOR EACH ROW
@@ -236,5 +220,6 @@ BEGIN
         SET is_read = TRUE
         WHERE related_id = NEW.message_id AND type = 'message';
     END IF;
-END //
+END;
+//
 DELIMITER ;
