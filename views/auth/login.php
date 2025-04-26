@@ -3,23 +3,25 @@ include '../../config/database.php';
 
 session_start();
 
-if($_SERVER["REQUEST_METHOD"] == 'POST'){
+$database = new Database();
+$conn = $database->connect();
+
+if ($_SERVER["REQUEST_METHOD"] == 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
 
-    //check if fields are empty
-    if(empty($email)||empty($password)){
-        die("Dont leave field empty");
+    // Check if fields are empty
+    if (empty($email) || empty($password)) {
+        die("Don't leave fields empty");
     }
 
-    $query = 'SELECT user_id, first_name, last_name, `password_hash`, email, `role` FROM Users WHERE email = ?';
-    $stmt = $conn -> prepare($query);
-    $stmt->bind_param('s',$email);
+    $query = 'SELECT user_id, first_name, last_name, password_hash, email, role FROM Users WHERE email = :email';
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':email', $email);
     $stmt->execute();
-    $results = $stmt -> get_result();
 
-    if($results -> num_rows > 0){
-        $row = $results -> fetch_assoc();
+    if ($stmt->rowCount() > 0) {
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         $user_id = $row['user_id'];
         $user_role = $row['role'];
@@ -27,35 +29,32 @@ if($_SERVER["REQUEST_METHOD"] == 'POST'){
         $lastName = $row['last_name'];
         $email = $row['email'];
 
-        if (password_verify($password, $row['password_hash'])){
-            // set session variables
+        if (password_verify($password, $row['password_hash'])) {
+            // Set session variables
             $_SESSION['id'] = $user_id;
             $_SESSION['role'] = $user_role;
             $_SESSION['full_name'] = $firstName . " " . $lastName;
             $_SESSION['email'] = $email;
 
-            if ($user_role == 'nurse'){
+            if ($user_role == 'nurse') {
                 header("Location: ../dashboard/admin-dashboard.php");
-            }elseif($user_role == 'doctor'){
+            } elseif ($user_role == 'doctor') {
                 header("Location: ../dashboard/student-dashboard.php");
-            }elseif($user_role == 'admin'){
-                // echo '<script>alert("User successfully logged in.");</script>';
+            } elseif ($user_role == 'admin') {
                 echo json_encode(array("status" => "success", "message" => "Login successful."));
                 header("Location: ../dashboard/tutor-dashboard.php");
-            }else{
+            } else {
                 header("Location: login.php");
             }
             exit();
         }
-    }else {
-        // Show an alert if the user is not registered
+    } else {
         header("Location: register.php");
         echo '<script>alert("User not registered.");</script>';
     }
-    $stmt -> close();
 }
-$conn -> close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
