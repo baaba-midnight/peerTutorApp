@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
+    header('Location: ../../views/auth/login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,9 +33,6 @@
                     <div class="list-group">
                         <a href="#profile" class="list-group-item list-group-item-action" data-bs-toggle="list">Profile</a>
                         <a href="#account" class="list-group-item list-group-item-action active" data-bs-toggle="list">Account Settings</a>
-                        <a href="#notifications" class="list-group-item list-group-item-action" data-bs-toggle="list">Notifications</a>
-                        <a href="#privacy" class="list-group-item list-group-item-action" data-bs-toggle="list">Privacy</a>
-                        <a href="#preferences" class="list-group-item list-group-item-action" data-bs-toggle="list">Preferences</a>
                     </div>
                 </div>
 
@@ -129,94 +133,7 @@
                             </div>
                         </div>
 
-                        <!-- Notifications Tab -->
-                        <div class="tab-pane fade" id="notifications">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="profile-title">Notification Settings</h3>
-                                </div>
-                                <div class="card-body">
-                                    <form id="notificationSettingsForm">
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                                                <label class="form-check-label" for="emailNotifications">Email Notifications</label>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="appointmentReminders" checked>
-                                                <label class="form-check-label" for="appointmentReminders">Appointment Reminders</label>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="messageNotifications" checked>
-                                                <label class="form-check-label" for="messageNotifications">Message Notifications</label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Privacy Tab -->
-                        <div class="tab-pane fade" id="privacy">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="profile-title">Privacy Settings</h3>
-                                </div>
-                                <div class="card-body">
-                                    <form id="privacySettingsForm">
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="profileVisibility" checked>
-                                                <label class="form-check-label" for="profileVisibility">Public Profile</label>
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input" type="checkbox" id="showOnlineStatus" checked>
-                                                <label class="form-check-label" for="showOnlineStatus">Show Online Status</label>
-                                            </div>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Preferences Tab -->
-                        <div class="tab-pane fade" id="preferences">
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="profile-title">Preferences</h3>
-                                </div>
-                                <div class="card-body">
-                                    <form id="preferencesForm">
-                                        <div class="mb-3">
-                                            <label for="timezone" class="form-label">Timezone</label>
-                                            <select class="form-select" id="timezone">
-                                                <option value="UTC">UTC</option>
-                                                <option value="EST">Eastern Time</option>
-                                                <option value="CST">Central Time</option>
-                                                <option value="PST">Pacific Time</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="language" class="form-label">Language</label>
-                                            <select class="form-select" id="language">
-                                                <option value="en">English</option>
-                                                <option value="es">Spanish</option>
-                                                <option value="fr">French</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </form>
                 </div>
                 <div class="modal-footer">

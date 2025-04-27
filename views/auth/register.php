@@ -1,62 +1,3 @@
-<?php
-include '../../config/database.php';
-
-// session_start(); // Only needed if you're starting a session for login/signup tracking
-
-$database = new Database();
-$conn = $database->connect();
-
-if ($_SERVER["REQUEST_METHOD"] === 'POST') {
-    $email = trim($_POST['email']);
-    $firstName = trim($_POST['fname']);
-    $lastName = trim($_POST['lname']);
-    $role = $_POST['role-options'];
-    $phone = trim($_POST['phone']);
-    $password = trim($_POST['password']);
-    $confirmPassword = trim($_POST['password2']);
-
-    // Check if fields are empty
-    if (empty($email) || empty($password) || empty($firstName) || empty($lastName)) {
-        die("Don't leave field empty");
-    }
-
-    if ($confirmPassword !== $password) {
-        die("Passwords do not match");
-    }
-
-    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
-
-    // Check if the user already exists
-    $query = 'SELECT user_id, first_name, last_name FROM Users WHERE email = :email';
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-
-    if ($stmt->rowCount() > 0) {
-        echo "<script>alert('User already registered')</script>";
-    } else {
-        // Insert new user
-        $sql = "INSERT INTO Users (first_name, last_name, email, phone_number, password_hash, role)
-                VALUES (:first_name, :last_name, :email, :phone, :password_hash, :role)";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':first_name', $firstName);
-        $stmt->bindParam(':last_name', $lastName);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':phone', $phone);
-        $stmt->bindParam(':password_hash', $hashedPassword);
-        $stmt->bindParam(':role', $role);
-
-        if ($stmt->execute()) {
-            echo "<script>alert('Registration Successful'); window.location.href = 'login.php';</script>";
-        } else {
-            echo "<script>alert('Registration Unsuccessful')</script>";
-        }
-    }
-}
-?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,29 +50,29 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
             </div>
         </div>
 
-        <form id="registrationForm" novalidate>
+        <form id="registrationForm" novalidate method="POST" action="../../api/register.php" enctype="multipart/form-data">
             <!-- Step 1: Basic Information -->
             <div class="form-step" id="step1">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">First Name *</label>
-                        <input type="text" id="firstName" class="form-control" placeholder="Enter your first name" required>
+                        <input type="text" id="firstName" name="fname" class="form-control" placeholder="Enter your first name" required>
                         <div class="error-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name *</label>
-                        <input type="text" id="lastName" class="form-control" placeholder="Enter your last name" required>
+                        <input type="text" id="lastName" name="lname" class="form-control" placeholder="Enter your last name" required>
                         <div class="error-feedback"></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email">Email Address *</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required>
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number">
                     <div class="error-feedback"></div>
                 </div>
             </div>
@@ -140,18 +81,18 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
             <div class="form-step" id="step2" style="display: none;">
                 <div class="form-group">
                     <label for="username">Username *</label>
-                    <input type="text" id="username" class="form-control" placeholder="Choose a username" required>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required>
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="password">Password *</label>
-                    <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
                     <div class="error-feedback"></div>
                     <div class="password-strength" id="password-strength"></div>
                 </div>
                 <div class="form-group">
                     <label for="confirmPassword">Confirm Password *</label>
-                    <input type="password" id="confirmPassword" class="form-control" placeholder="Confirm your password" required>
+                    <input type="password" id="confirmPassword" name="password2" class="form-control" placeholder="Confirm your password" required>
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
@@ -160,7 +101,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
                         <button type="button" class="role-button student" data-role="student">Student</button>
                         <button type="button" class="role-button tutor" data-role="tutor">Tutor</button>
                     </div>
-                    <input type="hidden" id="selectedRole" required>
+                    <input type="hidden" id="selectedRole" name="role-options" required>
                     <div class="error-feedback"></div>
                 </div>
             </div>
@@ -169,7 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
             <div class="form-step" id="step3" style="display: none;">
                 <div class="form-group">
                     <label for="subjects">Subjects of Interest *</label>
-                    <select id="subjects" class="form-control" multiple required>
+                    <select id="subjects" name="subjects[]" class="form-control" multiple required>
                         <option value="mathematics">Mathematics</option>
                         <option value="physics">Physics</option>
                         <option value="chemistry">Chemistry</option>
@@ -183,14 +124,14 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
                 </div>
                 <div class="form-group tutor-only" style="display: none;">
                     <label for="experience">Teaching Experience</label>
-                    <textarea id="experience" class="form-control" rows="3" placeholder="Describe your teaching experience"></textarea>
+                    <textarea id="experience" name="experience" class="form-control" rows="3" placeholder="Describe your teaching experience"></textarea>
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="avatar">Profile Picture</label>
                     <label class="upload-image-label" for="avatar">
                         <span id="avatar-text">Choose a profile picture</span>
-                        <input type="file" id="avatar" accept="image/*">
+                        <input type="file" id="avatar" name="avatar" accept="image/*">
                     </label>
                     <div class="error-feedback"></div>
                 </div>
@@ -387,27 +328,10 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
 
             // Form submission
             form.addEventListener('submit', async (e) => {
-                e.preventDefault();
                 if (validateStep(currentStep)) {
-                    const formData = new FormData(form);
-                    try {
-                        const response = await fetch('../../api/auth.php', {
-                            method: 'POST',
-                            body: formData
-                        });
-                        
-                        if (!response.ok) {
-                            throw new Error('Registration failed');
-                        }
-
-                        const data = await response.json();
-                        if (data.success) {
-                            window.location.href = 'login.php?registered=true';
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        // Show error message to user
-                    }
+                    // Allow default form submission
+                } else {
+                    e.preventDefault();
                 }
             });
 

@@ -1,10 +1,17 @@
--- Create Users table
+-- Drop database if it exists
+DROP DATABASE IF EXISTS PeerTutor;
+
+-- Create a new database
+CREATE DATABASE PeerTutor;
+
+-- Use the newly created database
+USE PeerTutor;
+
+-- Users table
 CREATE TABLE Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
     role ENUM('student', 'tutor', 'admin') NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
@@ -60,7 +67,9 @@ CREATE TABLE TutorCourses (
     course_id INT NOT NULL,
     proficiency_level ENUM('beginner', 'intermediate', 'advanced', 'expert') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (parent_subject_id) REFERENCES Subjects(subject_id)
+    FOREIGN KEY (tutor_id) REFERENCES TutorProfiles(tutor_profile_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE,
+    UNIQUE KEY (tutor_id, course_id)
 );
 
 -- Sessions table
@@ -83,9 +92,9 @@ CREATE TABLE Sessions (
     FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE
 );
 
--- Create Availability table for tutors
+-- Availability table
 CREATE TABLE Availability (
-    availability_id INT PRIMARY KEY AUTO_INCREMENT,
+    availability_id INT AUTO_INCREMENT PRIMARY KEY,
     tutor_id INT,
     day_of_week ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),
     start_time TIME,
@@ -93,9 +102,9 @@ CREATE TABLE Availability (
     FOREIGN KEY (tutor_id) REFERENCES Users(user_id)
 );
 
--- Create Appointments table
+-- Appointments table
 CREATE TABLE Appointments (
-    appointment_id INT PRIMARY KEY AUTO_INCREMENT,
+    appointment_id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT,
     tutor_id INT,
     subject_id INT,
@@ -108,10 +117,10 @@ CREATE TABLE Appointments (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES Users(user_id),
     FOREIGN KEY (tutor_id) REFERENCES Users(user_id),
-    FOREIGN KEY (subject_id) REFERENCES Subjects(subject_id)
+    FOREIGN KEY (subject_id) REFERENCES Courses(course_id)
 );
 
--- Create Reviews table
+-- Reviews table
 CREATE TABLE Reviews (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     session_id INT NOT NULL,
@@ -121,12 +130,14 @@ CREATE TABLE Reviews (
     comment TEXT,
     is_anonymous BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (appointment_id) REFERENCES Appointments(appointment_id),
-    FOREIGN KEY (reviewer_id) REFERENCES Users(user_id),
-    FOREIGN KEY (reviewee_id) REFERENCES Users(user_id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (session_id) REFERENCES Sessions(session_id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (tutor_id) REFERENCES TutorProfiles(tutor_profile_id) ON DELETE CASCADE,
+    UNIQUE KEY (session_id, student_id)
 );
 
--- Create Messages table
+-- Messages table
 CREATE TABLE Messages (
     message_id INT AUTO_INCREMENT PRIMARY KEY,
     sender_id INT NOT NULL,
@@ -134,8 +145,8 @@ CREATE TABLE Messages (
     content TEXT NOT NULL,
     is_read BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sender_id) REFERENCES Users(user_id),
-    FOREIGN KEY (receiver_id) REFERENCES Users(user_id)
+    FOREIGN KEY (sender_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (recipient_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
 -- Conversations table
@@ -168,10 +179,13 @@ CREATE TABLE Notifications (
 CREATE TABLE AcademicResources (
     resource_id INT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
-    content TEXT,
-    is_read BOOLEAN DEFAULT FALSE,
+    resource_type ENUM('faculty', 'library', 'online_resource', 'study_material') NOT NULL,
+    description TEXT,
+    contact_info VARCHAR(255),
+    department VARCHAR(100),
+    url VARCHAR(255),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- LecturerContacts table
@@ -189,26 +203,40 @@ CREATE TABLE LecturerContacts (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Indexes
+-- Create indexes for optimized queries
+
+-- Users table indexes
 CREATE INDEX idx_users_email ON Users(email);
 CREATE INDEX idx_users_role ON Users(role);
+
+-- TutorProfiles table indexes
 CREATE INDEX idx_tutors_rating ON TutorProfiles(overall_rating);
 CREATE INDEX idx_tutors_verified ON TutorProfiles(is_verified);
+
+-- Courses table indexes
 CREATE INDEX idx_Courses_dept ON Courses(department);
 CREATE INDEX idx_Courses_code ON Courses(course_code);
+
+-- Sessions table indexes
 CREATE INDEX idx_sessions_tutor ON Sessions(tutor_id);
 CREATE INDEX idx_sessions_student ON Sessions(student_id);
 CREATE INDEX idx_sessions_course ON Sessions(course_id);
 CREATE INDEX idx_sessions_status ON Sessions(status);
 CREATE INDEX idx_sessions_date ON Sessions(start_time);
+
+-- Messages table indexes
 CREATE INDEX idx_messages_sender ON Messages(sender_id);
 CREATE INDEX idx_messages_recipient ON Messages(recipient_id);
 CREATE INDEX idx_messages_read ON Messages(is_read);
+
+-- Notifications table indexes
 CREATE INDEX idx_notifications_user ON Notifications(user_id);
 CREATE INDEX idx_notifications_read ON Notifications(is_read);
 CREATE INDEX idx_notifications_type ON Notifications(type);
 
--- Triggers
+-- Create triggers
+
+-- Trigger to update overall tutor rating when a new review is added
 DELIMITER //
 CREATE TRIGGER update_tutor_rating
 AFTER INSERT ON Reviews
@@ -221,9 +249,11 @@ BEGIN
         WHERE tutor_id = NEW.tutor_id
     )
     WHERE tutor_profile_id = NEW.tutor_id;
-END;
-//
+END //
+DELIMITER ;
 
+-- Trigger to mark related notifications as read when a message is read
+DELIMITER //
 CREATE TRIGGER mark_message_notifications
 AFTER UPDATE ON Messages
 FOR EACH ROW
@@ -233,6 +263,5 @@ BEGIN
         SET is_read = TRUE
         WHERE related_id = NEW.message_id AND type = 'message';
     END IF;
-END;
-//
+END //
 DELIMITER ;

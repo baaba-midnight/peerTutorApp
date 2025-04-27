@@ -1,60 +1,3 @@
-<?php
-include '../../config/database.php';
-
-session_start();
-
-$database = new Database();
-$conn = $database->connect();
-
-if ($_SERVER["REQUEST_METHOD"] == 'POST') {
-    $email = trim($_POST['email']);
-    $password = trim($_POST['password']);
-
-    // Check if fields are empty
-    if (empty($email) || empty($password)) {
-        die("Don't leave fields empty");
-    }
-
-    $query = 'SELECT user_id, first_name, last_name, password_hash, email, role FROM Users WHERE email = :email';
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':email', $email);
-    $stmt->execute();
-
-    if ($stmt->rowCount() > 0) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        $user_id = $row['user_id'];
-        $user_role = $row['role'];
-        $firstName = $row['first_name'];
-        $lastName = $row['last_name'];
-        $email = $row['email'];
-
-        if (password_verify($password, $row['password_hash'])) {
-            // Set session variables
-            $_SESSION['id'] = $user_id;
-            $_SESSION['role'] = $user_role;
-            $_SESSION['full_name'] = $firstName . " " . $lastName;
-            $_SESSION['email'] = $email;
-
-            if ($user_role == 'nurse') {
-                header("Location: ../dashboard/admin-dashboard.php");
-            } elseif ($user_role == 'doctor') {
-                header("Location: ../dashboard/student-dashboard.php");
-            } elseif ($user_role == 'admin') {
-                echo json_encode(array("status" => "success", "message" => "Login successful."));
-                header("Location: ../dashboard/tutor-dashboard.php");
-            } else {
-                header("Location: login.php");
-            }
-            exit();
-        }
-    } else {
-        header("Location: register.php");
-        echo '<script>alert("User not registered.");</script>';
-    }
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -255,55 +198,15 @@ if ($_SERVER["REQUEST_METHOD"] == 'POST') {
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             }
 
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            form.setAttribute('method', 'POST');
+            form.setAttribute('action', '../../api/login.php');
+            form.setAttribute('enctype', 'application/x-www-form-urlencoded');
 
+            form.addEventListener('submit', (e) => {
                 if (!validateForm()) {
-                    return;
+                    e.preventDefault();
                 }
-
-                // Show loading state
-                buttonText.style.display = 'none';
-                spinner.style.display = 'inline-block';
-                loginButton.disabled = true;
-
-                try {
-                    const formData = {
-                        email: document.getElementById('email').value,
-                        password: document.getElementById('password').value,
-                        role: selectedRole.value
-                    };
-
-                    const response = await fetch('../../api/auth.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Login failed');
-                    }
-
-                    // Redirect based on role
-                    const dashboardPath = selectedRole.value === 'tutor' 
-                        ? '../dashboard/tutor-dashboard.php'
-                        : '../dashboard/student-dashboard.php';
-                    
-                    window.location.href = dashboardPath;
-
-                } catch (error) {
-                    errorMessage.textContent = error.message;
-                    errorMessage.style.display = 'block';
-                } finally {
-                    // Reset loading state
-                    buttonText.style.display = 'inline';
-                    spinner.style.display = 'none';
-                    loginButton.disabled = false;
-                }
+                // If valid, allow default form submission to ../../api/login.php
             });
 
             // Hide error message when user starts typing
