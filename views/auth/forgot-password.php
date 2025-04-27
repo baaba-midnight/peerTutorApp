@@ -1,51 +1,48 @@
 <?php
-require_once '../../config/database.php';
-require_once '../../config/constants.php';
-require_once '../../models/User.php';
+include '../../config/database.php';
 
-$error = '';
-$success = '';
+// session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = "Please enter a valid email address.";
-    } else {
-        $user = new User($conn);
-        $userData = $user->findByEmail($email);
-        
-        if ($userData) {
-            // Generate reset token
-            $token = bin2hex(random_bytes(32));
-            $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
-            
-            if ($user->setResetToken($userData['id'], $token, $expiry)) {
-                $resetLink = "http://" . $_SERVER['HTTP_HOST'] . "/views/auth/reset-password.php?token=" . $token;
-                
-                // Send email
-                $to = $email;
-                $subject = "Password Reset Request";
-                $message = "Hello,\n\nYou have requested to reset your password. Click the link below to reset your password:\n\n";
-                $message .= $resetLink . "\n\n";
-                $message .= "This link will expire in 1 hour.\n\n";
-                $message .= "If you didn't request this, please ignore this email.\n\n";
-                $message .= "Best regards,\nPeer Tutor App Team";
-                $headers = "From: noreply@peertutorapp.com";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
 
-                if (mail($to, $subject, $message, $headers)) {
-                    $success = "Password reset instructions have been sent to your email.";
-                } else {
-                    $error = "Failed to send reset email. Please try again later.";
-                }
-            } else {
-                $error = "An error occurred. Please try again later.";
-            }
+    // Prepare query to check if email exists
+    $query = "SELECT * FROM Users WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $results = $stmt->get_result();
+
+    if ($results->num_rows > 0) {
+        $row = $results->fetch_assoc();
+
+        // Generate a random password
+        $new_password = bin2hex(random_bytes(4)); // Generates an 8-character password
+        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
+
+        // Update the password in the database
+        $update_query = "UPDATE Users SET password_hash = ? WHERE email = ?";
+        $stmt = $conn->prepare($update_query);
+        $stmt->bind_param("ss", $hashed_password, $email);
+        $stmt->execute();
+
+        // Send the new password via email
+        $subject = "Your New Password";
+        $message = "Hello, your new password is: $new_password\nPlease change it after logging in.";
+        $headers = "From: no-reply@yourdomain.com";
+
+        if (mail($email, $subject, $message, $headers)) {
+            echo "A new password has been sent to your email.";
         } else {
-            // To prevent email enumeration, show the same message even if email doesn't exist
-            $success = "If your email exists in our system, you will receive password reset instructions.";
+            echo "Failed to send email. Please try again.";
         }
+    } else {
+        echo "Email not found!";
     }
+
+    // Close statement and connection
+    $stmt->close();
+    $conn->close();
 }
 ?>
 
@@ -185,48 +182,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </body>
 </html>
-include '../../config/database.php';
-
-// session_start();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = $_POST["email"];
-
-    // Prepare query to check if email exists
-    $query = "SELECT * FROM Users WHERE email = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $results = $stmt->get_result();
-
-    if ($results->num_rows > 0) {
-        $row = $results->fetch_assoc();
-
-        // Generate a random password
-        $new_password = bin2hex(random_bytes(4)); // Generates an 8-character password
-        $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
-        // Update the password in the database
-        $update_query = "UPDATE Users SET password_hash = ? WHERE email = ?";
-        $stmt = $conn->prepare($update_query);
-        $stmt->bind_param("ss", $hashed_password, $email);
-        $stmt->execute();
-
-        // Send the new password via email
-        $subject = "Your New Password";
-        $message = "Hello, your new password is: $new_password\nPlease change it after logging in.";
-        $headers = "From: no-reply@yourdomain.com";
-
-        if (mail($email, $subject, $message, $headers)) {
-            echo "A new password has been sent to your email.";
-        } else {
-            echo "Failed to send email. Please try again.";
-        }
-    } else {
-        echo "Email not found!";
-    }
-
-    // Close statement and connection
-    $stmt->close();
-    $conn->close();
-}
