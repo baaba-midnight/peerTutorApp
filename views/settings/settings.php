@@ -13,7 +13,10 @@
 </head>
 <body>
     <?php 
-    $role = 'student'; // This should come from session
+    //session has not been implemented 
+    session_start();
+    $user_id = $_SESSION['user_id'];
+    $role = $_SESSION['user_id'];// This should come from session
     include('../../includes/header.php'); 
     ?>
 
@@ -410,12 +413,31 @@
     <script src="../../assets/js/activePage.js"></script>
     <script src="../../assets/js/settings.js"></script>
     <script>
-        document.querySelectorAll('form').forEach(form => {
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                alert('Settings saved successfully!');
-            });
-        });
+        // document.querySelectorAll('form').forEach(form => {
+        //     form.addEventListener('submit', (e) => {
+        //         e.preventDefault();
+        //         alert('Settings saved successfully!');
+        //     });
+        // });
+        const user_id =  <?php echo $user_id;?> ;
+        const form = document.getElementById('editProfileForm');
+        form.addEventListener(
+            'submit', (e) => {
+            e.preventDefault();
+        })
+        const formData = new FormData(form);
+
+        const xhttp = XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // alert(); alert user theri data is saved
+            }
+        };
+        data = {'user_id':user_id, 'data':formData}
+        xhttp.open("POST", "../models/edit_tutor_details.php", true);
+        xhttp.send(data);
+            
+
     </script>
 </body>
 </html>

@@ -78,6 +78,11 @@ class Tutor {
         $profileStmt->bindParam(":department", $data['department']);
         $profileResult = $profileStmt->execute();
         
+        return $profileResult;
+    }
+
+
+    public function updateTutorAvailability($user_id, $data){
         // Then update the tutor-specific information
         $tutorQuery = "INSERT INTO TutorProfiles (tutor_profile_id, user_id, hourly_rate, availability_schedule, updated_at) 
                         VALUES (UUID(), :user_id, :hourly_rate, :availability_schedule, NOW()) 
@@ -89,9 +94,11 @@ class Tutor {
         $tutorStmt->bindParam(":availability_schedule", $data['availability_schedule']);
         $tutorResult = $tutorStmt->execute();
         
-        return $profileResult && $tutorResult;
-    }
 
+        return $tutorResult;
+
+        
+    }
     // Get tutor's courses
     public function getTutorCourses($tutor_profile_id) {
         $query = "SELECT tc.tutor_course_id, c.course_id, c.course_code, c.course_name, 
