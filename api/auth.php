@@ -25,17 +25,15 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
 
 // Handle login requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $data = json_decode(file_get_contents('php://input'), true);
-    
-    if (!isset($data['email']) || !isset($data['password']) || !isset($data['role'])) {
+    if (!isset($_POST['email']) || !isset($_POST['password']) || !isset($_POST['role'])) {
         http_response_code(400);
         echo json_encode(['error' => 'Email, password and role are required']);
         exit;
     }
     
-    $email = filter_var($data['email'], FILTER_SANITIZE_EMAIL);
-    $password = $data['password'];
-    $role = $data['role'];
+    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+    $password = $_POST['password'];
+    $role = $_POST['role'];
     
     // Verify credentials
     $sql = "SELECT * FROM Users WHERE email = ? AND role = ?";
