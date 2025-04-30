@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === 'POST') {
     // Handle profile picture upload if present
     $profilePictureUrl = '';
     if (isset($_FILES['avatar']) && $_FILES['avatar']['error'] == 0) {
-        $uploadDir = '../../uploads/avatars/';
+        $uploadDir = __DIR__ . '/../uploads/avatars/';
         if (!file_exists($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }

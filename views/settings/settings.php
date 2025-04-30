@@ -17,6 +17,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
     <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/footer.css">
     <link rel="stylesheet" href="../../assets/css/settings.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <?php 
@@ -136,12 +137,6 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
                         
                     </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn delete-button" id="deleteBtn">Delete</button>
-                    </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -161,7 +156,8 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
                             <div class="upload-preview mx-auto mb-3">
                                 <img id="uploadPreview" src="../../assets/images/avatar.png" alt="Profile Picture">
                             </div>
-                            <button type="button" class="btn btn-outline-secondary">Change Photo</button>
+                            <input type="file" id="profileImageInput" accept="image/*" style="display:none;">
+                            <button type="button" class="btn btn-outline-secondary" id="changePhotoBtn">Change Photo</button>
                         </div>
 
                         <div class="mb-3">
@@ -330,9 +326,141 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
     <?php include('../../includes/footer.php'); ?>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="../../assets/js/activePage.js"></script>
     <script src="../../assets/js/settings.js"></script>
     <script>
+        $(document).ready(function() {
+            // Fetch user details via AJAX
+            $.ajax({
+                url: '../../api/get_user.php',
+                method: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    if (data && !data.error) {
+                        // Profile Tab
+                        var fullName = (data.first_name ? data.first_name : '') + (data.last_name ? ' ' + data.last_name : '');
+                        $('#profileName').text(fullName);
+                        $('#profileRole').text(data.role ? data.role.charAt(0).toUpperCase() + data.role.slice(1) : '');
+                        $('#profileBio').text(data.bio || '');
+                        $('#name').val(fullName);
+                        $('#role').val(data.role ? data.role.charAt(0).toUpperCase() + data.role.slice(1) : '');
+                        $('#bio').val(data.bio || '');
+                        if (data.profile_picture_url) {
+                            $('#profileImage').attr('src', '../../' + data.profile_picture_url);
+                            $('#uploadPreview').attr('src', '../../' + data.profile_picture_url);
+                        }
+                        // Account Tab
+                        $('#email').val(data.email || '');
+                        $('#password').val('********'); // Never show real password
+                        // The following fields are not present in the HTML, so we skip them to avoid errors.
+                        // $('#phone').val(data.phone_number || '');
+                        // $('#department').val(data.department || '');
+                        // $('#year_of_study').val(data.year_of_study || '');
+                        // if (data.role === 'tutor') {
+                        //     if (data.hourly_rate) $('#hourlyRate').val(data.hourly_rate);
+                        //     if (data.overall_rating) $('#overallRating').val(data.overall_rating);
+                        //     if (data.is_verified !== undefined) $('#isVerified').val(data.is_verified ? 'Yes' : 'No');
+                        // }
+                    }
+                },
+                error: function(xhr) {
+                    // Optionally handle error
+                }
+            });
+
+            $('#saveProfileBtn').on('click', function(e) {
+                e.preventDefault();
+                var name = $('#name').val().trim();
+                var role = $('#role').val();
+                var bio = $('#bio').val();
+                var first_name = '', last_name = '';
+                if (name) {
+                    var parts = name.split(' ');
+                    first_name = parts[0];
+                    last_name = parts.slice(1).join(' ');
+                }
+                var formData = new FormData();
+                formData.append('first_name', first_name);
+                formData.append('last_name', last_name);
+                formData.append('role', role);
+                formData.append('bio', bio);
+                var fileInput = $('#profileImageInput')[0];
+                if (fileInput.files && fileInput.files[0]) {
+                    formData.append('profile_image', fileInput.files[0]);
+                }
+                $.ajax({
+                    url: '../../api/save_profile.php',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert('Profile updated successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + (response.message || 'Could not update profile.'));
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred while saving the profile.');
+                    }
+                });
+            });
+
+            // Change Photo functionality
+            $('#changePhotoBtn').on('click', function() {
+                $('#profileImageInput').click();
+            });
+            $('#profileImageInput').on('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#uploadPreview').attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            $('#saveAccountBtn').on('click', function(e) {
+                e.preventDefault();
+                var currentPassword = $('#currentPassword').val();
+                var newPassword = $('#newPassword').val();
+                var confirmPassword = $('#confirmPassword').val();
+
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    alert('Please fill in all password fields.');
+                    return;
+                }
+                if (newPassword !== confirmPassword) {
+                    alert('New password and confirm password do not match.');
+                    return;
+                }
+                $.ajax({
+                    url: '../../api/change_password.php',
+                    method: 'POST',
+                    data: {
+                        current_password: currentPassword,
+                        new_password: newPassword
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert('Password updated successfully!');
+                            $('#editAccountModal').modal('hide');
+                        } else {
+                            alert('Error: ' + (response.message || 'Could not update password.'));
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('An error occurred while updating the password.');
+                    }
+                });
+            });
+        });
         document.querySelectorAll('form').forEach(form => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();

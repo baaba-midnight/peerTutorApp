@@ -359,6 +359,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
             });
         }
     </script>
+
+    <script src="../../assets/js/activePage.js"></script>
 </body>
 
 </html>

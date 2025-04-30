@@ -10,7 +10,7 @@
 
         <?php if ($role === 'student') : ?>
             <nav class="main-nav" id="mainNav">
-                <a class="nav-link" href="#">Home</a>
+                <a class="nav-link" href="../../views/dashboard/student-dashboard.php">Home</a>
                 <a class="nav-link" href="../../views/appointments/schedule.php">Find Tutors</a>
                 <a class="nav-link" href="../../views/appointments/view-appointments.php">Appointments</a>
                 <a class="nav-link" href="../../views/messaging/chat.php">Messages</a>

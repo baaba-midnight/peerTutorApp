@@ -7,7 +7,7 @@ class User {
     }
 
     // Register a new user with profile and tutor profile if applicable
-    public function register($first_name, $last_name, $email, $password, $role, $phone_number = null, $bio = null, $profile_picture_url = null, $subjects = null) {
+    public function register($first_name, $last_name, $email, $wordword, $role, $phone_number = null, $bio = null, $profile_picture_url = null, $subjects = null) {
         try {
             // Begin transaction for multiple table operations
             $this->conn->beginTransaction();
@@ -165,6 +165,7 @@ class User {
                           FROM TutorProfiles
                           WHERE user_id = :user_id";
             $tutorStmt = $this->conn->prepare($tutorQuery);
+            echo "<h1>Lalalalala</h1>";
             $tutorStmt->bindParam(':user_id', $user_id);
             $tutorStmt->execute();
             
@@ -376,6 +377,24 @@ class User {
         $stmt->execute();
         
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Reset password by email
+    public function resetPasswordByEmail($email, $newPassword) {
+        $query = "SELECT user_id FROM Users WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        if ($stmt->rowCount() === 0) {
+            return array('status' => 'error', 'message' => 'Email not found!');
+        }
+        $password_hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $updateQuery = "UPDATE Users SET password_hash = :password_hash WHERE email = :email";
+        $updateStmt = $this->conn->prepare($updateQuery);
+        $updateStmt->bindParam(':password_hash', $password_hash);
+        $updateStmt->bindParam(':email', $email);
+        $updateStmt->execute();
+        return array('status' => 'success');
     }
 }
 ?>
