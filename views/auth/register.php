@@ -330,24 +330,79 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (validateStep(currentStep)) {
-                    const formData = new FormData(form);
+                    // Create FormData object
+                    const formData = new FormData();
+                    
+                    // Add all form fields to FormData
+                    formData.append('firstName', document.getElementById('firstName').value);
+                    formData.append('lastName', document.getElementById('lastName').value);
+                    formData.append('email', document.getElementById('email').value);
+                    formData.append('phone', document.getElementById('phone').value || '');
+                    formData.append('username', document.getElementById('username').value);
+                    formData.append('password', document.getElementById('password').value);
+                    formData.append('role', document.getElementById('selectedRole').value);
+                    
+                    // Add selected subjects
+                    const subjects = Array.from(document.getElementById('subjects').selectedOptions).map(option => option.value);
+                    formData.append('subjects', subjects.join(','));
+                    
+                    // Add tutor-specific fields if applicable
+                    if (document.getElementById('selectedRole').value === 'tutor') {
+                        formData.append('experience', document.getElementById('experience').value || '');
+                    }
+                    
+                    // Add avatar file if selected
+                    if (avatarInput.files && avatarInput.files[0]) {
+                        formData.append('avatar', avatarInput.files[0]);
+                    }
+                    
                     try {
-                        const response = await fetch('../../api/auth.php', {
+                        const response = await fetch('../../api/auth.php?action=register', {
                             method: 'POST',
                             body: formData
                         });
                         
+                        // Check if response is valid JSON
+                        let data;
+                        const contentType = response.headers.get('content-type');
+                        if (contentType && contentType.includes('application/json')) {
+                            try {
+                                data = await response.json();
+                            } catch (jsonError) {
+                                console.error('JSON parsing error:', jsonError);
+                                
+                                // Try to get the raw text to see the actual server response
+                                const rawText = await response.text();
+                                throw new Error(`Server returned invalid JSON. Raw response: ${rawText.substring(0, 100)}...`);
+                            }
+                        } else {
+                            // If not JSON, get the text content
+                            const textContent = await response.text();
+                            throw new Error(`Server returned non-JSON response: ${textContent.substring(0, 100)}...`);
+                        }
+                        
                         if (!response.ok) {
-                            throw new Error('Registration failed');
+                            throw new Error(data.error || 'Registration failed');
                         }
 
-                        const data = await response.json();
                         if (data.success) {
                             window.location.href = 'login.php?registered=true';
+                        } else {
+                            throw new Error(data.error || 'Registration failed with an unknown error');
                         }
                     } catch (error) {
                         console.error('Error:', error);
-                        // Show error message to user
+                        
+                        // Create an error alert above the form
+                        const errorAlert = document.createElement('div');
+                        errorAlert.className = 'alert alert-danger';
+                        errorAlert.innerHTML = `<strong>Error:</strong> ${error.message}`;
+                        
+                        // Insert at the top of the form
+                        form.prepend(errorAlert);
+                        
+                        // Scroll to top to show error
+                        window.scrollTo(0, 0);
                     }
                 }
             });

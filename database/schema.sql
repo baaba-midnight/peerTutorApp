@@ -106,6 +106,15 @@ CREATE TABLE Notifications (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
+-- Create UserSubjects table (for storing user subject preferences)
+CREATE TABLE UserSubjects (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    subject VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_appointments_student ON Appointments(student_id);
 CREATE INDEX idx_appointments_tutor ON Appointments(tutor_id);
