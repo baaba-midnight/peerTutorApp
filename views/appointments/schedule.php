@@ -249,7 +249,6 @@ $role = $isStudent ? 'student' : 'guest';
                                 <div class="col-md-6">
                                     <p class="mb-1"><strong>Subject:</strong> <span data-summary="subject">-</span></p>
                                     <p class="mb-1"><strong>Tutor:</strong> <span data-summary="tutor"><?php echo htmlspecialchars($tutor['first_name'] . " " . $tutor['last_name']); ?></span></p>
-                                    <p class="mb-1"><strong>Price:</strong> <span data-summary="price">-</span></p>
                                 </div>
                             </div>
                         </div>
