@@ -114,3 +114,20 @@ CREATE INDEX idx_messages_sender ON Messages(sender_id);
 CREATE INDEX idx_messages_receiver ON Messages(receiver_id);
 CREATE INDEX idx_notifications_user ON Notifications(user_id);
 CREATE INDEX idx_reviews_reviewee ON Reviews(reviewee_id);
+
+
+
+-- Add upcoming appointments with tutor Kelvin (user_id 29)
+INSERT INTO Appointments (student_id, tutor_id, subject_id, start_datetime, end_datetime, status, meeting_link, notes) 
+VALUES 
+(2, 29, 1, '2025-05-03 10:00:00', '2025-05-03 11:00:00', 'confirmed', 'https://meet.link/session1', 'Reviewing algebra'),
+(3, 29, 1, '2025-05-04 15:00:00', '2025-05-04 16:00:00', 'pending', 'https://meet.link/session2', 'Geometry basics');
+
+
+UPDATE Appointments SET status = 'completed' WHERE appointment_id = 1;
+
+-- Add reviews for completed sessions
+INSERT INTO Reviews (appointment_id, reviewer_id, reviewee_id, rating, title, content, is_anonymous) 
+VALUES 
+(1, 3, 29, 5, 'Excellent tutor!', 'Kelvin explained everything clearly and was very patient.', FALSE),
+(1, 3, 29, 4, 'Very helpful', 'I understood algebra better after the session.', TRUE);

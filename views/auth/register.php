@@ -50,29 +50,29 @@
             </div>
         </div>
 
-        <form id="registrationForm" novalidate>
+        <form id="registrationForm" enctype="multipart/form-data" novalidate>
             <!-- Step 1: Basic Information -->
             <div class="form-step" id="step1">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">First Name *</label>
-                        <input type="text" id="firstName" class="form-control" placeholder="Enter your first name" required>
+                        <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Enter your first name" required>
                         <div class="error-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name *</label>
-                        <input type="text" id="lastName" class="form-control" placeholder="Enter your last name" required>
+                        <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Enter your last name" required>
                         <div class="error-feedback"></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email">Email Address *</label>
-                    <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required>
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
-                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number">
                     <div class="error-feedback"></div>
                 </div>
             </div>
@@ -81,12 +81,12 @@
             <div class="form-step" id="step2" style="display: none;">
                 <div class="form-group">
                     <label for="username">Username *</label>
-                    <input type="text" id="username" class="form-control" placeholder="Choose a username" required>
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required>
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="password">Password *</label>
-                    <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
                     <div class="error-feedback"></div>
                     <div class="password-strength" id="password-strength"></div>
                 </div>
@@ -101,7 +101,7 @@
                         <button type="button" class="role-button student" data-role="student">Student</button>
                         <button type="button" class="role-button tutor" data-role="tutor">Tutor</button>
                     </div>
-                    <input type="hidden" id="selectedRole" required>
+                    <input type="hidden" id="selectedRole" name="selectedRole" required>
                     <div class="error-feedback"></div>
                 </div>
             </div>
@@ -110,7 +110,7 @@
             <div class="form-step" id="step3" style="display: none;">
                 <div class="form-group">
                     <label for="subjects">Subjects of Interest *</label>
-                    <select id="subjects" class="form-control" multiple required>
+                    <select id="subjects" name="subjects[]" class="form-control" multiple required>
                         <option value="mathematics">Mathematics</option>
                         <option value="physics">Physics</option>
                         <option value="chemistry">Chemistry</option>
@@ -124,14 +124,14 @@
                 </div>
                 <div class="form-group tutor-only" style="display: none;">
                     <label for="experience">Teaching Experience</label>
-                    <textarea id="experience" class="form-control" rows="3" placeholder="Describe your teaching experience"></textarea>
+                    <textarea id="experience" name="experience" class="form-control" rows="3" placeholder="Describe your teaching experience"></textarea>
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="avatar">Profile Picture</label>
                     <label class="upload-image-label" for="avatar">
                         <span id="avatar-text">Choose a profile picture</span>
-                        <input type="file" id="avatar" accept="image/*">
+                        <input type="file" id="avatar" name="avatar" accept="image/*">
                     </label>
                     <div class="error-feedback"></div>
                 </div>
@@ -240,7 +240,10 @@
                 let isValid = true;
 
                 inputs.forEach(input => {
-                    if (!input.value) {
+                    if (input.id === 'subjects' && !Array.from(input.selectedOptions).length) {
+                        showError(input, 'Please select at least one subject');
+                        isValid = false;
+                    } else if (!input.value) {
                         showError(input, 'This field is required');
                         isValid = false;
                     } else {
@@ -330,24 +333,54 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (validateStep(currentStep)) {
-                    const formData = new FormData(form);
                     try {
+                        // Create a user-friendly error message element
+                        let errorMessageElement = document.querySelector('.form-error-message');
+                        if (!errorMessageElement) {
+                            errorMessageElement = document.createElement('div');
+                            errorMessageElement.className = 'form-error-message alert alert-danger';
+                            errorMessageElement.style.marginTop = '15px';
+                            form.insertAdjacentElement('afterend', errorMessageElement);
+                        } else {
+                            errorMessageElement.style.display = 'none';
+                        }
+
+                        // Get form data
+                        const formData = new FormData(form);
+                        
+                        // Ensure subjects are properly added even if multiple
+                        const subjectsSelect = document.getElementById('subjects');
+                        if (subjectsSelect) {
+                            formData.delete('subjects[]'); // Remove default entries
+                            Array.from(subjectsSelect.selectedOptions).forEach(option => {
+                                formData.append('subjects[]', option.value);
+                            });
+                        }
+
+                        // Submit the form
                         const response = await fetch('../../api/auth.php', {
                             method: 'POST',
                             body: formData
                         });
                         
-                        if (!response.ok) {
-                            throw new Error('Registration failed');
+                        const data = await response.json();
+                        
+                        if (!response.ok || !data.success) {
+                            throw new Error(data.message || 'Registration failed');
                         }
 
-                        const data = await response.json();
                         if (data.success) {
                             window.location.href = 'login.php?registered=true';
                         }
                     } catch (error) {
                         console.error('Error:', error);
+                        
                         // Show error message to user
+                        const errorMessageElement = document.querySelector('.form-error-message');
+                        if (errorMessageElement) {
+                            errorMessageElement.textContent = error.message || 'Registration failed. Please try again.';
+                            errorMessageElement.style.display = 'block';
+                        }
                     }
                 }
             });

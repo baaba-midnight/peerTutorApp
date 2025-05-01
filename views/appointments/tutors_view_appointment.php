@@ -47,6 +47,8 @@
     <?php 
         $role = 'student';
         include('../../includes/header.php'); 
+        require '../../config/database.php';
+        session_start();
     ?>
 
     <div class="main-content">
@@ -79,17 +81,18 @@
 </html>
 
 <?php
-require '../../config/database.php';
-session_start();
 
-// Get current user ID (assuming it's stored in session)
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-} else {
-    // Redirect to login page if user ID is not set
+$role = 'student';
+include('../../includes/header.php');
+require '../../config/database.php';
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../../login.php");
     exit();
 }
+
+$user_id = $_SESSION['user_id'];
 
 // Function to format datetime
 function formatDateTime($datetime) {
@@ -97,7 +100,7 @@ function formatDateTime($datetime) {
     return $date->format('l') . ', ' . $date->format('g:i A');
 }
 
-// Get all appointments for the current tutor
+// Get all appointments for the current tutor using PDO
 $sql = "SELECT a.*, 
                s.name AS subject_name, 
                u.first_name AS student_first_name, 
@@ -108,15 +111,15 @@ $sql = "SELECT a.*,
         WHERE a.tutor_id = ?
         ORDER BY a.start_datetime ASC";
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
+$stmt = $pdo->prepare($sql);
+$stmt->execute([$user_id]);
+$appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
+
 <!-- Inside your container div, replace the single hardcoded card with this code: -->
-<?php if ($result->num_rows > 0): ?>
-    <?php while($row = $result->fetch_assoc()): ?>
+<?php if (!empty($appointments)): ?>
+    <?php foreach ($appointments as $row): ?>
         <div class="card">
             <div class="card-header">
                 <p>Session with <?php echo htmlspecialchars($row['student_first_name'] . ' ' . $row['student_last_name']); ?></p>
@@ -141,7 +144,8 @@ $result = $stmt->get_result();
                 </div>
             </div>
         </div>
-    <?php endwhile; ?>
+        <?php endforeach; ?>
+
 <?php else: ?>
     <div class="text-center py-5">
         <h3>No appointments found</h3>

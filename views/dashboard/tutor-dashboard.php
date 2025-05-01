@@ -107,7 +107,7 @@
         <div class="card">
             <div class="card-header">
                 <p>Upcoming Sessions</p>
-                <a href="../appointments/tutor_view_appointment.php">View All</a>
+                <a href="../appointments/tutors_view_appointment.php">View All</a>
             </div>
             <div class="card-body">
                 <div class="card-section">
@@ -152,7 +152,7 @@
         <div class="card" id="reviews-ratings">
             <div class="card-header">
                 <h2 class="card-title">Recent Reviews</h2>
-                <a href="models\Reviews.php">View All</a>
+                <a href='../../api/reviews.php'>View All</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
