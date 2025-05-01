@@ -228,6 +228,7 @@
 
     <!-- Modals -->
     <!-- Edit Profile Modal -->
+
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -412,6 +413,9 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/js/activePage.js"></script>
     <script src="../../assets/js/settings.js"></script>
+    <script src="../../assets/js/update_profile.js"></script>
+    <script src="../../assets/js/update_availability.js"></script>
+    <script src="../../assets/js/notification.js"></script>
     <script>
         // document.querySelectorAll('form').forEach(form => {
         //     form.addEventListener('submit', (e) => {
@@ -419,23 +423,7 @@
         //         alert('Settings saved successfully!');
         //     });
         // });
-        const user_id =  <?php echo $user_id;?> ;
-        const form = document.getElementById('editProfileForm');
-        form.addEventListener(
-            'submit', (e) => {
-            e.preventDefault();
-        })
-        const formData = new FormData(form);
-
-        const xhttp = XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                // alert(); alert user theri data is saved
-            }
-        };
-        data = {'user_id':user_id, 'data':formData}
-        xhttp.open("POST", "../models/edit_tutor_details.php", true);
-        xhttp.send(data);
+        
             
 
     </script>
