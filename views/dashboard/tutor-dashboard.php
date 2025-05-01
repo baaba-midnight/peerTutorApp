@@ -107,7 +107,7 @@
         <div class="card">
             <div class="card-header">
                 <p>Upcoming Sessions</p>
-                <a href="../appointments/view-appointments.php">View All</a>
+                <a href="../appointments/tutor_view_appointment.php">View All</a>
             </div>
             <div class="card-body">
                 <div class="card-section">
@@ -152,7 +152,7 @@
         <div class="card" id="reviews-ratings">
             <div class="card-header">
                 <h2 class="card-title">Recent Reviews</h2>
-                <a href="../reviews/view-reviews.php">View All</a>
+                <a href="models\Review.php">View All</a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -213,7 +213,7 @@
                 // TODO: Add logic to start session or open chat
                 const action = this.textContent.toLowerCase();
                 if (action.includes('start')) {
-                    window.location.href = '../appointments/view-appointments.php';
+                    window.location.href = '../appointments/tutor_view_appointment.php';
                 } else if (action.includes('reply')) {
                     window.location.href = '../messaging/chat.php';
                 }
