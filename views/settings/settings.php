@@ -13,7 +13,7 @@
 </head>
 <body>
     <?php 
-    $role = 'student'; // This should come from session
+    $role = 'admin'; // This should come from session
     include('../../includes/header.php'); 
     ?>
 

@@ -30,8 +30,10 @@
                    href="../../views/dashboard/admin-dashboard.php">Home</a>
                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'manage-users.php' ? 'active' : ''; ?>"
                    href="../../views/admin/manage-users.php">User Management</a>
-                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : ''; ?>"
-                   href="../../views/admin/reports.php">Reports</a>
+                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'system-log.php' ? 'active' : ''; ?>"
+                   href="../../views/admin/system-log.php">System Log</a>
+                <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'backup-restore.php' ? 'active' : ''; ?>"
+                   href="../../views/admin/backup-restore.php">Backup & Restore</a>
                 <a class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : ''; ?>"
                    href="../../views/settings/settings.php">Settings</a>
             </nav>

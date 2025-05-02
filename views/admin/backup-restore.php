@@ -20,6 +20,28 @@
 
 
     <style>
+        .badge {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            text-align: center !important;
+            justify-content: center !important;
+            font-weight: var(--poppins-regular);
+        }
+
+        .badge.bg-success {
+            background-color: #2E4F2A !important;
+        }
+
+        .badge.bg-warning {
+            background-color: #6D6D6D !important;
+            color: #ffffff !important;
+        }
+        
+        .badge.bg-danger {
+            background-color: #6A2E2E !important;
+        }
+
         .backup-card {
             transition: all 0.3s ease;
             cursor: pointer;
@@ -31,15 +53,15 @@
         }
 
         .backup-success {
-            border-left: 5px solid #28a745;
+            border-left: 5px solid #2E4F2A;
         }
 
         .backup-warning {
-            border-left: 5px solid #ffc107;
+            border-left: 5px solid #6D6D6D;
         }
 
         .backup-danger {
-            border-left: 5px solid #dc3545;
+            border-left: 5px solid #6A2E2E;
         }
 
         .progress-thin {
@@ -73,7 +95,7 @@
         <div class="row mb-5">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header bg-black text-white">
                         <h5 class="mb-0">Backup Management</h5>
                     </div>
                     <div class="card-body">
@@ -174,7 +196,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header bg-warning text-dark">
+                    <div class="card-header bg-black text-white">
                         <h5 class="mb-0">Restore Options</h5>
                     </div>
                     <div class="card-body">
@@ -196,7 +218,7 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6 d-flex align-items-end">
-                                    <button class="btn btn-warning w-100" id="startRestore">
+                                    <button class="btn" id="startRestore">
                                         <i class="bi bi-arrow-counterclockwise"></i> Begin Restore Process
                                     </button>
                                 </div>
@@ -209,7 +231,7 @@
                                 <label for="backupFile" class="form-label">Select backup file to upload</label>
                                 <input class="form-control" type="file" id="backupFile" accept=".sql,.gz,.zip">
                             </div>
-                            <button class="btn btn-outline-primary">
+                            <button class="btn">
                                 <i class="bi bi-upload"></i> Upload and Verify Backup
                             </button>
                         </div>
