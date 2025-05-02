@@ -17,11 +17,12 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
     <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/footer.css">
     <link rel="stylesheet" href="../../assets/css/settings.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <?php 
-    $role = 'student'; // This should come from session
+    $role = $_SESSION['role']; // This should come from session
     include('../../includes/header.php'); 
     ?>
 
@@ -71,36 +72,28 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
                                             <h3 class="profile-title">Tutor Profile</h3>
                                             <button class="edit-button" data-bs-toggle="modal" data-bs-target="#editTutorModal">Edit Tutor Profile</button>
                                         </div>
-
                                         <div class="card-body">
                                             <div class="form-group mb-3">
                                                 <label for="courses-offered" class="form-label">Courses Offered</label>
-                                                <input type="text" id="courses-offered" class="form-control" value="OOP, DSA" readonly>
+                                                <input type="text" id="courses-offered" class="form-control" value="" readonly>
                                             </div>
-
                                             <div class="form-group">
-                                                <label for="experience" class="form-label">Tutoring Experience</label>
-                                                <input type="text" id="experience" class="form-control" value="5 years" readonly>
+                                                <label class="form-label">Average Rating</label>
+                                                <div id="average-rating-stars"></div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="col-md-6">
                                     <div class="card h-100">
                                         <div class="card-header">
                                             <h3 class="profile-title">Availability & Scheduling</h3>
                                             <button class="edit-button" data-bs-toggle="modal" data-bs-target="#editAvailabilityModal">Set Availability</button>
                                         </div>
-
                                         <div class="card-body">
                                             <!-- Display Current Schedule -->
                                             <div id="current-schedule">
-                                                <p><strong>Monday:</strong> 9:00 AM - 12:00 PM, 1:00 PM - 4:00 PM</p>
-                                                <p><strong>Tuesday:</strong> 10:00 AM - 2:00 PM</p>
-                                                <p><strong>Wednesday:</strong> Not Available</p>
-                                                <p><strong>Thursday:</strong> 9:00 AM - 12:00 PM</p>
-                                                <p><strong>Friday:</strong> 2:00 PM - 5:00 PM</p>
+                                                <!-- Will be populated by JS -->
                                             </div>
                                         </div>
                                     </div>
@@ -258,18 +251,9 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
                         <div class="mb-3">
                             <label for="tutorCourses" class="form-label">Courses Offered</label>
                             <select class="form-select" id="tutorCourses" multiple>
-                                <option value="OOP" selected>Object-Oriented Programming</option>
-                                <option value="DSA" selected>Data Structures & Algorithms</option>
-                                <option value="DB">Database Systems</option>
-                                <option value="WebDev">Web Development</option>
-                                <option value="ML">Machine Learning</option>
+                                <!-- Options will be populated dynamically -->
                             </select>
                             <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple courses</small>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="tutorExperience" class="form-label">Tutoring Experience (years)</label>
-                            <input type="number" class="form-control" id="tutorExperience" value="5" min="0" max="50">
                         </div>
                     </form>
                 </div>
@@ -353,15 +337,39 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
                         // Account Tab
                         $('#email').val(data.email || '');
                         $('#password').val('********'); // Never show real password
-                        // The following fields are not present in the HTML, so we skip them to avoid errors.
-                        // $('#phone').val(data.phone_number || '');
-                        // $('#department').val(data.department || '');
-                        // $('#year_of_study').val(data.year_of_study || '');
-                        // if (data.role === 'tutor') {
-                        //     if (data.hourly_rate) $('#hourlyRate').val(data.hourly_rate);
-                        //     if (data.overall_rating) $('#overallRating').val(data.overall_rating);
-                        //     if (data.is_verified !== undefined) $('#isVerified').val(data.is_verified ? 'Yes' : 'No');
-                        // }
+
+                        // Tutor-specific fields
+                        if (data.role === 'tutor') {
+                            if (data.courses_offered) {
+                                $('#courses-offered').val(data.courses_offered);
+                            }
+                            // Show average rating as stars
+                            if (data.average_rating !== undefined && data.average_rating !== null) {
+                                var rating = parseFloat(data.average_rating) || 0;
+                                var starsHtml = '';
+                                for (var i = 1; i <= 5; i++) {
+                                    if (i <= Math.floor(rating)) {
+                                        starsHtml += '<i class="bi bi-star-fill text-warning"></i>';
+                                    } else if (i - rating < 1 && i - rating > 0) {
+                                        starsHtml += '<i class="bi bi-star-half text-warning"></i>';
+                                    } else {
+                                        starsHtml += '<i class="bi bi-star text-warning"></i>';
+                                    }
+                                }
+                                starsHtml += ' <span>(' + rating.toFixed(1) + ')</span>';
+                                $('#average-rating-stars').html(starsHtml);
+                            } else {
+                                $('#average-rating-stars').html('<span class="text-muted">No ratings yet</span>');
+                            }
+                            if (data.availability) {
+                                // data.availability should be an object like {Monday: '9-12', ...}
+                                var html = '';
+                                for (var day in data.availability) {
+                                    html += '<p><strong>' + day + ':</strong> ' + data.availability[day] + '</p>';
+                                }
+                                $('#current-schedule').html(html);
+                            }
+                        }
                     }
                 },
                 error: function(xhr) {
@@ -457,6 +465,110 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
                     },
                     error: function(xhr) {
                         alert('An error occurred while updating the password.');
+                    }
+                });
+            });
+
+            // Dynamically populate courses in editTutorModal
+            function populateCoursesDropdown() {
+                $.ajax({
+                    url: '../../api/courses.php',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success' && response.courses) {
+                            var $dropdown = $('#tutorCourses');
+                            $dropdown.empty();
+                            response.courses.forEach(function(course) {
+                                var optionText = course.course_code + ' - ' + course.course_name;
+                                $dropdown.append('<option value="' + course.course_id + '">' + optionText + '</option>');
+                            });
+                        }
+                    },
+                    error: function() {
+                        // Optionally handle error
+                    }
+                });
+            }
+
+            // Populate when modal is shown
+            $('#editTutorModal').on('show.bs.modal', function() {
+                populateCoursesDropdown();
+            });
+
+            // Handle save courses (Edit Tutor Profile)
+            $('#saveTutorBtn').on('click', function() {
+                var selectedCourses = $('#tutorCourses').val(); // array of course_ids
+                $.ajax({
+                    url: '../../api/save_tutor_courses.php',
+                    method: 'POST',
+                    data: { courses: selectedCourses },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert('Courses updated successfully!');
+                            $('#editTutorModal').modal('hide');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + (response.message || 'Could not update courses.'));
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while saving courses.');
+                    }
+                });
+            });
+
+            // Fetch and populate availability in the modal
+            function populateAvailabilityModal() {
+                $.ajax({
+                    url: '../../api/get_user.php',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        if (data && data.availability) {
+                            $('#monday').val(data.availability.Monday || '');
+                            $('#tuesday').val(data.availability.Tuesday || '');
+                            $('#wednesday').val(data.availability.Wednesday || '');
+                            $('#thursday').val(data.availability.Thursday || '');
+                            $('#friday').val(data.availability.Friday || '');
+                            // Add Saturday/Sunday if needed
+                        }
+                    }
+                });
+            }
+
+            // Populate when modal is shown
+            $('#editAvailabilityModal').on('show.bs.modal', function() {
+                populateAvailabilityModal();
+            });
+
+            // Handle save availability (Edit Availability Modal)
+            $('#saveAvailabilityBtn').on('click', function() {
+                var availability = {
+                    Monday: $('#monday').val(),
+                    Tuesday: $('#tuesday').val(),
+                    Wednesday: $('#wednesday').val(),
+                    Thursday: $('#thursday').val(),
+                    Friday: $('#friday').val()
+                    // Add Saturday/Sunday if needed
+                };
+                $.ajax({
+                    url: '../../api/save_tutor_availability.php',
+                    method: 'POST',
+                    data: { availability: JSON.stringify(availability) },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            alert('Availability updated successfully!');
+                            $('#editAvailabilityModal').modal('hide');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + (response.message || 'Could not update availability.'));
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred while saving availability.');
                     }
                 });
             });

@@ -112,15 +112,26 @@
     $messageModel = new Message($conn);
     $userModel = new User($conn);
 
-    // Fetch all conversations (contacts)
-    $conversations = $messageModel->getUserConversations($currentUserId);
+    // Fetch all user IDs that the current user has a meeting with
+    $meetingUserIds = [];
+    $meetingQuery = "SELECT DISTINCT 
+        CASE WHEN student_id = :uid THEN tutor_id ELSE student_id END AS other_user_id
+    FROM Appointments
+    WHERE (student_id = :uid OR tutor_id = :uid) AND status IN ('confirmed', 'completed')";
+    $stmt = $conn->prepare($meetingQuery);
+    $stmt->bindParam(':uid', $currentUserId);
+    $stmt->execute();
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $meetingUserIds[] = $row['other_user_id'];
+    }
 
-    // Prepare contacts list (get user info for each contact)
+    // Fetch all conversations (contacts) but only if they are in meetingUserIds
+    $conversations = $messageModel->getUserConversations($currentUserId);
     $contacts = [];
     $contactIds = [];
     foreach ($conversations as $conv) {
         $otherId = $conv['sender_id'] == $currentUserId ? $conv['recipient_id'] : $conv['sender_id'];
-        if (!in_array($otherId, $contactIds)) {
+        if (in_array($otherId, $meetingUserIds) && !in_array($otherId, $contactIds)) {
             $contactIds[] = $otherId;
             $contacts[] = $userModel->getUserById($otherId);
         }
@@ -204,34 +215,55 @@
     <script>
         // Handle contact selection
         document.querySelectorAll('.contact-item').forEach(contact => {
-            contact.addEventListener('click', () => {
+            contact.addEventListener('click', function() {
                 document.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
-                contact.classList.add('active');
-                // Add AJAX call to load conversation
+                this.classList.add('active');
+                const contactId = this.getAttribute('data-contact-id');
+                fetchMessages(contactId);
             });
         });
 
+        function fetchMessages(contactId) {
+            fetch(`../../api/messages.php?contact_id=${contactId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        const messageList = document.querySelector('.message-list');
+                        messageList.innerHTML = '';
+                        data.messages.forEach(msg => {
+                            const div = document.createElement('div');
+                            div.className = 'message-bubble ' + (msg.sender_id == <?php echo json_encode($currentUserId); ?> ? 'message-sent' : 'message-received');
+                            div.innerHTML = `<p class='mb-1'>${msg.content}</p><div class='message-time'>${new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>`;
+                            messageList.appendChild(div);
+                        });
+                        messageList.scrollTop = messageList.scrollHeight;
+                    }
+                });
+        }
+
         // Handle message form submission
-        document.getElementById('messageForm').addEventListener('submit', (e) => {
+        document.getElementById('messageForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            const message = document.getElementById('messageInput').value;
-            if (!message.trim()) return;
-
-            // Add message to UI
-            const messageList = document.querySelector('.message-list');
-            const messageElement = document.createElement('div');
-            messageElement.className = 'message-bubble message-sent';
-            messageElement.innerHTML = `
-                <p class="mb-1">${message}</p>
-                <div class="message-time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-            `;
-            messageList.appendChild(messageElement);
-            messageList.scrollTop = messageList.scrollHeight;
-
-            // Clear input
-            document.getElementById('messageInput').value = '';
-
-            // Add AJAX call to send message
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+            const activeContact = document.querySelector('.contact-item.active');
+            if (!activeContact) return;
+            const contactId = activeContact.getAttribute('data-contact-id');
+            fetch('../../api/messages.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contact_id: contactId, content: message })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    fetchMessages(contactId);
+                    input.value = '';
+                } else {
+                    alert(data.message || 'Failed to send message.');
+                }
+            });
         });
 
         // Auto-scroll to bottom of message list

@@ -197,6 +197,39 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
                 $('#appointments').html('<div class="alert alert-danger">Failed to load appointments.</div>');
             }
         });
+
+        // Fetch unread messages
+        $.ajax({
+            url: '../../api/get_unread_messages.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                let html = '';
+                if (data.status === 'success' && data.messages.length > 0) {
+                    data.messages.forEach(function(msg) {
+                        html += `
+                            <div class="card-section">
+                                <div class="card-info">
+                                    <p class="title">${msg.sender_name} sent you a chat</p>
+                                    <div class="title-meta">
+                                        <p>${msg.sent_time}</p>
+                                    </div>
+                                </div>
+                                <div class="card-action">
+                                    <button class="btn appointment-join" onclick="window.location.href='../messaging/chat.php?contact_id=${msg.sender_id}'">Open Message</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html = '<div class="alert alert-info">No unread messages.</div>';
+                }
+                $('#unreadMessages').html(html);
+            },
+            error: function() {
+                $('#unreadMessages').html('<div class="alert alert-danger">Failed to load messages.</div>');
+            }
+        });
     });
     </script>
 </head>
@@ -234,44 +267,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
             </div>
 
             <div class="card-body">
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Jennifer Sent You A chat</p>
-
-                        <div class="title-meta">
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-join">Open Message</button>
-                    </div>
-                </div>
-
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Jennifer Sent You A chat</p>
-
-                        <div class="title-meta">
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-join">Open Message</button>
-                    </div>
-                </div>
-
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Jennifer Sent You A chat</p>
-
-                        <div class="title-meta">
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-join">Open Message</button>
-                    </div>
-                </div>
+                <div id="unreadMessages"></div>
             </div>
         </div>
 

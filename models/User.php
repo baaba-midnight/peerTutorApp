@@ -161,21 +161,51 @@ class User {
         
         // If user is a tutor, get tutor profile info
         if ($user && $user['role'] === 'tutor') {
-            $tutorQuery = "SELECT hourly_rate, overall_rating, is_verified
-                          FROM TutorProfiles
-                          WHERE user_id = :user_id";
+            $tutorQuery = "SELECT hourly_rate, overall_rating, is_verified FROM TutorProfiles WHERE user_id = :user_id";
             $tutorStmt = $this->conn->prepare($tutorQuery);
-            echo "<h1>Lalalalala</h1>";
             $tutorStmt->bindParam(':user_id', $user_id);
             $tutorStmt->execute();
-            
             $tutorInfo = $tutorStmt->fetch(PDO::FETCH_ASSOC);
             if ($tutorInfo) {
                 $user = array_merge($user, $tutorInfo);
             }
+            // Add tutor-specific fields
+            $user['courses_offered'] = $this->getTutorCourses($user_id);
+            $user['average_rating'] = $this->getTutorAverageRating($user_id);
+            $user['availability'] = $this->getTutorAvailability($user_id);
         }
         
         return $user;
+    }
+
+    // Get tutor's courses offered
+    private function getTutorCourses($user_id) {
+        $query = "SELECT c.course_name FROM TutorCourses tc JOIN Courses c ON tc.course_id = c.course_id WHERE tc.tutor_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $courses = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $courses ? implode(', ', $courses) : null;
+    }
+
+    // Get tutor's average rating
+    private function getTutorAverageRating($user_id) {
+        $query = "SELECT overall_rating FROM TutorProfiles WHERE user_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row ? $row['overall_rating'] : null;
+    }
+
+    // Get tutor's availability (assume JSON in TutorProfiles.availability_schedule)
+    private function getTutorAvailability($user_id) {
+        $query = "SELECT availability_schedule FROM TutorProfiles WHERE user_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        $stmt->execute();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row && $row['availability_schedule'] ? json_decode($row['availability_schedule'], true) : null;
     }
 
     // Update user profile including Profiles table

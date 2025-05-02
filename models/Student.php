@@ -63,8 +63,8 @@ class Student {
 
     // Leave a review for a tutor
     public function leaveReview($session_id, $student_id, $tutor_id, $rating, $comment, $is_anonymous) {
-        $query = "INSERT INTO Reviews (review_id, session_id, student_id, tutor_id, rating, comment, is_anonymous, created_at) 
-                  VALUES (UUID(), :session_id, :student_id, :tutor_id, :rating, :comment, :is_anonymous, NOW())";
+        $query = "INSERT INTO Reviews (session_id, student_id, tutor_id, rating, comment, is_anonymous, created_at) 
+                  VALUES (:session_id, :student_id, :tutor_id, :rating, :comment, :is_anonymous, NOW())";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":session_id", $session_id);
         $stmt->bindParam(":student_id", $student_id);
