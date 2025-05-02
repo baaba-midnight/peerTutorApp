@@ -10,7 +10,7 @@ async function loadUsers() {
   try {
     const start = (currentPage - 1) * pageSize;
     const response = await fetch(
-      `${API_BASE_URL}?action=getFilteredUsers&start${start}&length=${pageSize}`
+      `${API_BASE_URL}?action=getFilteredUsers&start=${start}&length=${pageSize}`
     );
     const data = await response.json();
 
@@ -147,166 +147,83 @@ function populateUserTable(data) {
   });
 }
 
+function generatePageNumbers(current, total) {
+  // If 7 or fewer pages, show all page numbers
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+      .map((p) => `<button class="page-btn ${p === current ? "active" : ""}" data-page="${p}">${p}</button>`)
+      .join("");
+  }
+  
+  // For more than 7 pages, show a compact version with ellipses
+  let pages = [];
+  
+  // Always show first page
+  pages.push(1);
+  
+  // Logic for showing pages around current page and ellipses
+  if (current <= 3) {
+    // Near the beginning: show first 5 pages, then ellipsis, then last page
+    pages.push(2, 3, 4, 5, '...', total);
+  } else if (current >= total - 2) {
+    // Near the end: show first page, ellipsis, and last 5 pages
+    pages.push('...', total - 4, total - 3, total - 2, total - 1, total);
+  } else {
+    // In the middle: show first page, ellipsis, current page and neighbors, ellipsis, last page
+    pages.push('...', current - 1, current, current + 1, '...', total);
+  }
+  
+  // Generate HTML for page buttons
+  return pages.map(p => {
+    if (p === '...') {
+      return `<span class="page-ellipsis">...</span>`;
+    }
+    return `<button class="page-btn ${p === current ? "active" : ""}" data-page="${p}">${p}</button>`;
+  }).join("");
+}
+
 function updatePaginationControls() {
   const paginationEl = document.getElementById("pagination");
-  const totalPages = Math.ceil(totalRecords / pageSize);
+  const totalPages = Math.ceil(totalFilteredRecords / pageSize);
 
   paginationEl.innerHTML = ""; // Clear existing pagination
 
+  // Calculate showing range
+  const startRecord = Math.min(((currentPage - 1) * pageSize) + 1, totalFilteredRecords);
+  const endRecord = Math.min(currentPage * pageSize, totalFilteredRecords);
+
   paginationEl.innerHTML = `
-	<div class="page-info">Showing ${((currentPage - 1) * pageSize) + 1}-${currentPage * pageSize > totalRecords ? totalRecords : currentPage * pageSize} of ${totalRecords}</div>
-	<div class="page-buttons">
-		<button class="page-btn" ${currentPage === 1 ? "disabled" : ""} id="prevBtn"><</button>
-		${generatePageNumbers(currentPage, totalPages)}
-		<button class="page-btn" ${currentPage === totalPages ? "disabled" : ""} id="nextBtn">></button>
-	</div>
+    <div class="page-info">Showing ${startRecord}-${endRecord} of ${totalFilteredRecords}</div>
+    <div class="page-buttons">
+      <button class="page-btn" ${currentPage === 1 ? "disabled" : ""} id="prevBtn"><</button>
+      ${generatePageNumbers(currentPage, totalPages)}
+      <button class="page-btn" ${currentPage === totalPages ? "disabled" : ""} id="nextBtn">></button>
+    </div>
   `;
 
+  // Add event listener for previous button
   document.getElementById("prevBtn").addEventListener("click", () => {
-	currentPage--;
-	loadUsers();
+    if (currentPage > 1) {
+      currentPage--;
+      loadUsers();
+    }
   });
 
+  // Add event listener for next button
   document.getElementById("nextBtn").addEventListener("click", () => {
-	currentPage++;
-	loadUsers();
+    if (currentPage < totalPages) {
+      currentPage++;
+      loadUsers();
+    }
+  });
+
+  // Add event listeners for page number buttons
+  document.querySelectorAll('.page-btn[data-page]').forEach(button => {
+    button.addEventListener('click', () => {
+      currentPage = parseInt(button.getAttribute('data-page'));
+      loadUsers();
+    });
   });
 }
-
-function generatePageNumbers(current, total) {
-	  if (total <= 7) {
-		return Array.from({ length: total }, (_, i) => i + 1)
-		  .map((p) => `<button class="page-btn ${p === current ? "active" : ""}">${p}</button>`)
-		  .join("");
-	}
-}
-
-// // add User Modal
-// function addUser() {
-
-// }
-
-// let selectedUserId = null;
-
-// // User actions functions
-// function deleteUser(userId) {
-//   selectedUserId = userId; // set user ID to delete
-
-//   console.log(selectedUserId)
-
-//   // Show the modal
-//   const deleteModal = new bootstrap.Modal(
-//     document.getElementById("deleteModal")
-//   );
-//   deleteModal.show();
-// }
-
-// function confirmDelete() {
-//   const input = document.getElementById("confirmDeleteInput").value.trim();
-
-//   if (input !== "DELETE") {
-//     alert("You must type DELETE to confirm.");
-//     return;
-//   }
-
-//   if (!selectedUserId) return;
-
-//   // send API request to delete user
-
-//   // For demo purposes, remove from the array
-//   const index = users.findIndex((user) => user.id === parseInt(selectedUserId));
-//   if (index !== -1) {
-//     users.splice(index, 1);
-//     populateUserTable();
-//   }
-
-//   selectedUserId = null; // reset user ID
-
-//   // Hide the modal
-//   const modalEl = document.getElementById("deleteModal");
-//   const modalInstance = bootstrap.Modal.getInstance(modalEl);
-//   modalInstance.hide();
-// }
-
-// function approveTutor(userId) {
-//   // get approve button element from modal
-//   document.getElementById("approveBtn").addEventListener("click", function () {
-//     console.log(`Approving tutor application for user ID: ${userId}`);
-//     // In a real application, you would send an API request here
-//   });
-
-//   // For demo purposes, update the user's role and status
-//   const user = users.find((user) => user.id === userId);
-//   if (user) {
-//     user.role = "tutor";
-//     user.status = "active";
-//     populateUserTable();
-//   }
-// }
-
-// function rejectModal(userId) {
-//   selectedUserId = userId; // set user ID to reject
-
-//   const rejectModal = new bootstrap.Modal(
-//     document.getElementById("rejectModal")
-//   );
-
-//   rejectModal.show();
-// }
-
-// function rejectTutor() {
-//   const reason = document.getElementById("rejection-reason").value;
-//   console.log(
-//     `Rejecting tutor application for user ID: ${selectedUserId} with reason: ${reason}`
-//   );
-//   // In a real application, you would send an API request here
-
-//   // For demo purposes, remove from the array or update status
-//   const user = users.find((user) => user.id === selectedUserId);
-//   if (user) {
-//     user.status = "inactive";
-//     populateUserTable();
-//   }
-
-//   // Clear the textarea
-//   document.getElementById("rejection-reason").value = "";
-
-//   selectedUserId = null;
-
-//   // Hide the modal
-//   const modalEl = document.getElementById("rejectModal");
-//   const modalInstance = bootstrap.Modal.getInstance(modalEl);
-//   modalInstance.hide();
-// }
-
-// function resetPassword(userId) {
-//   console.log(`Resetting password for user ID: ${userId}`);
-//   // In a real application, you would send an API request here
-//   alert(`Password reset email sent to user ID: ${userId}`);
-// }
-
-// function disableUser(userId) {
-//   console.log(`Disabling user ID: ${userId}`);
-//   // In a real application, you would send an API request here
-
-//   // For demo purposes, update the user's status
-//   const user = users.find((user) => user.id === userId);
-//   if (user) {
-//     user.status = "inactive";
-//     populateUserTable();
-//   }
-// }
-
-// function enableUser(userId) {
-//   console.log(`Enabling user ID: ${userId}`);
-//   // In a real application, you would send an API request here
-
-//   // For demo purposes, update the user's status
-//   const user = users.find((user) => user.id === userId);
-//   if (user) {
-//     user.status = "active";
-//     populateUserTable();
-//   }
-// }
 
 document.addEventListener("DOMContentLoaded", loadUsers);
