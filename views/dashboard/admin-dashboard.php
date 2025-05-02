@@ -106,100 +106,15 @@
 
         <!-- Second Row -->
         <div class="row g-4 mb-4">
-
-            <!-- Pending Actions -->
-            <div class="col-md-6">
-                <div class="card h-100">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        Pending Actions
-                        <a href="#" class="text-decoration-none">View All</a>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="pending-item">
-                            <div>
-                                <i class="fas fa-circle-info me-2"></i>
-                                Tutor Applications
-                            </div>
-                            <div>
-                                <span class="badge bg-secondary">12 items require attention</span>
-                            </div>
-                        </div>
-                        <div class="text-center mt-2">
-                            <button class="btn btn-sm btn-outline-secondary">Review</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- Top Rated Tutors -->
-            <div class="col-md-6">
+            <div class="col-md">
                 <div class="card h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         Top Rated Tutors
                         <a href="#" class="text-decoration-none">View All</a>
                     </div>
                     <div class="card-body p-0">
-                        <div class="top-tutor p-3">
-                            <div class="user-avatar">JL</div>
-                            <div class="tutor-info">
-                                <p class="tutor-name">Jennifer Lawrence</p>
-                                <p class="tutor-subject">Computer Science</p>
-                            </div>
-                            <div class="tutor-rating">
-                                <i class="fas fa-star"></i> 4.9
-                            </div>
-                        </div>
-                        <div class="top-tutor p-3">
-                            <div class="user-avatar">RA</div>
-                            <div class="tutor-info">
-                                <p class="tutor-name">Rahina Abban</p>
-                                <p class="tutor-subject">Writing Center</p>
-                            </div>
-                            <div class="tutor-rating">
-                                <i class="fas fa-star"></i> 4.8
-                            </div>
-                        </div>
-                        <div class="top-tutor p-3">
-                            <div class="user-avatar">CA</div>
-                            <div class="tutor-info">
-                                <p class="tutor-name">Christopher Appiah</p>
-                                <p class="tutor-subject">Calculus</p>
-                            </div>
-                            <div class="tutor-rating">
-                                <i class="fas fa-star"></i> 4.7
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-4 mb-4">
-            <div class="col-12">
-                <div class="card h-100">
-                    <div class="card-header">
-                        Recent Activity
-                    </div>
-                    <div class="card-body">
-                        <div class="activity-item d-flex align-items-center">
-                            <div class="activity-icon">
-                                <i class="fas fa-user-plus"></i>
-                            </div>
-                            <div>
-                                <div>New Tutor Application From Robert Wilson</div>
-                                <div class="activity-time">15 minutes ago</div>
-                            </div>
-                        </div>
-                        <div class="activity-item d-flex align-items-center">
-                            <div class="activity-icon">
-                                <i class="fas fa-calendar-check"></i>
-                            </div>
-                            <div>
-                                <div>Student Sarah Has Booked A Meeting With Joyce</div>
-                                <div class="activity-time">30 minutes ago</div>
-                            </div>
-                        </div>
+                        <!-- Will dynamically be inserted with JS -->
                     </div>
                 </div>
             </div>
@@ -207,6 +122,7 @@
     </div>
 
     <script src="../../assets/js/activePage.js"></script>
+    <script src="../../assets/js/admin/dashboardStat.js"></script>
 </body>
 
 </html>
