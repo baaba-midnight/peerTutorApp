@@ -7,7 +7,7 @@ class User {
     }
 
     // Register a new user with profile and tutor profile if applicable
-    public function register($first_name, $last_name, $email, $wordword, $role, $phone_number = null, $bio = null, $profile_picture_url = null, $subjects = null) {
+    public function register($first_name, $last_name, $email, $password, $role, $phone_number = null, $bio = null, $profile_picture_url = null, $subjects = null) {
         try {
             // Begin transaction for multiple table operations
             $this->conn->beginTransaction();

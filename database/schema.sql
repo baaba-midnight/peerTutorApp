@@ -67,7 +67,7 @@ CREATE TABLE TutorCourses (
     course_id INT NOT NULL,
     proficiency_level ENUM('beginner', 'intermediate', 'advanced', 'expert') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (tutor_id) REFERENCES TutorProfiles(tutor_profile_id) ON DELETE CASCADE,
+    FOREIGN KEY (tutor_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE,
     UNIQUE KEY (tutor_id, course_id)
 );
