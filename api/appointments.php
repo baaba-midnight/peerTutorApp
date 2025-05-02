@@ -2,6 +2,7 @@
 require_once('../config/database.php');
 require_once('../config/session.php');
 
+
 header('Content-Type: application/json');
 
 // Get database connection
@@ -28,12 +29,27 @@ switch ($method) {
         }
         break;
 
-    case 'POST':
-        // Create new appointment
-        $data = json_decode(file_get_contents('php://input'), true);
-        createAppointment($conn, $data);
-        break;
-
+        case 'POST':
+            // Decode raw input if JSON (used for creating new appointment)
+            $data = json_decode(file_get_contents('php://input'), true);
+        
+            // Fallback to $_POST if form-encoded
+            $action = $_POST['action'] ?? $data['action'] ?? null;
+        
+            if ($action === 'cancel') {
+                $appointmentId = $_POST['appointment_id'] ?? $data['appointment_id'] ?? null;
+                if ($appointmentId) {
+                    cancelAppointment($conn, $appointmentId);
+                } else {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'Appointment ID is required']);
+                }
+            } else {
+                // Default: Create new appointment
+                createAppointment($conn, $data);
+            }
+            break;
+        
     case 'PUT':
         // Update appointment
         if (!isset($_GET['id'])) {
@@ -316,4 +332,4 @@ function cancelAppointment($conn, $id) {
     }
 }
 
-$conn->close();
+$conn = null; // Close the connection

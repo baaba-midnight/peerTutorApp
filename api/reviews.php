@@ -1,8 +1,6 @@
 <?php
 require_once('../config/database.php');
-require_once('../config/session.php');
-
-header('Content-Type: application/json');
+require_once('../views/reviews/view-reviews.php');
 
 // Get database connection
 $conn = getConnection();
@@ -61,6 +59,32 @@ switch ($method) {
 }
 
 // Function to get a single review
+function getReview($conn, $id) {
+    $sql = "SELECT r.*, 
+            CONCAT(u1.first_name, ' ', u1.last_name) as reviewer_name,
+            CONCAT(u2.first_name, ' ', u2.last_name) as reviewee_name,
+            a.start_datetime as appointment_date,
+            s.name as subject_name
+            FROM Reviews r
+            JOIN Users u1 ON r.reviewer_id = u1.user_id
+            JOIN Users u2 ON r.reviewee_id = u2.user_id
+            JOIN Appointments a ON r.appointment_id = a.appointment_id
+            JOIN Subjects s ON a.subject_id = s.subject_id
+            WHERE r.review_id = ?";
+    
+    $stmt = $conn->prepare($sql);
+    $stmt->execute([':id' => $id]);
+    $review = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$review) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Review not found']);
+        exit;
+    }
+
+    echo json_encode($review);
+}
+// Function to get filtered list of reviews
 function getReviews($conn, $filters) {
     $sql = "SELECT r.*, 
             CONCAT(u1.first_name, ' ', u1.last_name) as reviewer_name,
@@ -73,24 +97,21 @@ function getReviews($conn, $filters) {
             JOIN Appointments a ON r.appointment_id = a.appointment_id
             JOIN Subjects s ON a.subject_id = s.subject_id
             WHERE 1=1";
-
-    $params = [];
     
+    $params = [];
+
     if ($filters['reviewer_id']) {
         $sql .= " AND r.reviewer_id = :reviewer_id";
         $params[':reviewer_id'] = $filters['reviewer_id'];
     }
-
     if ($filters['reviewee_id']) {
         $sql .= " AND r.reviewee_id = :reviewee_id";
         $params[':reviewee_id'] = $filters['reviewee_id'];
     }
-
     if ($filters['rating']) {
         $sql .= " AND r.rating = :rating";
         $params[':rating'] = $filters['rating'];
     }
-
     if ($filters['appointment_id']) {
         $sql .= " AND r.appointment_id = :appointment_id";
         $params[':appointment_id'] = $filters['appointment_id'];
@@ -99,17 +120,16 @@ function getReviews($conn, $filters) {
     $sql .= " ORDER BY r.created_at DESC";
 
     $stmt = $conn->prepare($sql);
-    $stmt->execute($params); // PDO binds all values here safely
+    $stmt->execute($params);
+    $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    foreach ($rows as &$row) {
+    foreach ($reviews as &$row) {
         if ($row['is_anonymous']) {
             $row['reviewer_name'] = 'Anonymous';
         }
     }
 
-    echo json_encode($rows);
+    echo json_encode($reviews);
 }
 
 // Function to create a new review
@@ -272,7 +292,8 @@ function updateAverageRating($conn, $user_id) {
     $result = $stmt->get_result();
     $avg = $result->fetch_assoc()['avg_rating'];
 
-   
+    // Store the average rating in the Users table or a separate ratings table
+    // This implementation depends on your database structure
 }
 
-$conn = null; 
+$conn = null; // Close the connection
