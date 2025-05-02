@@ -13,10 +13,14 @@
 </head>
 <body>
     <?php 
+<<<<<<< HEAD
     //session has not been implemented 
     session_start();
     $user_id = $_SESSION['user_id'];
     $role = $_SESSION['user_id'];// This should come from session
+=======
+    $role = 'student'; // This should come from session
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
     include('../../includes/header.php'); 
     ?>
 
@@ -220,6 +224,15 @@
                                 </div>
                             </div>
                         </div>
+<<<<<<< HEAD
+=======
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn delete-button" id="deleteBtn">Delete</button>
+                    </div>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     </div>
                 </div>
             </div>
@@ -228,7 +241,10 @@
 
     <!-- Modals -->
     <!-- Edit Profile Modal -->
+<<<<<<< HEAD
 
+=======
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
     <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -413,6 +429,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="../../assets/js/activePage.js"></script>
     <script src="../../assets/js/settings.js"></script>
+<<<<<<< HEAD
     <script src="../../assets/js/update_profile.js"></script>
     <script src="../../assets/js/update_availability.js"></script>
     <script src="../../assets/js/notification.js"></script>
@@ -426,6 +443,15 @@
         
             
 
+=======
+    <script>
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Settings saved successfully!');
+            });
+        });
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
     </script>
 </body>
 </html>

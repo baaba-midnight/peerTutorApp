@@ -50,29 +50,49 @@
             </div>
         </div>
 
+<<<<<<< HEAD
         <form id="registrationForm" enctype="multipart/form-data" novalidate>
+=======
+        <form id="registrationForm" novalidate>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
             <!-- Step 1: Basic Information -->
             <div class="form-step" id="step1">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="firstName">First Name *</label>
+<<<<<<< HEAD
                         <input type="text" id="firstName" name="firstName" class="form-control" placeholder="Enter your first name" required>
+=======
+                        <input type="text" id="firstName" class="form-control" placeholder="Enter your first name" required>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                         <div class="error-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name *</label>
+<<<<<<< HEAD
                         <input type="text" id="lastName" name="lastName" class="form-control" placeholder="Enter your last name" required>
+=======
+                        <input type="text" id="lastName" class="form-control" placeholder="Enter your last name" required>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                         <div class="error-feedback"></div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email">Email Address *</label>
+<<<<<<< HEAD
                     <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" required>
+=======
+                    <input type="email" id="email" class="form-control" placeholder="Enter your email address" required>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="phone">Phone Number</label>
+<<<<<<< HEAD
                     <input type="tel" id="phone" name="phone" class="form-control" placeholder="Enter your phone number">
+=======
+                    <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number">
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     <div class="error-feedback"></div>
                 </div>
             </div>
@@ -81,12 +101,20 @@
             <div class="form-step" id="step2" style="display: none;">
                 <div class="form-group">
                     <label for="username">Username *</label>
+<<<<<<< HEAD
                     <input type="text" id="username" name="username" class="form-control" placeholder="Choose a username" required>
+=======
+                    <input type="text" id="username" class="form-control" placeholder="Choose a username" required>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="password">Password *</label>
+<<<<<<< HEAD
                     <input type="password" id="password" name="password" class="form-control" placeholder="Create a password" required>
+=======
+                    <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     <div class="error-feedback"></div>
                     <div class="password-strength" id="password-strength"></div>
                 </div>
@@ -101,7 +129,11 @@
                         <button type="button" class="role-button student" data-role="student">Student</button>
                         <button type="button" class="role-button tutor" data-role="tutor">Tutor</button>
                     </div>
+<<<<<<< HEAD
                     <input type="hidden" id="selectedRole" name="selectedRole" required>
+=======
+                    <input type="hidden" id="selectedRole" required>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     <div class="error-feedback"></div>
                 </div>
             </div>
@@ -110,7 +142,11 @@
             <div class="form-step" id="step3" style="display: none;">
                 <div class="form-group">
                     <label for="subjects">Subjects of Interest *</label>
+<<<<<<< HEAD
                     <select id="subjects" name="subjects[]" class="form-control" multiple required>
+=======
+                    <select id="subjects" class="form-control" multiple required>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                         <option value="mathematics">Mathematics</option>
                         <option value="physics">Physics</option>
                         <option value="chemistry">Chemistry</option>
@@ -124,14 +160,22 @@
                 </div>
                 <div class="form-group tutor-only" style="display: none;">
                     <label for="experience">Teaching Experience</label>
+<<<<<<< HEAD
                     <textarea id="experience" name="experience" class="form-control" rows="3" placeholder="Describe your teaching experience"></textarea>
+=======
+                    <textarea id="experience" class="form-control" rows="3" placeholder="Describe your teaching experience"></textarea>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     <div class="error-feedback"></div>
                 </div>
                 <div class="form-group">
                     <label for="avatar">Profile Picture</label>
                     <label class="upload-image-label" for="avatar">
                         <span id="avatar-text">Choose a profile picture</span>
+<<<<<<< HEAD
                         <input type="file" id="avatar" name="avatar" accept="image/*">
+=======
+                        <input type="file" id="avatar" accept="image/*">
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     </label>
                     <div class="error-feedback"></div>
                 </div>
@@ -240,10 +284,14 @@
                 let isValid = true;
 
                 inputs.forEach(input => {
+<<<<<<< HEAD
                     if (input.id === 'subjects' && !Array.from(input.selectedOptions).length) {
                         showError(input, 'Please select at least one subject');
                         isValid = false;
                     } else if (!input.value) {
+=======
+                    if (!input.value) {
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                         showError(input, 'This field is required');
                         isValid = false;
                     } else {
@@ -333,6 +381,7 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (validateStep(currentStep)) {
+<<<<<<< HEAD
                     try {
                         // Create a user-friendly error message element
                         let errorMessageElement = document.querySelector('.form-error-message');
@@ -358,22 +407,35 @@
                         }
 
                         // Submit the form
+=======
+                    const formData = new FormData(form);
+                    try {
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                         const response = await fetch('../../api/auth.php', {
                             method: 'POST',
                             body: formData
                         });
                         
+<<<<<<< HEAD
                         const data = await response.json();
                         
                         if (!response.ok || !data.success) {
                             throw new Error(data.message || 'Registration failed');
                         }
 
+=======
+                        if (!response.ok) {
+                            throw new Error('Registration failed');
+                        }
+
+                        const data = await response.json();
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                         if (data.success) {
                             window.location.href = 'login.php?registered=true';
                         }
                     } catch (error) {
                         console.error('Error:', error);
+<<<<<<< HEAD
                         
                         // Show error message to user
                         const errorMessageElement = document.querySelector('.form-error-message');
@@ -381,6 +443,9 @@
                             errorMessageElement.textContent = error.message || 'Registration failed. Please try again.';
                             errorMessageElement.style.display = 'block';
                         }
+=======
+                        // Show error message to user
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
                     }
                 }
             });
@@ -390,4 +455,8 @@
         });
     </script>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356

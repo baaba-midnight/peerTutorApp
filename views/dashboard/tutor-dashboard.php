@@ -65,7 +65,10 @@
         }
     </style>
 </head>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
 <body>
     <?php
     $role = 'tutor';
@@ -152,7 +155,11 @@
         <div class="card" id="reviews-ratings">
             <div class="card-header">
                 <h2 class="card-title">Recent Reviews</h2>
+<<<<<<< HEAD
                 <a href='../../api/reviews.php'>View All</a>
+=======
+                <a href="../reviews/view-reviews.php">View All</a>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -220,6 +227,11 @@
             });
         });
     </script>
+<<<<<<< HEAD
+=======
+
+    <script src="../../assets/js/activePage.js"></script>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
 </body>
 
 </html>

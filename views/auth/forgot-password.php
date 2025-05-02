@@ -184,4 +184,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356

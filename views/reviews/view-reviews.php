@@ -190,9 +190,14 @@
         </div>
     </div>
 
+<<<<<<< HEAD
     <?php  
     include('../../includes/footer.php');
     ?>
+=======
+    <?php include('../../includes/footer.php'); ?>
+    
+>>>>>>> 95ea66a859590aff608529076fdee37c9c56d356
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Handle filters
