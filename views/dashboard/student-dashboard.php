@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
+    header('Location: ../auth/login.php');
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -150,6 +157,81 @@
             opacity: 0.5;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $.ajax({
+            url: '../../api/appointments.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                if (data.status === 'success') {
+                    let html = '';
+                    if (data.appointments.length === 0) {
+                        html = '<div class="alert alert-info">No appointments found.</div>';
+                    } else {
+                        data.appointments.forEach(function(app) {
+                            html += `
+                                <div class="card-section">
+                                    <div class="card-info">
+                                        <p class="title">Appointment with ${app.tutor_first_name}  ${app.tutor_last_name}</p>
+                                        <div class="title-meta">
+                                            <p>${app.course_name}</p>
+                                            <p> ${app.start_datetime ? new Date(app.start_datetime).toLocaleDateString() : ''}</p>
+                                        </div>
+                                    </div>
+                                    <div class="card-action">
+                                        <button class="btn appointment-status">${app.status}</button>
+                                        <button class="btn appointment-join">Join</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    }
+                    $('#appointments').html(html);
+                } else {
+                    $('#appointments').html('<div class="alert alert-danger">Failed to load appointments.</div>');
+                }
+            },
+            error: function() {
+                $('#appointments').html('<div class="alert alert-danger">Failed to load appointments.</div>');
+            }
+        });
+
+        // Fetch unread messages
+        $.ajax({
+            url: '../../api/get_unread_messages.php',
+            method: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                let html = '';
+                if (data.status === 'success' && data.messages.length > 0) {
+                    data.messages.forEach(function(msg) {
+                        html += `
+                            <div class="card-section">
+                                <div class="card-info">
+                                    <p class="title">${msg.sender_name} sent you a chat</p>
+                                    <div class="title-meta">
+                                        <p>${msg.sent_time}</p>
+                                    </div>
+                                </div>
+                                <div class="card-action">
+                                    <button class="btn appointment-join" onclick="window.location.href='../messaging/chat.php?contact_id=${msg.sender_id}'">Open Message</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    html = '<div class="alert alert-info">No unread messages.</div>';
+                }
+                $('#unreadMessages').html(html);
+            },
+            error: function() {
+                $('#unreadMessages').html('<div class="alert alert-danger">Failed to load messages.</div>');
+            }
+        });
+    });
+    </script>
 </head>
 
 <body>
@@ -160,10 +242,11 @@
 
     <div class="main-content">
         <div class="student-welcome">
-            <h2>Welcome Malcom!</h2>
+            <h2>Welcome <?php echo htmlspecialchars($_SESSION['full_name']); ?>!</h2>
             <p>Find the best tutors and manage your learning journey.</p>
         </div>
 
+        
         <div class="card">
             <div class="card-header">
                 <p>Upcoming Appointments</p>
@@ -171,49 +254,8 @@
             </div>
 
             <div class="card-body">
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Appointment with Jennifer</p>
+                <div id = "appointments">
 
-                        <div class="title-meta">
-                            <p>Mathematics</p>
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-status">Pending</button>
-                        <button class="btn appointment-join">Join</button>
-                    </div>
-                </div>
-
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Appointment with Jennifer</p>
-
-                        <div class="title-meta">
-                            <p>Mathematics</p>
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-status">Pending</button>
-                        <button class="btn appointment-join">Join</button>
-                    </div>
-                </div>
-
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Appointment with Jennifer</p>
-
-                        <div class="title-meta">
-                            <p>Mathematics</p>
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-status">Pending</button>
-                        <button class="btn appointment-join">Join</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -225,153 +267,7 @@
             </div>
 
             <div class="card-body">
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Jennifer Sent You A chat</p>
-
-                        <div class="title-meta">
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-join">Open Message</button>
-                    </div>
-                </div>
-
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Jennifer Sent You A chat</p>
-
-                        <div class="title-meta">
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-join">Open Message</button>
-                    </div>
-                </div>
-
-                <div class="card-section">
-                    <div class="card-info">
-                        <p class="title">Jennifer Sent You A chat</p>
-
-                        <div class="title-meta">
-                            <p>Monday, 10:00 AM</p>
-                        </div>
-                    </div>
-                    <div class="card-action">
-                        <button class="btn appointment-join">Open Message</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card" id="reviews-ratings">
-            <div class="card-header">
-                <h2 class="card-title">Reviews & Ratings</h2>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Rating</th>
-                                <th>Review</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="initials rounded-circle bg-primary text-white fw-semibold">JS</span>
-                                        <div>
-                                            <div class="fw-semibold">John Smith</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="rating-stars">
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="far fa-star rating-star"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="review-content">Great tutor, very helpful!</div>
-                                </td>
-                                <td>10 Mar, 2025</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="initials rounded-circle bg-warning text-white fw-semibold">SJ</span>
-                                        <div>
-                                            <div class="fw-semibold">Sarah Johnson</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="rating-stars">
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="review-content">Excellent service, highly recommended.</div>
-                                </td>
-                                <td>05 Mar, 2025</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span class="initials rounded-circle bg-danger text-white fw-semibold">MB</span>
-                                        <div>
-                                            <div class="fw-semibold">Michael Brown</div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="rating-stars">
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="fas fa-star rating-star"></i>
-                                        <i class="far fa-star rating-star"></i>
-                                        <i class="far fa-star rating-star"></i>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div class="review-content">Good but could be better.</div>
-                                </td>
-                                <td>01 Mar, 2025</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <p class="text-muted text-center">Showing 1-3 of 10 reviews</p>
+                <div id="unreadMessages"></div>
             </div>
         </div>
 
@@ -459,6 +355,8 @@
             });
         }
     </script>
+
+    <script src="../../assets/js/activePage.js"></script>
 </body>
 
 </html>

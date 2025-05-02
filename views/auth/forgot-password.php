@@ -1,50 +1,31 @@
 <?php
 require_once '../../config/database.php';
-require_once '../../config/constants.php';
 require_once '../../models/User.php';
 
 $error = '';
 $success = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = "Please enter a valid email address.";
-    } else {
-        $user = new User($conn);
-        $userData = $user->findByEmail($email);
-        
-        if ($userData) {
-            // Generate reset token
-            $token = bin2hex(random_bytes(32));
-            $expiry = date('Y-m-d H:i:s', strtotime('+1 hour'));
-            
-            if ($user->setResetToken($userData['id'], $token, $expiry)) {
-                $resetLink = "http://" . $_SERVER['HTTP_HOST'] . "/views/auth/reset-password.php?token=" . $token;
-                
-                // Send email
-                $to = $email;
-                $subject = "Password Reset Request";
-                $message = "Hello,\n\nYou have requested to reset your password. Click the link below to reset your password:\n\n";
-                $message .= $resetLink . "\n\n";
-                $message .= "This link will expire in 1 hour.\n\n";
-                $message .= "If you didn't request this, please ignore this email.\n\n";
-                $message .= "Best regards,\nPeer Tutor App Team";
-                $headers = "From: noreply@peertutorapp.com";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST["email"];
+    $database = new Database();
+    $db = $database->connect();
+    $user = new User($db);
 
-                if (mail($to, $subject, $message, $headers)) {
-                    $success = "Password reset instructions have been sent to your email.";
-                } else {
-                    $error = "Failed to send reset email. Please try again later.";
-                }
-            } else {
-                $error = "An error occurred. Please try again later.";
-            }
+    // Generate a random password
+    $new_password = bin2hex(random_bytes(4));
+    $result = $user->resetPasswordByEmail($email, $new_password);
+
+    if ($result['status'] === 'success') {
+        $subject = "Your New Password";
+        $message = "Hello, your new password is: $new_password\nPlease change it after logging in.";
+        $headers = "From: no-reply@ashesi.com";
+        if (mail($email, $subject, $message, $headers)) {
+            $success = "A new password has been sent to your email.";
         } else {
-            // To prevent email enumeration, show the same message even if email doesn't exist
-            $success = "If your email exists in our system, you will receive password reset instructions.";
+            $error = "Failed to send email. Please try again.";
         }
+    } else {
+        $error = $result['message'];
     }
 }
 ?>
