@@ -1,3 +1,8 @@
+<?php 
+    define('BASE_URL', 'http://localhost/peerTutorApp'); 
+    define('ROOT_PATH', 'C:/xampp/htdocs/peerTutorApp');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,11 +19,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/css/main.css">
     <!-- <link rel="stylesheet" href="../../assets/css/dashboard.css"> -->
-    <link rel="stylesheet" href="../../assets/css/header.css">
+    <link rel="stylesheet" href="<?php echo BASE_URL ?>/assets/css/header.css">
 
-    <script src="../../assets/js/activePage.js"></script>
+    <script src="<?php echo BASE_URL ?>/assets/js/activePage.js"></script>
 
     <style>
         .log-critical {
@@ -41,11 +46,29 @@
             background-color: #f8f9fa;
         }
 
-        .severity-badge {
-            padding: 3px 8px;
+        .badge {
+            padding: 10px;
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 600;
+            color: #fff;
+        }
+
+        .severity-info {
+            background-color: #2E4F2A !important;
+        }
+
+        .severity-debug {
+            background-color: #6D6D6D !important;
+            color: #ffffff !important;
+        }
+        
+        .severity-warning {
+            background-color: #6A2E2E !important;
+        }
+
+        .severity-error {
+            background-color: #C72E2E !important;
         }
 
         .filter-section {
@@ -60,7 +83,7 @@
 <body>
     <?php
     $role = 'admin';
-    include('../../includes/header.php');
+    include(ROOT_PATH . '/includes/header.php');
     ?>
 
     <div class="main-content">
@@ -102,19 +125,18 @@
                     <label for="moduleFilter" class="form-label">Module</label>
                     <select class="form-select" id="moduleFilter">
                         <option value="">All Modules</option>
-                        <option value="authentication">Authentication</option>
+                        <option value="auth">Authentication</option>
                         <option value="tutoring">Tutoring</option>
                         <option value="scheduling">Scheduling</option>
                         <option value="database">Database</option>
                         <option value="backup">Backup</option>
                     </select>
                 </div>
-                <div class="col-md-8">
-                    <label for="searchLogs" class="form-label">Search</label>
-                    <input type="text" class="form-control" id="searchLogs" placeholder="Search log messages...">
+                <div class="col-md-4 d-flex align-items-end">
+                    <button class="btn w-100" id="applyFilters">Apply Filters</button>
                 </div>
                 <div class="col-md-4 d-flex align-items-end">
-                    <button class="btn btn-primary w-100" id="applyFilters">Apply Filters</button>
+                    <button class="btn w-100" id="resetFilters">Reset Filters</button>
                 </div>
             </div>
         </div>
@@ -133,57 +155,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Sample rows - will be populated by JS/PHP -->
-                    <tr class="log-critical">
-                        <td>2023-10-15 14:32:45</td>
-                        <td><span class="severity-badge bg-danger">Critical</span></td>
-                        <td>Database</td>
-                        <td>Failed to connect to database server</td>
-                        <td>admin1</td>
-                        <td>192.168.1.10</td>
-                    </tr>
-                    <tr class="log-error">
-                        <td>2023-10-15 14:33:10</td>
-                        <td><span class="severity-badge bg-danger">Error</span></td>
-                        <td>Authentication</td>
-                        <td>Invalid login attempt for user 'testuser'</td>
-                        <td>testuser</td>
-                        <td>10.0.0.15</td>
-                    </tr>
-                    <tr class="log-warning">
-                        <td>2023-10-15 14:35:22</td>
-                        <td><span class="severity-badge bg-warning text-dark">Warning</span></td>
-                        <td>Scheduling</td>
-                        <td>Tutor availability conflict detected</td>
-                        <td>tutor1</td>
-                        <td>192.168.1.25</td>
-                    </tr>
-                    <tr class="log-info">
-                        <td>2023-10-15 14:40:05</td>
-                        <td><span class="severity-badge bg-info">Info</span></td>
-                        <td>Backup</td>
-                        <td>System backup completed successfully</td>
-                        <td>admin1</td>
-                        <td>192.168.1.10</td>
-                    </tr>
+                    <!-- Will be inserted with JS dynamically -->
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
-        <nav aria-label="Logs pagination">
-            <ul class="pagination justify-content-center mt-4">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
+        <div class="pagination-controls" id="pagination">
+            <!-- Pagination buttons will be inserted here by JS -->
+        </div>
     </div>
     </div>
 
@@ -244,47 +224,8 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Initialize DataTable
-            $('#logsTable').DataTable({
-                ordering: true,
-                order: [
-                    [0, 'desc']
-                ],
-                pageLength: 25,
-                responsive: true
-            });
-
-            // Apply row click handler
-            $('#logsTable tbody').on('click', 'tr', function() {
-                // In a real app, you would fetch the full log details from the server
-                $('#logDetailsModal').modal('show');
-            });
-
-            // Filter button handler
-            $('#applyFilters').click(function() {
-                // In a real app, this would send filter parameters to the server
-                // and reload the table with filtered data
-                alert('Filter functionality would be implemented here');
-            });
-
-            // Export logs button
-            $('#exportLogs').click(function() {
-                // This would trigger a server-side export (CSV, JSON, etc.)
-                alert('Export functionality would be implemented here');
-            });
-
-            // Archive logs button
-            $('#archiveLogs').click(function() {
-                if (confirm('Archive logs older than 30 days? Archived logs will be compressed and stored separately.')) {
-                    alert('Archive functionality would be implemented here');
-                }
-            });
-        });
-    </script>
+    
+    <script src="<?php echo BASE_URL ?>/assets/js/admin/SystemLogs.js"></script>
 </body>
 
 </html>

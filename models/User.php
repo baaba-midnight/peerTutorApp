@@ -146,6 +146,41 @@ class User {
         $stmt->execute();
     }
 
+    // Get all users
+    public function getAllUsers() {
+        $query = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.role, u.is_active,
+                         p.profile_picture_url, u.last_login, u.created_at
+                  FROM Users u
+                  LEFT JOIN Profiles p ON u.user_id = p.user_id
+                  ORDER BY u.user_id DESC";
+
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $data = array();
+
+        foreach ($users as $user) {
+            $data[] = array(
+                "user_id" => $user['user_id'],
+                "first_name" => $user['first_name'],
+                "last_name" => $user['last_name'],
+                "email" => $user['email'],
+                "role" => $user['role'],
+                "is_active" => $user['is_active'] ? 'Active' : 'Inactive',
+                "profile_picture_url" => $user['profile_picture_url'],
+                "last_login" => $user['last_login'],
+                "joined_date" => $user['created_at']
+            );
+        }
+
+       return [
+            "data" => $data,
+            "total"=> count($data),
+            "filtered" => count($data) // Assuming no filtering for now
+       ]; 
+    }
+
     // Get user by ID with profile information
     public function getUserById($user_id) {
         $query = "SELECT u.user_id, u.email, u.first_name, u.last_name, u.phone_number, u.role, u.is_active,
@@ -161,52 +196,91 @@ class User {
         
         // If user is a tutor, get tutor profile info
         if ($user && $user['role'] === 'tutor') {
-            $tutorQuery = "SELECT hourly_rate, overall_rating, is_verified FROM TutorProfiles WHERE user_id = :user_id";
+            $tutorQuery = "SELECT hourly_rate, overall_rating, is_verified
+                          FROM TutorProfiles
+                          WHERE user_id = :user_id";
             $tutorStmt = $this->conn->prepare($tutorQuery);
             $tutorStmt->bindParam(':user_id', $user_id);
             $tutorStmt->execute();
+            
             $tutorInfo = $tutorStmt->fetch(PDO::FETCH_ASSOC);
             if ($tutorInfo) {
                 $user = array_merge($user, $tutorInfo);
             }
-            // Add tutor-specific fields
-            $user['courses_offered'] = $this->getTutorCourses($user_id);
-            $user['average_rating'] = $this->getTutorAverageRating($user_id);
-            $user['availability'] = $this->getTutorAvailability($user_id);
         }
         
         return $user;
     }
 
-    // Get tutor's courses offered
-    private function getTutorCourses($user_id) {
-        $query = "SELECT c.course_name FROM TutorCourses tc JOIN Courses c ON tc.course_id = c.course_id WHERE tc.tutor_id = :user_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
+    public function getFilteredUsers($start, $length, $filter = '', $search = '') {
+        $whereClauses = [];
+        $params = [
+            ':start' => (int)$start,
+            ':length' => (int)$length,
+        ];
+    
+        // Filter clause
+        if (!empty($filter)) {
+            $whereClauses[] = "(u.role LIKE :filter OR u.is_active LIKE :filter)";
+            $params[':filter'] = "%$filter%";
+        }
+    
+        // Search clause
+        if (!empty($search)) {
+            $whereClauses[] = "(u.first_name LIKE :search OR u.last_name LIKE :search OR u.email LIKE :search)";
+            $params[':search'] = "%$search%";
+        }
+    
+        $where = '';
+        if (count($whereClauses)) {
+            $where = 'WHERE ' . implode(' AND ', $whereClauses);
+        }
+    
+        // Data query
+        $dataQuery = "
+            SELECT u.user_id, u.first_name, u.last_name, u.email, u.role, u.is_active,
+                   p.profile_picture_url, u.last_login, u.created_at
+            FROM Users u
+            LEFT JOIN Profiles p ON u.user_id = p.user_id
+            $where
+            ORDER BY u.user_id DESC
+            LIMIT :start, :length
+        ";
+    
+        $stmt = $this->conn->prepare($dataQuery);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
         $stmt->execute();
-        $courses = $stmt->fetchAll(PDO::FETCH_COLUMN);
-        return $courses ? implode(', ', $courses) : null;
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Total count
+        $totalStmt = $this->conn->prepare("SELECT COUNT(*) FROM Users");
+        $totalStmt->execute();
+        $total = $totalStmt->fetchColumn();
+    
+        // Filtered count
+        $filteredCountQuery = "
+            SELECT COUNT(*) 
+            FROM Users u
+            $where
+        ";
+        $filteredStmt = $this->conn->prepare($filteredCountQuery);
+        foreach ($params as $key => $value) {
+            if ($key !== ':start' && $key !== ':length') {
+                $filteredStmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+            }
+        }
+        $filteredStmt->execute();
+        $filteredTotal = $filteredStmt->fetchColumn();
+    
+        return [
+            'data' => $users,
+            'total' => $total,
+            'filteredTotal' => $filteredTotal
+        ];
     }
-
-    // Get tutor's average rating
-    private function getTutorAverageRating($user_id) {
-        $query = "SELECT overall_rating FROM TutorProfiles WHERE user_id = :user_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ? $row['overall_rating'] : null;
-    }
-
-    // Get tutor's availability (assume JSON in TutorProfiles.availability_schedule)
-    private function getTutorAvailability($user_id) {
-        $query = "SELECT availability_schedule FROM TutorProfiles WHERE user_id = :user_id";
-        $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':user_id', $user_id);
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row && $row['availability_schedule'] ? json_decode($row['availability_schedule'], true) : null;
-    }
+      
 
     // Update user profile including Profiles table
     public function updateUser($user_id, $data) {
@@ -312,6 +386,44 @@ class User {
             return array("status" => "error", "message" => "Update failed: " . $e->getMessage());
         }
     }
+
+    // search for Users by name, email or course
+    public function searchUsers($searchParams) {
+        $query = "SELECT u.user_id, u.first_name, u.last_name, u.email, u.role, u.is_active,
+                         p.profile_picture_url
+                  FROM Users u
+                  LEFT JOIN Profiles p ON u.user_id = p.user_id
+                  WHERE 1=1";
+        
+        $params = [];
+
+        if (!empty($searchParams['name'])) {
+            $query .= " AND (u.first_name LIKE :name OR u.last_name LIKE :name)";
+            $params[':name'] = "%" . $searchParams['name'] . "%";
+        }
+
+        if (!empty($searchParams['email'])) {
+            $query .= " AND u.email LIKE :email";
+            $params[':email'] = "%" . $searchParams['email'] . "%";
+        }
+
+        if (!empty($searchParams['course'])) {
+            $query .= " AND EXISTS (SELECT 1 FROM TutorCourses tc WHERE tc.tutor_id = u.user_id AND tc.course_id = :course)";
+            $params[':course'] = $searchParams['course'];
+        }
+
+        // Add sorting
+        $query .= " ORDER BY u.user_id DESC";
+
+        $stmt = $this->conn->prepare($query);
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
     
     // Update tutor profile
     private function updateTutorProfile($user_id, $data) {
@@ -356,6 +468,21 @@ class User {
             }
             $stmt->execute();
         }
+    }
+
+    public function deleteUser($user_id) {
+        $query = "DELETE FROM Users WHERE user_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
+    }
+
+    // Activate user
+    public function activateUser($user_id) {
+        $query = "UPDATE Users SET is_active = 1 WHERE user_id = :user_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id);
+        return $stmt->execute();
     }
 
     // Deactivate (soft delete) user
@@ -427,4 +554,5 @@ class User {
         return array('status' => 'success');
     }
 }
+?>
 ?>
