@@ -198,55 +198,15 @@
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             }
 
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
+            form.setAttribute('method', 'POST');
+            form.setAttribute('action', '../../api/login.php');
+            form.setAttribute('enctype', 'application/x-www-form-urlencoded');
 
+            form.addEventListener('submit', (e) => {
                 if (!validateForm()) {
-                    return;
+                    e.preventDefault();
                 }
-
-                // Show loading state
-                buttonText.style.display = 'none';
-                spinner.style.display = 'inline-block';
-                loginButton.disabled = true;
-
-                try {
-                    const formData = {
-                        email: document.getElementById('email').value,
-                        password: document.getElementById('password').value,
-                        role: selectedRole.value
-                    };
-
-                    const response = await fetch('../../api/auth.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.error || 'Login failed');
-                    }
-
-                    // Redirect based on role
-                    const dashboardPath = selectedRole.value === 'tutor' 
-                        ? '../dashboard/tutor-dashboard.php'
-                        : '../dashboard/student-dashboard.php';
-                    
-                    window.location.href = dashboardPath;
-
-                } catch (error) {
-                    errorMessage.textContent = error.message;
-                    errorMessage.style.display = 'block';
-                } finally {
-                    // Reset loading state
-                    buttonText.style.display = 'inline';
-                    spinner.style.display = 'none';
-                    loginButton.disabled = false;
-                }
+                // If valid, allow default form submission to ../../api/login.php
             });
 
             // Hide error message when user starts typing

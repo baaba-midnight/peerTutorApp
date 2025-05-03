@@ -18,7 +18,7 @@ CREATE TABLE Users (
     phone_number VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    last_login TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE,
     verification_status BOOLEAN DEFAULT FALSE
 );
@@ -67,7 +67,7 @@ CREATE TABLE TutorCourses (
     course_id INT NOT NULL,
     proficiency_level ENUM('beginner', 'intermediate', 'advanced', 'expert') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (tutor_id) REFERENCES TutorProfiles(tutor_profile_id) ON DELETE CASCADE,
+    FOREIGN KEY (tutor_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES Courses(course_id) ON DELETE CASCADE,
     UNIQUE KEY (tutor_id, course_id)
 );
@@ -175,56 +175,32 @@ CREATE TABLE Notifications (
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
 
--- System Logs table
-CREATE TABLE system_logs (
-    log_id INT AUTO_INCREMENT PRIMARY KEY,
-    timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    severity ENUM('critical', 'error', 'warning', 'info', 'debug') NOT NULL,
-    module VARCHAR(50) NOT NULL,
-    message TEXT NOT NULL,
-    user_id INT,
-    ip_address VARCHAR(45),
-    request_id VARCHAR(50),
-    stack_trace TEXT,
-    additional_data JSON,
-    INDEX idx_timestamp (timestamp),
-    INDEX idx_severity (severity),
-    INDEX idx_module (module),
-    INDEX idx_user (user_id)
+-- AcademicResources table
+CREATE TABLE AcademicResources (
+    resource_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    resource_type ENUM('faculty', 'library', 'online_resource', 'study_material') NOT NULL,
+    description TEXT,
+    contact_info VARCHAR(255),
+    department VARCHAR(100),
+    url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Backup Records table
-CREATE TABLE backup_records (
-    backup_id INT AUTO_INCREMENT PRIMARY KEY,
-    backup_name VARCHAR(255) NOT NULL,
-    backup_type ENUM('full', 'database', 'incremental') NOT NULL,
-    filename VARCHAR(255) NOT NULL,
-    filepath VARCHAR(512) NOT NULL,
-    file_size BIGINT NOT NULL,
-    status ENUM('pending', 'in_progress', 'completed', 'failed') NOT NULL,
-    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    completed_at DATETIME,
-    created_by INT NOT NULL,
-    notes TEXT,
-    checksum VARCHAR(64),
-    INDEX idx_type (backup_type),
-    INDEX idx_status (status),
-    INDEX idx_created_at (created_at)
-);
-
--- Backup Logs table
-CREATE TABLE backup_logs (
-    log_id INT AUTO_INCREMENT PRIMARY KEY,
-    backup_id INT,
-    operation ENUM('create', 'restore', 'delete', 'download', 'verify') NOT NULL,
-    status ENUM('started', 'completed', 'failed') NOT NULL,
-    timestamp DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    user_id INT NOT NULL,
-    details TEXT,
-    FOREIGN KEY (backup_id) REFERENCES backup_records(backup_id) ON DELETE SET NULL,
-    INDEX idx_operation (operation),
-    INDEX idx_status (status),
-    INDEX idx_timestamp (timestamp)
+-- LecturerContacts table
+CREATE TABLE LecturerContacts (
+    lecturer_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    department VARCHAR(100) NOT NULL,
+    office_location VARCHAR(255),
+    office_hours TEXT,
+    phone_number VARCHAR(20),
+    Courses_taught TEXT,
+    profile_picture_url VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 -- Create indexes for optimized queries
@@ -276,6 +252,7 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Trigger to mark related notifications as read when a message is read
 DELIMITER //
 CREATE TRIGGER mark_message_notifications
 AFTER UPDATE ON Messages
