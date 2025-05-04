@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const topTutorsContainer = document.querySelector('.card-body.p-0');
             topTutorsContainer.innerHTML = ''; // Clear existing entries
 
+            console.log(data.topTutors); // Debugging line to check the data structure
+
             data.topTutors.forEach(tutor => {
                 const initials = `${tutor.first_name[0]}${tutor.last_name[0]}`;
                 const tutorDiv = `

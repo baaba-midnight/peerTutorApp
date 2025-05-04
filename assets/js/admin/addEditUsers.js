@@ -119,10 +119,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (data.success) {
                     alert(isEdit ? "User updated successfully!" : "User added successfully!");
 
-                    
-
-                    // Wait a bit before reload
-                    setTimeout(() => location.reload(), 300);
+                    loadUsers(); // Reload the user list
+                    modal.hide(); // Hide the modal after submission
 
                 } else {
                     alert("Error: " + data.message);
