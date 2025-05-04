@@ -43,7 +43,12 @@
 </head>
 <body>
     <?php 
-    $role = 'tutor';
+    session_start();
+    if (!isset($_SESSION['role'])) {
+        header('Location: ../../views/auth/login.php');
+        exit;
+    }
+    $role = $_SESSION['role'];
     include('../../includes/header.php'); 
     ?>
 

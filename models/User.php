@@ -214,7 +214,7 @@ class User {
     }
 
     // Get tutor's courses offered
-    private function getTutorCourses($user_id) {
+    public function getTutorCourses($user_id) {
         $query = "SELECT c.course_name FROM TutorCourses tc JOIN Courses c ON tc.course_id = c.course_id WHERE tc.tutor_id = :user_id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':user_id', $user_id);

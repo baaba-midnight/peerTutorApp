@@ -1,3 +1,10 @@
+<?php
+session_start();
+if (!isset($_SESSION['role'])) {
+    header('Location: ../../views/auth/login.php');
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,7 +74,7 @@
 </head>
 <body>
     <?php
-    $role = 'tutor';
+    $role = $_SESSION['role'];
     include('../../includes/header.php');
     ?>
 

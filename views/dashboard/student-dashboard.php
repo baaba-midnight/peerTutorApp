@@ -182,13 +182,25 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
                                     </div>
                                     <div class="card-action">
                                         <button class="btn appointment-status">${app.status}</button>
-                                        <button class="btn appointment-join">Join</button>
+                                        <button class="btn appointment-join" data-meeting-link="${app.meeting_link ? app.meeting_link : ''}">Join</button>
                                     </div>
                                 </div>
                             `;
                         });
                     }
                     $('#appointments').html(html);
+
+                    // Add click handler for Join buttons
+                    $(document).on('click', '.appointment-join', function() {
+                        var meetingLink = $(this).data('meeting-link');
+                        if (meetingLink) {
+                            $('#meetingLinkModal .modal-body').html(`<a href="${meetingLink}" target="_blank">${meetingLink}</a>`);
+                        } else {
+                            $('#meetingLinkModal .modal-body').text('No meeting link available.');
+                        }
+                        var modal = new bootstrap.Modal(document.getElementById('meetingLinkModal'));
+                        modal.show();
+                    });
                 } else {
                     $('#appointments').html('<div class="alert alert-danger">Failed to load appointments.</div>');
                 }
@@ -236,7 +248,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
 
 <body>
     <?php
-    $role = 'student'; // temporary variable
+    $role = $_SESSION['role']; // temporary variable
     include('../../includes/header.php');
     ?>
 
@@ -356,6 +368,24 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'student') {
     </script>
 
     <script src="../../assets/js/activePage.js"></script>
+
+    <!-- Meeting Link Modal -->
+    <div class="modal fade" id="meetingLinkModal" tabindex="-1" aria-labelledby="meetingLinkModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="meetingLinkModalLabel">Join Session</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- Meeting link will be inserted here -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 
 </html>
