@@ -125,15 +125,12 @@
         $meetingUserIds[] = $row['other_user_id'];
     }
 
-    // Fetch all conversations (contacts) but only if they are in meetingUserIds
-    $conversations = $messageModel->getUserConversations($currentUserId);
+    // Build contacts from all meetingUserIds
     $contacts = [];
-    $contactIds = [];
-    foreach ($conversations as $conv) {
-        $otherId = $conv['sender_id'] == $currentUserId ? $conv['recipient_id'] : $conv['sender_id'];
-        if (in_array($otherId, $meetingUserIds) && !in_array($otherId, $contactIds)) {
-            $contactIds[] = $otherId;
-            $contacts[] = $userModel->getUserById($otherId);
+    foreach ($meetingUserIds as $uid) {
+        $user = $userModel->getUserById($uid);
+        if ($user) {
+            $contacts[] = $user;
         }
     }
 
@@ -270,5 +267,6 @@
         const messageList = document.querySelector('.message-list');
         messageList.scrollTop = messageList.scrollHeight;
     </script>
+    <script src="../../assets/js/activePage.js"></script>
 </body>
 </html>

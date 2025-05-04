@@ -44,7 +44,7 @@
 </head>
 <body>
     <?php 
-    $role = 'student';
+    $role = $_SESSION['role'];
     include('../../includes/header.php'); 
     ?>
 

@@ -65,7 +65,8 @@
 </head>
 <body>
     <?php 
-    $role = 'student'; // Example role, replace with actual session variable
+    session_start();
+    $role = $_SESSION['role']; // Example role, replace with actual session variable
     include('../../includes/header.php'); 
     ?>
 
@@ -316,7 +317,6 @@
         </div>
     </div>
 
-    <?php include('../../includes/footer.php'); ?>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>

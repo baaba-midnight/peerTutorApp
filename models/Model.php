@@ -1,5 +1,5 @@
 <?php
-require_once '../config/Database.php';
+require_once dirname(__DIR__) . '/config/database.php';
 
 class Model {
     protected $table;
