@@ -19,7 +19,7 @@
         <?php elseif ($role === 'tutor') : ?>
             <nav class="main-nav" id="mainNav">
                 <a class="nav-link" href="../../views/dashboard/tutor-dashboard.php">Home</a>
-                <a class="nav-link" href="../../views/appointments/view-appointments.php">Appointments</a>
+                <a class="nav-link" href="../../views/appointments/tutor-view-appointments.php">Appointments</a>
                 <a class="nav-link" href="../../views/messaging/chat.php">Messages</a>
                 <a class="nav-link" href="../../views/reviews/view-reviews.php">Reviews and Ratings</a>
                 <a class="nav-link" href="../../views/settings/settings.php">Settings</a>
