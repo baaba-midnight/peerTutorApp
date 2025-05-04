@@ -49,6 +49,7 @@ function renderStars(rating) {
     return html;
 }
 
+
 function updateDashboardCards(data) {
 
     // add upcoming appointments to card
@@ -99,10 +100,10 @@ function updateDashboardCards(data) {
             message => `
             <div class="card-section">
                 <div class="card-info">
-                    <p class="title">Message from ${message.student_id}</p>
+                    <p class="title">Message from ${message.student_name}</p>
                     <div class="title-meta">
                         <p>${message.content}</p>
-                        <p>${message.start_time} minutes ago</p>
+                        <p>@ ${message.created_at}</p>
                     </div>
                 </div>
                 <div class="card-action">

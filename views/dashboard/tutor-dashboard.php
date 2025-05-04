@@ -118,10 +118,10 @@ if (!isset($_SESSION['role'])) {
     include('../../includes/header.php');
     ?>
 
-    <input type="hidden" id="tutorId" value=2>
+    <input type="hidden" id="tutorId" value="<?php echo $_SESSION['id'] ?>">
 
     <div class="main-content">
-        <h2>Welcome back, Tutor!</h2>
+        <h2>Welcome back, <?php echo $_SESSION['full_name'] ?>!</h2>
         <p class="text-muted">Manage your sessions and connect with students.</p>
 
         <!-- Upcoming Sessions -->

@@ -56,9 +56,3 @@ editProfileForm.addEventListener('submit', (e) => {
     // Close modal after saving
     closeModal();
 });
-
-function edit
-
-function editAccountModal() {
-
-}

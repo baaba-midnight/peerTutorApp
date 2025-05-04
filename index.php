@@ -150,10 +150,6 @@
                 </div>
             </section>
         </main>
-
-        <footer class="bg-gray-200 py-4 text-center">
-            <p class="text-gray-600">© 2025 PeerEd. All Rights Reserved.</p>
-        </footer>
     </div>
 
     <script>

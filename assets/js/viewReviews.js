@@ -10,7 +10,7 @@ async function loadTutorStats(tutorId) {
     const res = await fetch(`../../api/tutor-review.php?action=getReviewStats&tutor_id=${tutorId}`);
     const data = await res.json();
 
-    document.getElementById("avgRating").textContent = parseFloat(data.data.avg_rating).toFixed(1);
+    document.getElementById("avgRating").textContent = isNaN(parseFloat(data.data.avg_rating)) ? "0.0" : parseFloat(data.data.avg_rating).toFixed(1);
     document.getElementById("totalReviews").textContent = data.data.total_reviews;
 }
 

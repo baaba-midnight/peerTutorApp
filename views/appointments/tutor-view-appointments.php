@@ -1,3 +1,11 @@
+<?php
+session_start();
+if (!isset($_SESSION['role'])) {
+    header('Location: ../../views/auth/login.php');
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -76,11 +84,11 @@
 
 <body>
     <?php
-    $role = 'tutor'; // Example role, replace with actual session variable
+    $role = $_SESSION['role']; 
     include('../../includes/header.php');
     ?>
 
-    <input type="hidden" id="tutorId" value=2>
+    <input type="hidden" id="tutorId" value=<?php echo $_SESSION['id']?>>
 
     <div class="main-content">
         <div class="container py-4">

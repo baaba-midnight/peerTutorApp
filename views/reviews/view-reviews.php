@@ -52,7 +52,7 @@
     include('../../includes/header.php'); 
     ?>
 
-    <input type="hidden" id="userId" value="5">
+    <input type="hidden" id="userId" value=<?php echo $_SESSION['id']?>>
 
     <div class="main-content">
         <div class="container py-4">
