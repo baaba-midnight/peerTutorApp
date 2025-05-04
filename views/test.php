@@ -1,17 +1,14 @@
 <?php
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../models/Tutor.php';
 
 $database = new Database();
 $conn = $database->connect();
-$userModel = new User($conn);
+$tutorModel = new Tutor($conn);
 
-// Test login
-$email = 'kevin13cudjoe@gmail.com'; // Replace with a valid email from your Users table
-$password = '123456789';   // Replace with the correct password for the above email
 
-$result = $userModel->login($email, $password);
+// Test getTutorCourses
+$tutorId = 3; // Change to a valid tutor user_id in your database
 
-echo '<pre>';
-print_r($result);
-echo '</pre>';
+print_r($tutorModel->getTutorCourses($tutorId));
+?>
