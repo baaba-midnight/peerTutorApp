@@ -88,12 +88,16 @@ if (!isset($_SESSION['role'])) {
     include('../../includes/header.php');
     ?>
 
-    <input type="hidden" id="tutorId" value=<?php echo $_SESSION['id']?>>
+    <input type="hidden" id="userId" value=<?php echo $_SESSION['id']?>>
+    <input type="hidden" id="userRole" value=<?php echo $_SESSION['role']?>>
 
     <div class="main-content">
         <div class="container py-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1>My Appointments</h1>
+                <?php if ($role == 'student'): ?>
+                    <a href="schedule.php" class="btn btn-primary">Schedule New Session</a>
+                <?php endif; ?>
             </div>
 
             <!-- Upcoming Appointments -->

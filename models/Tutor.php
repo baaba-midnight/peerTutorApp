@@ -112,10 +112,18 @@ class Tutor
     }
 
     // Dashboard Functionality
-    public function getUpcomingSessions($tutorId, $limit)
+    public function getUpcomingSessions($userId, $role, $limit)
     {
+        $params = [];
 
-        $query = "SELECT * FROM appointments WHERE tutor_id = :tutorId AND end_datetime >= NOW() ORDER BY end_datetime ASC";
+        if ($role === 'student') {
+            $query = "SELECT a.*, r.review_id AS reviewed
+            FROM appointments a
+            LEFT JOIN reviews r ON a.appointment_id = r.session_id AND r.student_id = :userId
+            WHERE a.student_id = :userId AND a.end_datetime >= NOW() ORDER BY a.end_datetime ASC";
+        } else {
+            $query = "SELECT * FROM appointments WHERE tutor_id = :userId AND end_datetime >= NOW() ORDER BY end_datetime ASC";
+        }
 
         if ($limit) {
             $query .= " LIMIT :limit";
@@ -123,7 +131,7 @@ class Tutor
         }
 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(':tutorId', $tutorId);
+        $stmt->bindParam(':userId', $userId);
 
         if ($limit) {
             $stmt->bindParam(':limit', $params[':limit'], PDO::PARAM_INT);
@@ -133,15 +141,29 @@ class Tutor
 
         // get student names for each appointment
         $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($appointments as &$appointment) {
-            $studentId = $appointment['student_id'];
-            $studentQuery = "SELECT CONCAT(first_name, ' ', last_name) as name FROM users WHERE user_id = :studentId";
-            $studentStmt = $this->conn->prepare($studentQuery);
-            $studentStmt->bindParam(':studentId', $studentId);
-            $studentStmt->execute();
-            $student = $studentStmt->fetch(PDO::FETCH_ASSOC);
-            $appointment['student_name'] = $student['name'];
+
+        if ($role == 'student') {
+            foreach ($appointments as &$appointment) {
+                $tutorId = $appointment['tutor_id'];
+                $tutorQuery = "SELECT CONCAT(first_name, ' ', last_name) as tutor_name FROM users WHERE user_id = :tutorId";
+                $tutorStmt = $this->conn->prepare($tutorQuery);
+                $tutorStmt->bindParam(':tutorId', $tutorId);
+                $tutorStmt->execute();
+                $tutor = $tutorStmt->fetch(PDO::FETCH_ASSOC);
+                $appointment['tutor_name'] = $tutor['tutor_name'];
+            }
+        } else {
+            foreach ($appointments as &$appointment) {
+                $studentId = $appointment['student_id'];
+                $studentQuery = "SELECT CONCAT(first_name, ' ', last_name) as student_name FROM users WHERE user_id = :studentId";
+                $studentStmt = $this->conn->prepare($studentQuery);
+                $studentStmt->bindParam(':studentId', $studentId);
+                $studentStmt->execute();
+                $student = $studentStmt->fetch(PDO::FETCH_ASSOC);
+                $appointment['student_name'] = $student['student_name'];
+            }
         }
+        
 
         // get the course code and name for each appointment
         foreach ($appointments as &$appointment) {
@@ -183,7 +205,22 @@ class Tutor
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':tutorId', $tutorId);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // get student names for each message
+        foreach ($messages as &$message) {
+            $senderId = $message['sender_id'];
+            $studentQuery = "SELECT CONCAT(first_name, ' ', last_name) as student_name, email FROM users WHERE user_id = :senderId";
+            $studentStmt = $this->conn->prepare($studentQuery);
+            $studentStmt->bindParam(':senderId', $senderId);
+            $studentStmt->execute();
+            $student = $studentStmt->fetch(PDO::FETCH_ASSOC);
+            $message['student_name'] = $student['student_name'];
+            $message['student_email'] = $student['email'];
+        }
+
+        return $messages;
     }
 
     public function getRecentReviews($tutorId)
@@ -203,7 +240,7 @@ class Tutor
             $studentStmt->bindParam(':studentId', $studentId);
             $studentStmt->execute();
             $student = $studentStmt->fetch(PDO::FETCH_ASSOC);
-            $review['student_name'] = $student['name'];
+            $review['student_name'] = $student['student_name'];
             $review['student_email'] = $student['email'];
         }
 

@@ -1,8 +1,9 @@
 const API_BASE_URL = '../../api/tutor-appointments.php';
 
-async function loadAppointments(tutorId) {
+async function loadAppointments(userId, role) {
     try {
-        const response = await fetch(`${API_BASE_URL}?action=getAppointments&tutor_id=${parseInt(tutorId)}`);
+
+        const response = await fetch(`${API_BASE_URL}?action=getAppointments&user_id=${parseInt(userId)}&role=${role}`);
         const data = await response.json();
 
         console.log(data);
@@ -13,14 +14,14 @@ async function loadAppointments(tutorId) {
         }
         
 
-        updateAppointmentsCards(data.appointments);
+        updateAppointmentsCards(data.appointments, role);
     } catch (error) {
         console.error('Error', error);
         updateAppointmentsCards({ data: [] });
     }
 }
 
-function updateAppointmentsCards(data) {
+function updateAppointmentsCards(data, role) {
     const upcomingAppointments = document.querySelector('#upcomingAppointments');
     const pastAppointments = document.querySelector('#pastAppointments');
     const pendingAppointments = document.querySelector('#pendingAppointments');
@@ -33,6 +34,7 @@ function updateAppointmentsCards(data) {
     // Helper function to create a card
     const createCard = (appointment, statusClass, statusLabel, actions = '') => {
         const card = document.createElement('div');
+        let name = role === 'student' ? appointment.tutor_name : appointment.student_name;
         card.className = 'col-md-6';
         card.innerHTML = `
             <div class="card appointment-card h-100" data-appointment-id="${appointment.appointment_id}">
@@ -40,7 +42,7 @@ function updateAppointmentsCards(data) {
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <div>
                             <h5 class="card-title mb-1">${appointment.course_name} Session</h5>
-                            <p class="text-muted mb-0">with ${appointment.student_name}</p>
+                            <p class="text-muted mb-0">with ${name}</p>
                         </div>
                         <span class="badge ${statusClass} status-badge">${statusLabel}</span>
                     </div>
@@ -70,10 +72,17 @@ function updateAppointmentsCards(data) {
     // Populate Pending Appointments
     if (data.pending && data.pending.length > 0 && pendingAppointments) {
         data.pending.forEach((appointment) => {
-            const actions = `
-                <button class="btn btn-success flex-grow-1" onclick="markAsUpcoming(${appointment.appointment_id})">Mark as Upcoming</button>
+            let actions = '';
+            if (role === 'student') {
+                actions = `
+                    <button class="btn btn-outline-danger" onclick="cancelSession(${appointment.appointment_id})">Cancel</button>
+                `;
+            } else if (role === 'tutor') {
+                actions = ` <button class="btn btn-success flex-grow-1" onclick="markAsUpcoming(${appointment.appointment_id})">Mark as Upcoming</button>
                 <button class="btn btn-outline-danger" onclick="cancelSession(${appointment.appointment_id})">Cancel</button>
-            `;
+             `;
+            }
+                
             const card = createCard(appointment, 'bg-warning', 'Pending', actions);
             pendingAppointments.appendChild(card);
         });
@@ -87,10 +96,17 @@ function updateAppointmentsCards(data) {
     // Populate Upcoming Appointments
     if (data.upcoming && data.upcoming.length > 0) {
         data.upcoming.forEach((appointment) => {
-            const actions = `
-                <button class="btn btn-primary flex-grow-1" onclick="markAsCompleted(${appointment.appointment_id})">Mark as Completed</button>
+            let actions = '';
+            if (role === 'student') {
+                actions = `
+                    <button class="btn btn-outline-danger" onclick="cancelSession(${appointment.appointment_id})">Cancel</button>
+                `;
+            } else if (role === 'tutor') {
+                actions = ` <button class="btn btn-primary flex-grow-1" onclick="markAsCompleted(${appointment.appointment_id})">Mark as Completed</button>
                 <button class="btn btn-outline-danger" onclick="cancelSession(${appointment.appointment_id})">Cancel</button>
-            `;
+             `;
+            }
+
             const card = createCard(appointment, 'bg-primary', 'Upcoming', actions);
             upcomingAppointments.appendChild(card);
         });
@@ -104,7 +120,12 @@ function updateAppointmentsCards(data) {
     // Populate Past Appointments
     if (data.past && data.past.length > 0) {
         data.past.forEach((appointment) => {
-            const card = createCard(appointment, 'bg-success', 'Completed');
+            let actions = '';
+            if (role === 'student' && !appointment.reviewed) { // Check if the appointment is not reviewed
+                actions = `<button class="btn btn-primary flex-grow-1" onclick="openReviewModal(${appointment.appointment_id})">Leave Review</button>`;
+            }
+
+            const card = createCard(appointment, 'bg-success', 'Completed', actions);
             pastAppointments.appendChild(card);
         });
     } else {
@@ -129,7 +150,7 @@ async function markAsUpcoming(appointmentId) {
         const result = await response.json();
         if (result.status === 'success') {
             console.log(`Appointment ${appointmentId} marked as upcoming.`);
-            loadAppointments(document.querySelector('#tutorId').value); // Reload appointments
+            loadAppointments(document.querySelector('#userId').value); // Reload appointments
         } else {
             console.error('Failed to mark as upcoming:', result.message);
         }
@@ -152,7 +173,7 @@ async function markAsCompleted(appointmentId) {
         const result = await response.json();
         if (result.status === 'success') {
             console.log(`Appointment ${appointmentId} marked as completed.`);
-            loadAppointments(document.querySelector('#tutorId').value); // Reload appointments
+            loadAppointments(document.querySelector('#userId').value); // Reload appointments
         } else {
             console.error('Failed to mark as completed:', result.message);
         }
@@ -179,7 +200,7 @@ async function cancelSession(appointmentId) {
         const result = await response.json();
         if (result.status === 'success') {
             console.log(`Appointment ${appointmentId} canceled.`);
-            loadAppointments(document.querySelector('#tutorId').value); // Reload appointments
+            loadAppointments(document.querySelector('#userId').value); // Reload appointments
         } else {
             console.error('Failed to cancel session:', result.message);
         }
@@ -189,10 +210,10 @@ async function cancelSession(appointmentId) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const tutorId = document.querySelector('#tutorId').value; 
+    const tutorId = document.querySelector('#userId').value; 
+    const role = document.querySelector('#userRole').value; // Assuming you have a hidden input for the role
     if (tutorId) {
-        console.log('Tutor ID:', tutorId);
-        loadAppointments(tutorId);
+        loadAppointments(tutorId, role);
     } else {
         console.error('Tutor ID not found in URL.');
     }

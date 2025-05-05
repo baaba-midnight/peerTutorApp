@@ -17,15 +17,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $action = null;
 }
 
-$tutor_id = isset($_GET['tutor_id']) ? $_GET['tutor_id'] : null;
+$user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
+$role = isset($_GET['role']) ? $_GET['role'] : null; // Default role for dashboard data
 $limit = isset($_GET['limit']) ? $_GET['limit'] : null; // Default limit for dashboard data
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     switch ($action) {
         case "getDashboardData":
-            $sessions = $tutorModel->getUpcomingSessions($tutor_id, $limit);
-            $messages = $tutorModel->getRecentMessages($tutor_id);
-            $reviews = $tutorModel->getRecentReviews($tutor_id);
+            $sessions = $tutorModel->getUpcomingSessions($user_id, 'tutor', $limit);
+            $messages = $tutorModel->getRecentMessages($user_id);
+            $reviews = $tutorModel->getRecentReviews($user_id);
 
             $response = [
                 'status' => 'success',
@@ -35,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             ];
             break;
         case "getAppointments":
-            $appointments = $tutorModel->getUpcomingSessions($tutor_id, $limit);
+            $appointments = $tutorModel->getUpcomingSessions($user_id, $role, $limit);
             $response = [
                 'status' => 'success',
                 'appointments' => $appointments
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $appointment_id = isset($_POST['appointment_id']) ? $_POST['appointment_id'] : null;
         $status = $_POST['status'];
 
-        if ($appointment_id && in_array($status, ['completed', 'pending', 'cancelled'])) {
+        if ($appointment_id && in_array($status, ['completed', 'pending', 'cancelled', 'confirmed'])) {
             if ($tutorModel->updateAppointmentStatus($appointment_id, $status)) {
                 $response = [
                     'status' => 'success',
