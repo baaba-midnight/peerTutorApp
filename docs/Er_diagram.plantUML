@@ -1,107 +1,199 @@
-@startuml PeerEd ER Diagram
-!define primary_key(x) <b><color:#b8861b><&key></color> x</b>
-!define foreign_key(x) <color:#3c7daf><&link-intact></color> x
+@startuml
+' Entity-Relationship Diagram for PeerTutor System
 
-!theme plain
-skinparam linetype ortho
+!define primary_key(x) <u>x</u>
+!define foreign_key(x) #x
 
-entity "Users" {
-    primary_key(user_id) : VARCHAR(36)
-    email : VARCHAR(255)
-    role : ENUM
-    first_name : VARCHAR(100)
-    last_name : VARCHAR(100)
-    --
-    + foreign_key(profile_id)
-    + foreign_key(tutor_profile_id)
+entity "Users" as users {
+  primary_key(user_id) : INT
+  email : VARCHAR(255)
+  password_hash : VARCHAR(255)
+  role : ENUM
+  first_name : VARCHAR(100)
+  last_name : VARCHAR(100)
+  phone_number : VARCHAR(20)
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+  last_login : TIMESTAMP
+  is_active : BOOLEAN
+  verification_status : BOOLEAN
 }
 
-entity "Profiles" {
-    primary_key(profile_id) : VARCHAR(36)
-    foreign_key(user_id) : VARCHAR(36)
-    bio : TEXT
-    department : VARCHAR(100)
-    year_of_study : INT
+entity "Profiles" as profiles {
+  primary_key(profile_id) : INT
+  foreign_key(user_id) : INT
+  bio : TEXT
+  profile_picture_url : VARCHAR(255)
+  department : VARCHAR(100)
+  year_of_study : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "TutorProfiles" {
-    primary_key(tutor_profile_id) : VARCHAR(36)
-    foreign_key(user_id) : VARCHAR(36)
-    hourly_rate : DECIMAL(10,2)
-    is_verified : BOOLEAN
-    overall_rating : DECIMAL(3,2)
+entity "TutorProfiles" as tutor_profiles {
+  primary_key(tutor_profile_id) : INT
+  foreign_key(user_id) : INT
+  hourly_rate : DECIMAL(10,2)
+  availability_schedule : JSON
+  overall_rating : DECIMAL(3,2)
+  is_verified : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "Subjects" {
-    primary_key(subject_id) : VARCHAR(36)
-    subject_code : VARCHAR(20)
-    subject_name : VARCHAR(100)
-    department : VARCHAR(100)
+entity "Courses" as courses {
+  primary_key(course_id) : INT
+  course_code : VARCHAR(20)
+  course_name : VARCHAR(100)
+  department : VARCHAR(100)
+  description : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "TutorSubjects" {
-    primary_key(tutor_subject_id) : VARCHAR(36)
-    foreign_key(tutor_id) : VARCHAR(36)
-    foreign_key(subject_id) : VARCHAR(36)
-    proficiency_level : ENUM
+entity "TutorCourses" as tutor_courses {
+  primary_key(tutor_course_id) : INT
+  foreign_key(tutor_id) : INT
+  foreign_key(course_id) : INT
+  proficiency_level : ENUM
+  created_at : TIMESTAMP
 }
 
-entity "Sessions" {
-    primary_key(session_id) : VARCHAR(36)
-    foreign_key(student_id) : VARCHAR(36)
-    foreign_key(tutor_id) : VARCHAR(36)
-    foreign_key(subject_id) : VARCHAR(36)
-    start_time : DATETIME
-    end_time : DATETIME
-    status : ENUM
-    session_type : ENUM
+entity "Sessions" as sessions {
+  primary_key(session_id) : INT
+  foreign_key(student_id) : INT
+  foreign_key(tutor_id) : INT
+  foreign_key(course_id) : INT
+  start_time : DATETIME
+  end_time : DATETIME
+  status : ENUM
+  location : VARCHAR(255)
+  session_type : ENUM
+  session_notes : TEXT
+  cancellation_reason : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "Reviews" {
-    primary_key(review_id) : VARCHAR(36)
-    foreign_key(session_id) : VARCHAR(36)
-    foreign_key(student_id) : VARCHAR(36)
-    foreign_key(tutor_id) : VARCHAR(36)
-    rating : INT
-    comment : TEXT
+entity "Availability" as availability {
+  primary_key(availability_id) : INT
+  foreign_key(tutor_id) : INT
+  day_of_week : ENUM
+  start_time : TIME
+  end_time : TIME
 }
 
-entity "Messages" {
-    primary_key(message_id) : VARCHAR(36)
-    foreign_key(sender_id) : VARCHAR(36)
-    foreign_key(recipient_id) : VARCHAR(36)
-    content : TEXT
-    is_read : BOOLEAN
+entity "Appointments" as appointments {
+  primary_key(appointment_id) : INT
+  foreign_key(student_id) : INT
+  foreign_key(tutor_id) : INT
+  foreign_key(subject_id) : INT
+  start_datetime : DATETIME
+  end_datetime : DATETIME
+  status : ENUM
+  meeting_link : VARCHAR(255)
+  notes : TEXT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "Conversations" {
-    primary_key(conversation_id) : VARCHAR(36)
-    foreign_key(user1_id) : VARCHAR(36)
-    foreign_key(user2_id) : VARCHAR(36)
-    foreign_key(last_message_id) : VARCHAR(36)
+entity "Reviews" as reviews {
+  primary_key(review_id) : INT
+  foreign_key(session_id) : INT
+  foreign_key(student_id) : INT
+  foreign_key(tutor_id) : INT
+  rating : INT
+  comment : TEXT
+  is_anonymous : BOOLEAN
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
 }
 
-entity "Notifications" {
-    primary_key(notification_id) : VARCHAR(36)
-    foreign_key(user_id) : VARCHAR(36)
-    type : ENUM
-    content : TEXT
-    is_read : BOOLEAN
+entity "Messages" as messages {
+  primary_key(message_id) : INT
+  foreign_key(sender_id) : INT
+  foreign_key(recipient_id) : INT
+  content : TEXT
+  is_read : BOOLEAN
+  created_at : TIMESTAMP
 }
 
-Users ||--|| Profiles
-Users ||--|| TutorProfiles
-Users ||--o{ Sessions
-Users ||--o{ Messages
-Users ||--o{ Notifications
-Users ||--o{ Conversations
+entity "Conversations" as conversations {
+  primary_key(conversation_id) : INT
+  foreign_key(user1_id) : INT
+  foreign_key(user2_id) : INT
+  foreign_key(last_message_id) : INT
+  created_at : TIMESTAMP
+  updated_at : TIMESTAMP
+}
 
-TutorProfiles ||--o{ TutorSubjects
-Subjects ||--o{ TutorSubjects
+entity "Notifications" as notifications {
+  primary_key(notification_id) : INT
+  foreign_key(user_id) : INT
+  type : ENUM
+  content : TEXT
+  is_read : BOOLEAN
+  related_id : INT
+  created_at : TIMESTAMP
+}
 
-Sessions ||--|| Reviews
-Sessions }|--|| Subjects
+entity "system_logs" as system_logs {
+  primary_key(log_id) : INT
+  timestamp : DATETIME
+  severity : ENUM
+  module : VARCHAR(50)
+  message : TEXT
+  user_id : INT
+  ip_address : VARCHAR(45)
+  request_id : VARCHAR(50)
+  stack_trace : TEXT
+  additional_data : JSON
+}
 
-Conversations ||--o{ Messages
+entity "backup_records" as backup_records {
+  primary_key(backup_id) : INT
+  backup_name : VARCHAR(255)
+  backup_type : ENUM
+  filename : VARCHAR(255)
+  filepath : VARCHAR(512)
+  file_size : BIGINT
+  status : ENUM
+  created_at : DATETIME
+  completed_at : DATETIME
+  created_by : INT
+  notes : TEXT
+  checksum : VARCHAR(64)
+}
+
+entity "backup_logs" as backup_logs {
+  primary_key(log_id) : INT
+  foreign_key(backup_id) : INT
+  operation : ENUM
+  status : ENUM
+  timestamp : DATETIME
+  user_id : INT
+  details : TEXT
+}
+
+' Relationships
+users ||--o{ profiles : has
+users ||--o{ tutor_profiles : has
+users ||--o{ notifications : receives
+users ||--o{ sessions : participates_as_student
+tutor_profiles ||--o{ sessions : provides
+tutor_profiles ||--o{ tutor_courses : offers
+tutor_profiles ||--o{ reviews : receives
+tutor_profiles ||--o{ availability : sets
+courses ||--o{ tutor_courses : included_in
+courses ||--o{ sessions : taught_in
+courses ||--o{ appointments : subject_of
+sessions ||--o{ reviews : rated_in
+users ||--o{ messages : sends
+users ||--o{ messages : receives
+users ||--o{ conversations : participates
+messages ||--o{ conversations : part_of
+backup_records ||--o{ backup_logs : generates
+users ||--o{ appointments : books_as_student
+users ||--o{ appointments : provides_as_tutor
 
 @enduml

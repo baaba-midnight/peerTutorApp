@@ -1,0 +1,86 @@
+@startuml
+' Sequence Diagram for Booking a Tutoring Session in PeerTutor System
+
+actor "Student" as student
+participant "Frontend" as frontend
+participant "Authentication Service" as auth
+participant "User Service" as userService
+participant "Course Service" as courseService
+participant "Tutor Service" as tutorService
+participant "Session Service" as sessionService
+participant "Notification Service" as notifService
+database "Database" as db
+
+title Booking a Tutoring Session
+
+== Authentication ==
+student -> frontend : Login
+frontend -> auth : Submit credentials
+auth -> db : Verify credentials
+db --> auth : Return user data
+auth --> frontend : Authentication token
+frontend --> student : Login success
+
+== Browse Available Tutors ==
+student -> frontend : Search tutors for a course
+frontend -> courseService : Get course details
+courseService -> db : Query course info
+db --> courseService : Course data
+courseService --> frontend : Course details
+
+frontend -> tutorService : Find tutors for course
+tutorService -> db : Query tutors offering course
+db --> tutorService : List of available tutors
+tutorService --> frontend : Tutor profiles with availability
+frontend --> student : Display available tutors
+
+== View Tutor Profile ==
+student -> frontend : Select tutor profile
+frontend -> tutorService : Get tutor details
+tutorService -> db : Query tutor profile, courses & ratings
+db --> tutorService : Tutor complete data
+tutorService --> frontend : Tutor profile information
+frontend --> student : Display tutor profile with reviews
+
+== Book Session ==
+student -> frontend : Select time slot and submit booking
+frontend -> sessionService : Create session request
+sessionService -> db : Check tutor availability
+db --> sessionService : Availability confirmed
+sessionService -> db : Create pending session record
+db --> sessionService : Session created
+sessionService -> notifService : Notify tutor about request
+notifService -> db : Create notification for tutor
+db --> notifService : Notification stored
+sessionService --> frontend : Booking request confirmed
+frontend --> student : Booking confirmation message
+
+== Tutor Confirms Session ==
+actor "Tutor" as tutor
+tutor -> frontend : View pending session requests
+frontend -> sessionService : Get pending sessions
+sessionService -> db : Query sessions for tutor
+db --> sessionService : Pending sessions
+sessionService --> frontend : List of pending sessions
+frontend --> tutor : Display pending sessions
+
+tutor -> frontend : Confirm session
+frontend -> sessionService : Update session status
+sessionService -> db : Update session to confirmed
+db --> sessionService : Session updated
+sessionService -> notifService : Notify student of confirmation
+notifService -> db : Create notification for student
+db --> notifService : Notification stored
+sessionService --> frontend : Confirmation successful
+frontend --> tutor : Session confirmed message
+
+== Notification to Student ==
+notifService --> student : Send email/push notification
+student -> frontend : View confirmed sessions
+frontend -> sessionService : Get student sessions
+sessionService -> db : Query sessions for student
+db --> sessionService : Student's sessions
+sessionService --> frontend : List of sessions
+frontend --> student : Display confirmed session
+
+@enduml
