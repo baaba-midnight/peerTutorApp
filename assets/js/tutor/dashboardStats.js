@@ -3,7 +3,7 @@ const API_BASE_URL = '../../api/tutor-appointments.php';
 // main data loader
 async function loadStats(tutorId) {
     try {
-        const response = await fetch(`${API_BASE_URL}?action=getDashboardData&tutor_id=${tutorId}&limit=5`);
+        const response = await fetch(`${API_BASE_URL}?action=getDashboardData&user_id=${tutorId}&limit=5`);
         const data = await response.json();
 
         const sessions = data.sessions;
@@ -158,6 +158,6 @@ function updateDashboardCards(data) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const tutorId = document.querySelector('#tutorId').value; // Get the tutor ID from a hidden input field or similar
+    const tutorId = document.querySelector('#userId').value; // Get the tutor ID from a hidden input field or similar
     loadStats(tutorId);
 });

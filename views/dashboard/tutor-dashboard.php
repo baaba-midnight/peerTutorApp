@@ -118,7 +118,7 @@ if (!isset($_SESSION['role'])) {
     include('../../includes/header.php');
     ?>
 
-    <input type="hidden" id="tutorId" value="<?php echo $_SESSION['id'] ?>">
+    <input type="hidden" id="userId" value=<?php echo $_SESSION['id'] ?>>
 
     <div class="main-content">
         <h2>Welcome back, <?php echo $_SESSION['full_name'] ?>!</h2>
