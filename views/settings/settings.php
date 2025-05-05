@@ -543,14 +543,17 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['role'])) {
 
             // Handle save availability (Edit Availability Modal)
             $('#saveAvailabilityBtn').on('click', function() {
-                var availability = {
-                    Monday: $('#monday').val(),
-                    Tuesday: $('#tuesday').val(),
-                    Wednesday: $('#wednesday').val(),
-                    Thursday: $('#thursday').val(),
-                    Friday: $('#friday').val()
-                    // Add Saturday/Sunday if needed
-                };
+                // Create availability object with all days
+                var availability = {};
+                
+                // Only add days that have values
+                if ($('#monday').val().trim()) availability.Monday = $('#monday').val().trim();
+                if ($('#tuesday').val().trim()) availability.Tuesday = $('#tuesday').val().trim();
+                if ($('#wednesday').val().trim()) availability.Wednesday = $('#wednesday').val().trim();
+                if ($('#thursday').val().trim()) availability.Thursday = $('#thursday').val().trim();
+                if ($('#friday').val().trim()) availability.Friday = $('#friday').val().trim();
+                // Add Saturday/Sunday if needed
+                
                 $.ajax({
                     url: '../../api/save_tutor_availability.php',
                     method: 'POST',
