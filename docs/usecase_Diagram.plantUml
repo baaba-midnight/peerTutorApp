@@ -1,0 +1,71 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+skinparam usecase {
+  BackgroundColor #FDF6E3
+  BorderColor black
+  ArrowColor black
+}
+
+actor Student
+actor Tutor
+actor Admin
+actor Guest
+
+package "PeerTutor Platform" {
+  
+  usecase "Sign Up / Log In" as UC1
+  usecase "Edit Profile" as UC2
+  usecase "Browse Tutors" as UC3
+  usecase "View Courses" as UC4
+  usecase "Book Session" as UC5
+  usecase "Join Session" as UC6
+  usecase "Leave Review" as UC7
+  usecase "Send Message" as UC8
+  usecase "View Messages" as UC9
+  usecase "Receive Notifications" as UC10
+  usecase "Manage Availability" as UC11
+  usecase "Set Tutor Profile" as UC12
+  usecase "Assign Courses" as UC13
+  usecase "Admin Panel Access" as UC14
+  usecase "View System Logs" as UC15
+  usecase "Manage Backups" as UC16
+
+}
+
+' Relationships for Students
+Student --> UC1
+Student --> UC2
+Student --> UC3
+Student --> UC4
+Student --> UC5
+Student --> UC6
+Student --> UC7
+Student --> UC8
+Student --> UC9
+Student --> UC10
+
+' Relationships for Tutors
+Tutor --> UC1
+Tutor --> UC2
+Tutor --> UC4
+Tutor --> UC6
+Tutor --> UC7
+Tutor --> UC8
+Tutor --> UC9
+Tutor --> UC10
+Tutor --> UC11
+Tutor --> UC12
+Tutor --> UC13
+
+' Relationships for Admin
+Admin --> UC1
+Admin --> UC14
+Admin --> UC15
+Admin --> UC16
+
+' Relationships for Guest
+Guest --> UC3
+Guest --> UC4
+
+@enduml

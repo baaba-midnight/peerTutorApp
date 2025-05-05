@@ -1,0 +1,247 @@
+@startuml
+' Class Diagram for PeerTutor System
+
+class User {
+  -user_id: int
+  -email: string
+  -password_hash: string
+  -role: enum
+  -first_name: string
+  -last_name: string
+  -phone_number: string
+  -created_at: timestamp
+  -updated_at: timestamp
+  -last_login: timestamp
+  -is_active: boolean
+  -verification_status: boolean
+  +register()
+  +login()
+  +updateProfile()
+  +resetPassword()
+  +deactivateAccount()
+}
+
+class Profile {
+  -profile_id: int
+  -user_id: int
+  -bio: text
+  -profile_picture_url: string
+  -department: string
+  -year_of_study: int
+  -created_at: timestamp
+  -updated_at: timestamp
+  +updateBio()
+  +uploadProfilePicture()
+  +updateAcademicInfo()
+}
+
+class TutorProfile {
+  -tutor_profile_id: int
+  -user_id: int
+  -hourly_rate: decimal
+  -availability_schedule: json
+  -overall_rating: decimal
+  -is_verified: boolean
+  -created_at: timestamp
+  -updated_at: timestamp
+  +updateRate()
+  +updateAvailability()
+  +addCourse()
+  +removeCourse()
+  +verifyProfile()
+}
+
+class Course {
+  -course_id: int
+  -course_code: string
+  -course_name: string
+  -department: string
+  -description: text
+  -created_at: timestamp
+  -updated_at: timestamp
+  +getDetails()
+  +getTutors()
+}
+
+class TutorCourse {
+  -tutor_course_id: int
+  -tutor_id: int
+  -course_id: int
+  -proficiency_level: enum
+  -created_at: timestamp
+  +updateProficiency()
+}
+
+class Session {
+  -session_id: int
+  -student_id: int
+  -tutor_id: int
+  -course_id: int
+  -start_time: datetime
+  -end_time: datetime
+  -status: enum
+  -location: string
+  -session_type: enum
+  -session_notes: text
+  -cancellation_reason: text
+  -created_at: timestamp
+  -updated_at: timestamp
+  +requestSession()
+  +confirmSession()
+  +cancelSession()
+  +completeSession()
+  +updateNotes()
+}
+
+class Availability {
+  -availability_id: int
+  -tutor_id: int
+  -day_of_week: enum
+  -start_time: time
+  -end_time: time
+  +addTimeSlot()
+  +removeTimeSlot()
+  +getAvailableSlots()
+}
+
+class Appointment {
+  -appointment_id: int
+  -student_id: int
+  -tutor_id: int
+  -subject_id: int
+  -start_datetime: datetime
+  -end_datetime: datetime
+  -status: enum
+  -meeting_link: string
+  -notes: text
+  -created_at: timestamp
+  -updated_at: timestamp
+  +bookAppointment()
+  +confirmAppointment()
+  +cancelAppointment()
+  +completeAppointment()
+  +rescheduleAppointment()
+}
+
+class Review {
+  -review_id: int
+  -session_id: int
+  -student_id: int
+  -tutor_id: int
+  -rating: int
+  -comment: text
+  -is_anonymous: boolean
+  -created_at: timestamp
+  -updated_at: timestamp
+  +submitReview()
+  +editReview()
+  +deleteReview()
+}
+
+class Message {
+  -message_id: int
+  -sender_id: int
+  -recipient_id: int
+  -content: text
+  -is_read: boolean
+  -created_at: timestamp
+  +sendMessage()
+  +markAsRead()
+  +deleteMessage()
+}
+
+class Conversation {
+  -conversation_id: int
+  -user1_id: int
+  -user2_id: int
+  -last_message_id: int
+  -created_at: timestamp
+  -updated_at: timestamp
+  +getMessages()
+  +getParticipants()
+  +markAsRead()
+}
+
+class Notification {
+  -notification_id: int
+  -user_id: int
+  -type: enum
+  -content: text
+  -is_read: boolean
+  -related_id: int
+  -created_at: timestamp
+  +sendNotification()
+  +markAsRead()
+  +deleteNotification()
+}
+
+class SystemLog {
+  -log_id: int
+  -timestamp: datetime
+  -severity: enum
+  -module: string
+  -message: text
+  -user_id: int
+  -ip_address: string
+  -request_id: string
+  -stack_trace: text
+  -additional_data: json
+  +logEvent()
+  +getLogsByUser()
+  +getLogsBySeverity()
+}
+
+class BackupRecord {
+  -backup_id: int
+  -backup_name: string
+  -backup_type: enum
+  -filename: string
+  -filepath: string
+  -file_size: bigint
+  -status: enum
+  -created_at: datetime
+  -completed_at: datetime
+  -created_by: int
+  -notes: text
+  -checksum: string
+  +createBackup()
+  +restoreBackup()
+  +verifyBackup()
+  +downloadBackup()
+}
+
+class BackupLog {
+  -log_id: int
+  -backup_id: int
+  -operation: enum
+  -status: enum
+  -timestamp: datetime
+  -user_id: int
+  -details: text
+  +logBackupOperation()
+  +getLogsByBackup()
+  +getLogsByUser()
+}
+
+' Relationships
+User "1" -- "0..1" Profile : has
+User "1" -- "0..1" TutorProfile : has
+User "1" -- "*" Notification : receives
+User "1" -- "*" Message : sends
+User "1" -- "*" Message : receives
+User "1" -- "*" Conversation : participates
+User "1" -- "*" Session : books
+TutorProfile "1" -- "*" TutorCourse : offers
+TutorProfile "1" -- "*" Availability : sets
+TutorProfile "1" -- "*" Session : conducts
+TutorProfile "1" -- "*" Review : receives
+Course "1" -- "*" TutorCourse : taught_by
+Course "1" -- "*" Session : used_in
+Course "1" -- "*" Appointment : subject_of
+Session "1" -- "*" Review : rated_in
+Message "*" -- "1" Conversation : belongs_to
+BackupRecord "1" -- "*" BackupLog : generates
+User "1" -- "*" Appointment : books
+User "1" -- "*" Appointment : tutors
+
+@enduml
