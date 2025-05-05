@@ -158,6 +158,112 @@
     <script>
         // Initialize Flatpickr for date selection
         let flatpickrInstance = null;
+        
+        // Function to load time slots based on selected day
+        function loadTimeSlots(selectedDay) {
+            var $timeDropdown = $('#modalTimeSlot');
+            $timeDropdown.empty();
+            $timeDropdown.append('<option value="">Select a time slot</option>');
+            
+            if (selectedDay && window.tutorAvailability && window.tutorAvailability[selectedDay]) {
+                // Get time ranges for the selected day
+                const timeRanges = window.tutorAvailability[selectedDay].split(',');
+                const selectedDate = $('#modalAvailableDate').val();
+                
+                timeRanges.forEach(function(timeRange, index) {
+                    timeRange = timeRange.trim();
+                    
+                    if (timeRange.toLowerCase() === 'not available') {
+                        return;
+                    }
+                    
+                    // Parse time range (e.g., "9:00 AM - 12:00 PM")
+                    const parts = timeRange.split('-');
+                    if (parts.length !== 2) {
+                        return;
+                    }
+                    
+                    const startTimeStr = parts[0].trim();
+                    const endTimeStr = parts[1].trim();
+                    
+                    // Create date objects for start and end times
+                    const startTime = parseTimeString(startTimeStr);
+                    const endTime = parseTimeString(endTimeStr);
+                    
+                    if (!startTime || !endTime) {
+                        return;
+                    }
+                    
+                    // Generate time slots in 1-hour increments
+                    let slotStart = new Date(startTime);
+                    while (slotStart < endTime) {
+                        // Calculate slot end (1 hour later)
+                        let slotEnd = new Date(slotStart);
+                        slotEnd.setHours(slotEnd.getHours() + 1);
+                        
+                        // Only add complete hour slots that fit within availability window
+                        if (slotEnd <= endTime) {
+                            const formattedStart = formatTime(slotStart);
+                            const formattedEnd = formatTime(slotEnd);
+                            const valueString = `${selectedDate}|${formatTimeForDb(slotStart)}|${formatTimeForDb(slotEnd)}`;
+                            $timeDropdown.append(`<option value="${valueString}">${formattedStart} - ${formattedEnd}</option>`);
+                        }
+                        
+                        // Move to next slot
+                        slotStart.setHours(slotStart.getHours() + 1);
+                    }
+                });
+                
+                if ($timeDropdown.find('option').length <= 1) {
+                    $timeDropdown.append('<option value="">No time slots available for this day</option>');
+                }
+            }
+        }
+
+        // Helper function to parse time strings like "9:00 AM" or "2:30 PM"
+        function parseTimeString(timeStr) {
+            try {
+                const [timePart, ampm] = timeStr.split(/\s+/);
+                let [hours, minutes] = timePart.split(':').map(Number);
+                
+                if (ampm.toUpperCase() === 'PM' && hours < 12) {
+                    hours += 12;
+                } else if (ampm.toUpperCase() === 'AM' && hours === 12) {
+                    hours = 0;
+                }
+                
+                const date = new Date();
+                date.setHours(hours, minutes || 0, 0, 0);
+                return date;
+            } catch (e) {
+                console.error('Error parsing time:', timeStr, e);
+                return null;
+            }
+        }
+
+        // Helper function to format time for display
+        function formatTime(date) {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            
+            hours = hours % 12;
+            hours = hours ? hours : 12; // Convert 0 to 12
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            return hours + ':' + minutes + ' ' + ampm;
+        }
+        
+        // Helper function to format time for database storage
+        function formatTimeForDb(date) {
+            let hours = date.getHours();
+            let minutes = date.getMinutes();
+            
+            hours = hours < 10 ? '0' + hours : hours;
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            
+            return hours + ':' + minutes + ':00';
+        }
             
         $(document).on('click', '.tutor-card button', function() {
             const card = $(this).closest('.tutor-card');
@@ -319,112 +425,6 @@
                     $('#tutorsGrid').html('<div class="col-12"><div class="alert alert-danger">Failed to load tutors.</div></div>');
                 }
             });
-
-            // Function to load time slots based on selected day
-            function loadTimeSlots(selectedDay) {
-                var $timeDropdown = $('#modalTimeSlot');
-                $timeDropdown.empty();
-                $timeDropdown.append('<option value="">Select a time slot</option>');
-                
-                if (selectedDay && window.tutorAvailability && window.tutorAvailability[selectedDay]) {
-                    // Get time ranges for the selected day
-                    const timeRanges = window.tutorAvailability[selectedDay].split(',');
-                    const selectedDate = $('#modalAvailableDate').val();
-                    
-                    timeRanges.forEach(function(timeRange, index) {
-                        timeRange = timeRange.trim();
-                        
-                        if (timeRange.toLowerCase() === 'not available') {
-                            return;
-                        }
-                        
-                        // Parse time range (e.g., "9:00 AM - 12:00 PM")
-                        const parts = timeRange.split('-');
-                        if (parts.length !== 2) {
-                            return;
-                        }
-                        
-                        const startTimeStr = parts[0].trim();
-                        const endTimeStr = parts[1].trim();
-                        
-                        // Create date objects for start and end times
-                        const startTime = parseTimeString(startTimeStr);
-                        const endTime = parseTimeString(endTimeStr);
-                        
-                        if (!startTime || !endTime) {
-                            return;
-                        }
-                        
-                        // Generate time slots in 1-hour increments
-                        let slotStart = new Date(startTime);
-                        while (slotStart < endTime) {
-                            // Calculate slot end (1 hour later)
-                            let slotEnd = new Date(slotStart);
-                            slotEnd.setHours(slotEnd.getHours() + 1);
-                            
-                            // Only add complete hour slots that fit within availability window
-                            if (slotEnd <= endTime) {
-                                const formattedStart = formatTime(slotStart);
-                                const formattedEnd = formatTime(slotEnd);
-                                const valueString = `${selectedDate}|${formatTimeForDb(slotStart)}|${formatTimeForDb(slotEnd)}`;
-                                $timeDropdown.append(`<option value="${valueString}">${formattedStart} - ${formattedEnd}</option>`);
-                            }
-                            
-                            // Move to next slot
-                            slotStart.setHours(slotStart.getHours() + 1);
-                        }
-                    });
-                    
-                    if ($timeDropdown.find('option').length <= 1) {
-                        $timeDropdown.append('<option value="">No time slots available for this day</option>');
-                    }
-                }
-            }
-
-            // Helper function to parse time strings like "9:00 AM" or "2:30 PM"
-            function parseTimeString(timeStr) {
-                try {
-                    const [timePart, ampm] = timeStr.split(/\s+/);
-                    let [hours, minutes] = timePart.split(':').map(Number);
-                    
-                    if (ampm.toUpperCase() === 'PM' && hours < 12) {
-                        hours += 12;
-                    } else if (ampm.toUpperCase() === 'AM' && hours === 12) {
-                        hours = 0;
-                    }
-                    
-                    const date = new Date();
-                    date.setHours(hours, minutes || 0, 0, 0);
-                    return date;
-                } catch (e) {
-                    console.error('Error parsing time:', timeStr, e);
-                    return null;
-                }
-            }
-
-            // Helper function to format time for display
-            function formatTime(date) {
-                let hours = date.getHours();
-                let minutes = date.getMinutes();
-                const ampm = hours >= 12 ? 'PM' : 'AM';
-                
-                hours = hours % 12;
-                hours = hours ? hours : 12; // Convert 0 to 12
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                
-                return hours + ':' + minutes + ' ' + ampm;
-            }
-            
-            // Helper function to format time for database storage
-            function formatTimeForDb(date) {
-                let hours = date.getHours();
-                let minutes = date.getMinutes();
-                
-                hours = hours < 10 ? '0' + hours : hours;
-                minutes = minutes < 10 ? '0' + minutes : minutes;
-                
-                return hours + ':' + minutes + ':00';
-            }
 
             // Handle book session form submission
             $('#bookSessionForm').on('submit', function(e) {
