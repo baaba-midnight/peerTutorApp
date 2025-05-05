@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="../../assets/css/main.css">
     <link rel="stylesheet" href="../../assets/css/header.css">
     <link rel="stylesheet" href="../../assets/css/footer.css">
+    <!-- Flatpickr Calendar CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         .tutor-card {
             transition: transform 0.2s;
@@ -98,8 +100,12 @@
         </div>
     </div>
     
+    <?php include('../../includes/footer.php'); ?>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- Book Session Modal -->
     <div class="modal fade" id="bookSessionModal" tabindex="-1" aria-labelledby="bookSessionModalLabel" aria-hidden="true">
@@ -120,11 +126,9 @@
                 </select>
               </div>
               <div class="mb-3">
-                <label for="modalAvailableDay" class="form-label">Available Day</label>
-                <select class="form-select" id="modalAvailableDay" name="available_day" required>
-                  <option value="">Select a day</option>
-                  <!-- Days will be loaded dynamically -->
-                </select>
+                <label for="modalAvailableDate" class="form-label">Select Date</label>
+                <input type="text" class="form-control" id="modalAvailableDate" name="available_date" placeholder="Click to select a date" required readonly>
+                <input type="hidden" id="modalSelectedDay" name="selected_day">
               </div>
               <div class="mb-3" id="timeSlotContainer">
                 <label for="modalTimeSlot" class="form-label">Available Time Slots</label>
@@ -152,7 +156,129 @@
     </div>
 
     <script>
-        // Fetch and display all tutors on page load
+        // Initialize Flatpickr for date selection
+        let flatpickrInstance = null;
+            
+        $(document).on('click', '.tutor-card button', function() {
+            const card = $(this).closest('.tutor-card');
+            const tutorId = card.data('tutor-id') || card.find('input[name="tutor_id"]').val() || card.attr('data-tutor-id');
+            $('#modalTutorId').val(tutorId);
+            
+            // Clear previous selections
+            $('#modalAvailableDate').val('');
+            $('#modalSelectedDay').val('');
+            $('#modalTimeSlot').empty().append('<option value="">Select a time slot</option>');
+            
+            // First show the modal without initializing the calendar
+            $('#bookSessionModal').modal('show');
+            
+            // Fetch courses for this tutor and populate the dropdown
+            $.ajax({
+                url: '../../api/get_tutor_courses.php',
+                method: 'GET',
+                data: { tutor_id: tutorId },
+                dataType: 'json',
+                success: function(response) {
+                    var $dropdown = $('#modalCourse');
+                    $dropdown.empty();
+                    $dropdown.append('<option value="">Select a course</option>');
+                    if (response.status === 'success' && response.courses.length > 0) {
+                        response.courses.forEach(function(course) {
+                            var text = course.course_code ? (course.course_code + ' - ' + course.course_name) : course.course_name;
+                            $dropdown.append('<option value="' + course.course_id + '">' + text + '</option>');
+                        });
+                    } else {
+                        $dropdown.append('<option value="">No courses found</option>');
+                    }
+                },
+                error: function() {
+                    var $dropdown = $('#modalCourse');
+                    $dropdown.empty();
+                    $dropdown.append('<option value="">Failed to load courses</option>');
+                }
+            });
+            
+            // Fetch tutor availability and populate the calendar
+            $.ajax({
+                url: '../../api/get_tutor_availability.php',
+                method: 'GET',
+                data: { tutor_id: tutorId },
+                dataType: 'json',
+                success: function(response) {
+                    if (response.status === 'success' && response.availability && Object.keys(response.availability).length > 0) {
+                        console.log("Tutor availability:", response.availability);
+                        
+                        // Store availability data for later use
+                        window.tutorAvailability = response.availability;
+                        
+                        // Get available days as an array of day names (e.g., ["Monday", "Wednesday"])
+                        const availableDays = [];
+                        for (const day in response.availability) {
+                            if (response.availability[day] && 
+                                response.availability[day].toLowerCase() !== 'not available') {
+                                availableDays.push(day);
+                            }
+                        }
+                        
+                        console.log("Available days:", availableDays);
+                        
+                        // Map day names to day numbers (0 = Sunday, 1 = Monday, etc.)
+                        const dayMap = {
+                            'Sunday': 0,
+                            'Monday': 1,
+                            'Tuesday': 2,
+                            'Wednesday': 3,
+                            'Thursday': 4,
+                            'Friday': 5,
+                            'Saturday': 6
+                        };
+                        
+                        // Convert day names to day numbers for easy comparison
+                        const availableDayNumbers = availableDays.map(day => dayMap[day]);
+                        
+                        console.log("Available day numbers:", availableDayNumbers);
+                        
+                        // Destroy previous instance if it exists
+                        if (flatpickrInstance) {
+                            flatpickrInstance.destroy();
+                        }
+                        
+                        // Initialize Flatpickr with available days
+                        setTimeout(() => {
+                            flatpickrInstance = $('#modalAvailableDate').flatpickr({
+                                dateFormat: "Y-m-d",
+                                minDate: "today",
+                                maxDate: new Date().fp_incr(60), // 60 days from now
+                                disableMobile: false,
+                                enable: [
+                                    function(date) {
+                                        // Check if the day of week number is in availableDayNumbers
+                                        const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+                                        return availableDayNumbers.includes(dayOfWeek);
+                                    }
+                                ],
+                                onChange: function(selectedDates, dateStr, instance) {
+                                    if (selectedDates.length > 0) {
+                                        const selectedDate = selectedDates[0];
+                                        // Get day name in full format (e.g., "Monday")
+                                        const dayOfWeek = selectedDate.toLocaleDateString('en-US', { weekday: 'long' });
+                                        $('#modalSelectedDay').val(dayOfWeek);
+                                        // Trigger change to load time slots
+                                        loadTimeSlots(dayOfWeek);
+                                    }
+                                }
+                            });
+                        }, 300); // Slight delay to ensure modal is fully displayed
+                    } else {
+                        alert('No availability found for this tutor.');
+                    }
+                },
+                error: function() {
+                    alert('Failed to load availability.');
+                }
+            });
+        });
+        
         $(document).ready(function() {
             $.ajax({
                 url: '../../api/search.php',
@@ -194,88 +320,8 @@
                 }
             });
 
-            // Handle schedule session clicks (delegated for dynamic content)
-            $(document).on('click', '.tutor-card button', function() {
-                const card = $(this).closest('.tutor-card');
-                const tutorId = card.data('tutor-id') || card.find('input[name="tutor_id"]').val() || card.attr('data-tutor-id');
-                $('#modalTutorId').val(tutorId);
-                
-                // Clear previous selections
-                $('#modalAvailableDay').empty().append('<option value="">Select a day</option>');
-                $('#modalTimeSlot').empty().append('<option value="">Select a time slot</option>');
-                
-                // Fetch courses for this tutor and populate the dropdown
-                $.ajax({
-                    url: '../../api/get_tutor_courses.php',
-                    method: 'GET',
-                    data: { tutor_id: tutorId },
-                    dataType: 'json',
-                    success: function(response) {
-                        var $dropdown = $('#modalCourse');
-                        $dropdown.empty();
-                        $dropdown.append('<option value="">Select a course</option>');
-                        if (response.status === 'success' && response.courses.length > 0) {
-                            response.courses.forEach(function(course) {
-                                var text = course.course_code ? (course.course_code + ' - ' + course.course_name) : course.course_name;
-                                $dropdown.append('<option value="' + course.course_id + '">' + text + '</option>');
-                            });
-                        } else {
-                            $dropdown.append('<option value="">No courses found</option>');
-                        }
-                    },
-                    error: function() {
-                        var $dropdown = $('#modalCourse');
-                        $dropdown.empty();
-                        $dropdown.append('<option value="">Failed to load courses</option>');
-                    }
-                });
-                
-                // Fetch tutor availability and populate days dropdown
-                $.ajax({
-                    url: '../../api/get_tutor_availability.php',
-                    method: 'GET',
-                    data: { tutor_id: tutorId },
-                    dataType: 'json',
-                    success: function(response) {
-                        var $dayDropdown = $('#modalAvailableDay');
-                        $dayDropdown.empty();
-                        $dayDropdown.append('<option value="">Select a day</option>');
-                        
-                        if (response.status === 'success' && response.availability && Object.keys(response.availability).length > 0) {
-                            // Store availability data for later use
-                            window.tutorAvailability = response.availability;
-                            
-                            // Sort days in correct order
-                            const dayOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                            const availableDays = Object.keys(response.availability).filter(day => 
-                                response.availability[day] && 
-                                response.availability[day].toLowerCase() !== 'not available'
-                            );
-                            
-                            availableDays.sort((a, b) => dayOrder.indexOf(a) - dayOrder.indexOf(b));
-                            
-                            // Add available days to dropdown
-                            availableDays.forEach(function(day) {
-                                $dayDropdown.append('<option value="' + day + '">' + day + '</option>');
-                            });
-                        } else {
-                            $dayDropdown.append('<option value="">No availability found</option>');
-                        }
-                    },
-                    error: function() {
-                        var $dayDropdown = $('#modalAvailableDay');
-                        $dayDropdown.empty();
-                        $dayDropdown.append('<option value="">Failed to load availability</option>');
-                    }
-                });
-                
-                // Show the modal
-                $('#bookSessionModal').modal('show');
-            });
-            
-            // Handle day selection - populate time slots
-            $('#modalAvailableDay').on('change', function() {
-                const selectedDay = $(this).val();
+            // Function to load time slots based on selected day
+            function loadTimeSlots(selectedDay) {
                 var $timeDropdown = $('#modalTimeSlot');
                 $timeDropdown.empty();
                 $timeDropdown.append('<option value="">Select a time slot</option>');
@@ -283,6 +329,7 @@
                 if (selectedDay && window.tutorAvailability && window.tutorAvailability[selectedDay]) {
                     // Get time ranges for the selected day
                     const timeRanges = window.tutorAvailability[selectedDay].split(',');
+                    const selectedDate = $('#modalAvailableDate').val();
                     
                     timeRanges.forEach(function(timeRange, index) {
                         timeRange = timeRange.trim();
@@ -319,7 +366,7 @@
                             if (slotEnd <= endTime) {
                                 const formattedStart = formatTime(slotStart);
                                 const formattedEnd = formatTime(slotEnd);
-                                const valueString = `${selectedDay}|${formatTimeForDb(slotStart)}|${formatTimeForDb(slotEnd)}`;
+                                const valueString = `${selectedDate}|${formatTimeForDb(slotStart)}|${formatTimeForDb(slotEnd)}`;
                                 $timeDropdown.append(`<option value="${valueString}">${formattedStart} - ${formattedEnd}</option>`);
                             }
                             
@@ -332,8 +379,8 @@
                         $timeDropdown.append('<option value="">No time slots available for this day</option>');
                     }
                 }
-            });
-            
+            }
+
             // Helper function to parse time strings like "9:00 AM" or "2:30 PM"
             function parseTimeString(timeStr) {
                 try {
@@ -383,49 +430,25 @@
             $('#bookSessionForm').on('submit', function(e) {
                 e.preventDefault();
                 
-                // Get the selected time slot
+                // Get form data
+                const tutor_id = $('#modalTutorId').val();
+                const course_id = $('#modalCourse').val();
+                const selectedDate = $('#modalAvailableDate').val(); // YYYY-MM-DD format
                 const timeSlotValue = $('#modalTimeSlot').val();
+                const link = $('#modalLocation').val();
+                const notes = $('#modalNotes').val();
+                
                 if (!timeSlotValue) {
                     alert('Please select a time slot');
                     return;
                 }
                 
-                // Parse the time slot value
-                const [day, start_time, end_time] = timeSlotValue.split('|');
-                
-                // Get the course ID
-                const course_id = $('#modalCourse').val();
-                
-                // Get the tutor ID
-                const tutor_id = $('#modalTutorId').val();
-                
-                // Meeting link and notes
-                const link = $('#modalLocation').val();
-                const notes = $('#modalNotes').val();
-                
-                // Create a date object for the selected day and time
-                const today = new Date();
-                const dayOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                const currentDay = dayOfWeek[today.getDay()];
-                
-                // Calculate the day offset
-                let dayOffset = dayOfWeek.indexOf(day) - dayOfWeek.indexOf(currentDay);
-                if (dayOffset <= 0) {
-                    dayOffset += 7; // Next week if day has already passed
-                }
-                
-                // Set the date for the selected day
-                const sessionDate = new Date(today);
-                sessionDate.setDate(today.getDate() + dayOffset);
-                
-                // Format the date for the API
-                const year = sessionDate.getFullYear();
-                const month = String(sessionDate.getMonth() + 1).padStart(2, '0');
-                const date = String(sessionDate.getDate()).padStart(2, '0');
+                // Parse the time slot value (selectedDate|start_time|end_time)
+                const [date, start_time, end_time] = timeSlotValue.split('|');
                 
                 // Create the datetime strings
-                const start_datetime = `${year}-${month}-${date} ${start_time}`;
-                const end_datetime = `${year}-${month}-${date} ${end_time}`;
+                const start_datetime = `${date} ${start_time}`;
+                const end_datetime = `${date} ${end_time}`;
                 
                 // Create the form data
                 const formData = {
@@ -447,13 +470,23 @@
                         if (response.status === 'success') {
                             alert('Session booked successfully!');
                             $('#bookSessionModal').modal('hide');
-                            // Optionally, refresh tutors or user sessions
+                            // Optionally, redirect to appointments page
+                            window.location.href = '../../views/appointments/view-appointments.php';
                         } else {
-                            alert('Failed to book session: ' + response.message);
+                            alert('Failed to book session: ' + (response.message || 'Unknown error'));
                         }
                     },
-                    error: function() {
-                        alert('Error booking session. Please try again.');
+                    error: function(xhr) {
+                        let errorMessage = 'Error booking session. Please try again.';
+                        try {
+                            const response = JSON.parse(xhr.responseText);
+                            if (response.message) {
+                                errorMessage = response.message;
+                            }
+                        } catch (e) {
+                            // Use default error message
+                        }
+                        alert(errorMessage);
                     }
                 });
             });

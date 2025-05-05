@@ -14,7 +14,17 @@ if (!$availability) {
     echo json_encode(['status' => 'error', 'message' => 'No availability data provided.']);
     exit;
 }
+
 try {
+    // Decode and validate the JSON availability data
+    $availabilityData = json_decode($availability, true);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo json_encode(['status' => 'error', 'message' => 'Invalid availability format.']);
+        exit;
+    }
+    
+    // Note: The client-side now only sends days with values, so we don't need to filter them here
+    
     $db = new Database();
     $conn = $db->connect();
     // Save as JSON in TutorProfiles.availability_schedule
@@ -23,5 +33,5 @@ try {
     echo json_encode(['status' => 'success']);
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['status' => 'error', 'message' => 'Failed to save availability.']);
+    echo json_encode(['status' => 'error', 'message' => 'Failed to save availability: ' . $e->getMessage()]);
 }
